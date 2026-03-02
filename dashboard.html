@@ -685,8 +685,18 @@
       const container = document.getElementById('bookingsContainer');
       try {
         const data = await apiRequest('/bookings');
-        renderRecentBookings(data.bookings);
-        container.innerHTML = container.querySelector('.data-table').outerHTML;
+        if (data.bookings && data.bookings.length > 0) {
+          renderRecentBookings(data.bookings);
+          // Get the rendered table from the temp container
+          const tempDiv = document.getElementById('recentBookingsContainer');
+          if (tempDiv && tempDiv.querySelector('.data-table')) {
+            container.innerHTML = tempDiv.querySelector('.data-table').outerHTML;
+          } else {
+            container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No bookings available</p>';
+          }
+        } else {
+          container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No bookings found</p>';
+        }
       } catch (error) {
         container.innerHTML = '<div class="error-message">Failed to load bookings</div>';
       }
@@ -697,8 +707,18 @@
       const container = document.getElementById('scheduleContainer');
       try {
         const data = await apiRequest('/dashboard/schedule');
-        renderUpcomingSchedule(data.schedules);
-        container.innerHTML = container.querySelector('.data-table').outerHTML;
+        if (data.schedules && data.schedules.length > 0) {
+          renderUpcomingSchedule(data.schedules);
+          // Get the rendered table from the temp container
+          const tempDiv = document.getElementById('upcomingScheduleContainer');
+          if (tempDiv && tempDiv.querySelector('.data-table')) {
+            container.innerHTML = tempDiv.querySelector('.data-table').outerHTML;
+          } else {
+            container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No schedule items available</p>';
+          }
+        } else {
+          container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">No schedule items found</p>';
+        }
       } catch (error) {
         container.innerHTML = '<div class="error-message">Failed to load schedule</div>';
       }

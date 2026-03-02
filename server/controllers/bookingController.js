@@ -97,8 +97,8 @@ exports.createBooking = async (req, res) => {
 
     const booking = await Booking.create(req.body);
 
-    // Clear cache
-    await clearCache('cache:/api/bookings*');
+    // Clear cache with application prefix
+    await clearCache('nct:cache:/api/bookings*');
 
     res.status(201).json({
       success: true,
@@ -144,8 +144,8 @@ exports.updateBooking = async (req, res) => {
       runValidators: true,
     });
 
-    // Clear cache
-    await clearCache('cache:/api/bookings*');
+    // Clear cache with application prefix
+    await clearCache('nct:cache:/api/bookings*');
 
     res.status(200).json({
       success: true,
@@ -176,8 +176,8 @@ exports.deleteBooking = async (req, res) => {
 
     await booking.deleteOne();
 
-    // Clear cache
-    await clearCache('cache:/api/bookings*');
+    // Clear cache with application prefix
+    await clearCache('nct:cache:/api/bookings*');
 
     res.status(200).json({
       success: true,

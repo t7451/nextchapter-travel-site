@@ -15,7 +15,9 @@ exports.cache = (duration = 300) => {
       return next();
     }
 
-    const key = `cache:${req.originalUrl || req.url}`;
+    // Use application-specific prefix
+    const appPrefix = 'nct:';
+    const key = `${appPrefix}cache:${req.originalUrl || req.url}`;
 
     try {
       const cachedData = await redisClient.get(key);
@@ -50,7 +52,10 @@ exports.clearCache = async (pattern) => {
   }
 
   try {
-    const keys = await redisClient.keys(pattern);
+    // Use application-specific prefix to avoid affecting other apps
+    const appPrefix = 'nct:';
+    const fullPattern = `${appPrefix}${pattern}`;
+    const keys = await redisClient.keys(fullPattern);
     if (keys.length > 0) {
       await redisClient.del(keys);
     }
@@ -61,7 +66,7 @@ exports.clearCache = async (pattern) => {
   }
 };
 
-// Clear all cache
+// Clear all cache for this application only
 exports.clearAllCache = async () => {
   const redisClient = getRedisClient();
   
@@ -70,7 +75,12 @@ exports.clearAllCache = async () => {
   }
 
   try {
-    await redisClient.flushDb();
+    // Only clear keys with our application prefix
+    const appPrefix = 'nct:';
+    const keys = await redisClient.keys(`${appPrefix}*`);
+    if (keys.length > 0) {
+      await redisClient.del(keys);
+    }
     return true;
   } catch (error) {
     console.error('Clear all cache error:', error);

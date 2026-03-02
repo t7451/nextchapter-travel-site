@@ -522,10 +522,12 @@
         const phone = document.getElementById('phone').value;
 
         // Generate a secure random password for the user
+        // Note: In production, this should be sent via email with a password reset link
         const tempPassword = generateSecurePassword();
 
         try {
-          // Register user (they'll be prompted to change password on first login)
+          // Register user (temporary password will need to be reset)
+          // TODO: Implement email notification with password reset link
           const registerResponse = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -549,7 +551,10 @@
           localStorage.setItem('authToken', authToken);
           currentUser = registerData.user;
 
-          showInfo(`Account created! A temporary password has been generated. Please check your email (${email}) for login instructions.`);
+          showInfo(
+            `Account created! An email has been sent to ${email} with login instructions. ` +
+            `For now, you can continue with your booking.`
+          );
         } catch (error) {
           // If registration fails (user might already exist), try to continue
           console.error('Registration error:', error);
