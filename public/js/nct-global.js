@@ -74,6 +74,8 @@
       if (!authContainer) {
         authContainer = document.createElement('div');
         authContainer.id = 'nct-auth-ui';
+        authContainer.setAttribute('role', 'navigation');
+        authContainer.setAttribute('aria-label', 'User account navigation');
         authContainer.style.cssText = `
           position: fixed;
           top: 20px;
@@ -92,25 +94,33 @@
 
       if (user) {
         authContainer.innerHTML = `
-          <span style="color: #2c3e50; font-size: 0.9rem;">
+          <span style="color: #2c3e50; font-size: 0.9rem;" aria-label="Current user">
             👤 ${user.firstName}
           </span>
-          <a href="/account.html" style="color: #c5a880; text-decoration: none; font-weight: 600;">
+          <a href="/account.html" 
+             style="color: #c5a880; text-decoration: none; font-weight: 600;"
+             aria-label="Go to my account">
             My Account
           </a>
           ${user.role === 'agent' || user.role === 'admin' ? 
-            '<a href="/dashboard.html" style="color: #c5a880; text-decoration: none; font-weight: 600;">Dashboard</a>' : 
+            '<a href="/dashboard.html" style="color: #c5a880; text-decoration: none; font-weight: 600;" aria-label="Go to agent dashboard">Dashboard</a>' : 
             ''}
-          <button onclick="NCT.logout()" style="background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; cursor: pointer; font-size: 0.9rem;">
+          <button onclick="NCT.logout()" 
+                  style="background: #e74c3c; color: white; border: none; padding: 5px 15px; border-radius: 15px; cursor: pointer; font-size: 0.9rem;"
+                  aria-label="Logout from account">
             Logout
           </button>
         `;
       } else {
         authContainer.innerHTML = `
-          <a href="/login.html" style="color: #c5a880; text-decoration: none; font-weight: 600;">
+          <a href="/login.html" 
+             style="color: #c5a880; text-decoration: none; font-weight: 600;"
+             aria-label="Login to your account">
             Login
           </a>
-          <a href="/register.html" style="background: #c5a880; color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 600;">
+          <a href="/register.html" 
+             style="background: #c5a880; color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 600;"
+             aria-label="Create a new account">
             Sign Up
           </a>
         `;

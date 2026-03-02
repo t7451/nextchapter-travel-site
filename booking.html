@@ -521,8 +521,11 @@
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
 
+        // Generate a secure random password for the user
+        const tempPassword = generateSecurePassword();
+
         try {
-          // Register user (with a temporary password they'll be asked to change)
+          // Register user (they'll be prompted to change password on first login)
           const registerResponse = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -531,7 +534,7 @@
               lastName,
               email,
               phone,
-              password: 'TempPassword123!', // Temporary password
+              password: tempPassword,
             }),
           });
 
@@ -546,7 +549,7 @@
           localStorage.setItem('authToken', authToken);
           currentUser = registerData.user;
 
-          showInfo('Account created! You can login later with email: ' + email);
+          showInfo(`Account created! A temporary password has been generated. Please check your email (${email}) for login instructions.`);
         } catch (error) {
           // If registration fails (user might already exist), try to continue
           console.error('Registration error:', error);
@@ -595,6 +598,19 @@
         submitBtn.textContent = 'Submit Booking Request';
       }
     });
+
+    // Generate secure random password
+    function generateSecurePassword() {
+      const length = 16;
+      const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+      let password = '';
+      const randomValues = new Uint8Array(length);
+      crypto.getRandomValues(randomValues);
+      for (let i = 0; i < length; i++) {
+        password += charset[randomValues[i] % charset.length];
+      }
+      return password;
+    }
 
     // Initialize
     checkAuth();
