@@ -44,3 +44,11 @@
 - [x] Role-based navigation (client portal vs admin dashboard)
 - [x] Sidebar navigation for both portal and admin
 - [x] Full routing in App.tsx (16 routes)
+
+## Bio & Content Updates (from Facebook profile)
+- [x] Update About Jessica section with real bio (Owner/CEO Next Chapter Travel LLC, Jan 2026-present)
+- [x] Update credentials: Disney, Universal, Norwegian Cruise, Royal Caribbean, Carnival, Expedia, Viator
+- [x] Remove incorrect bookstore reference (was Clackamas Book Exchange — not accurate)
+- [x] Update specialty tags to match real certifications
+- [x] Update footer contact info (Portland, Oregon — confirmed)
+- [x] Update testimonials placeholder names if needed

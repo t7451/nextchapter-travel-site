@@ -132,8 +132,8 @@ export default function Home() {
             <span className="italic text-secondary">Perfectly Planned</span>
           </h1>
           <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto font-sans font-light leading-relaxed opacity-0 animate-fade-in-up animate-delay-200">
-            Jessica Seiders brings you a seamless travel experience — from the moment you book
-            to the final memory made. Everything you need, beautifully organized.
+            Owner & CEO of Next Chapter Travel LLC — Jessica Seiders is your certified travel professional
+            specializing in Disney, cruises, family adventures, and beyond. Everything you need, beautifully organized.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in-up animate-delay-300">
             <a href={getLoginUrl()}>
@@ -175,18 +175,21 @@ export default function Home() {
                 Meet Jessica Seiders
               </h2>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-6 font-sans">
-                As a proud Oregon mom of four and passionate travel specialist, Jessica brings warmth,
-                expertise, and meticulous attention to detail to every trip she plans. A Disney specialist
-                and family travel expert, she's also the heart behind the beloved{" "}
-                <span className="text-secondary font-medium">To Be Read</span> bookstore in Milwaukie — proof
-                that she believes every great adventure begins with a great story.
+                Jessica Seiders is the Owner, Manager, and CEO of{" "}
+                <span className="text-secondary font-medium">Next Chapter Travel LLC</span> — a Portland,
+                Oregon-based travel agency dedicated to planning every kind of vacation with precision and
+                heart. A certified Disney specialist with deep expertise across Universal, Norwegian Cruise
+                Line, Royal Caribbean, Carnival Cruises, Expedia, and Viator, Jessica can plan virtually
+                any travel experience you can dream of.
               </p>
               <p className="text-primary-foreground/80 text-lg leading-relaxed mb-8 font-sans">
-                Through her partnership with Next Chapter Travel, Jessica offers clients a unified digital
-                experience — so you can focus entirely on the joy of traveling while she handles every detail.
+                With a background that spans healthcare (former ER Tech at Providence Health Systems) and
+                entrepreneurship, Jessica brings a rare combination of calm-under-pressure and meticulous
+                planning to every trip. She believes every traveler deserves a seamless, stress-free
+                experience — and this portal is how she delivers it.
               </p>
               <div className="flex flex-wrap gap-3">
-                {["Disney Specialist", "Family Travel", "Luxury Escapes", "Group Tours"].map((tag) => (
+                {["Disney Specialist", "Universal Studios", "Norwegian Cruise Line", "Royal Caribbean", "Carnival Cruises", "Family Travel"].map((tag) => (
                   <Badge key={tag} className="bg-secondary/20 text-secondary border-secondary/30 font-sans">
                     {tag}
                   </Badge>
@@ -352,8 +355,8 @@ export default function Home() {
               <span className="text-secondary italic"> Next Chapter?</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-10 font-sans leading-relaxed">
-              Join hundreds of travelers who trust Jessica to turn their dream vacations into
-              perfectly orchestrated adventures.
+              Certified in Disney, Universal, Norwegian Cruise Line, Royal Caribbean, Carnival, and more —
+              Jessica Seiders at Next Chapter Travel LLC has the expertise to plan any adventure you can imagine.
             </p>
             <a href={getLoginUrl()}>
               <Button
@@ -396,8 +399,8 @@ export default function Home() {
               <h4 className="font-serif font-semibold mb-4">Contact Jessica</h4>
               <ul className="space-y-2 text-sm font-sans text-primary-foreground/60">
                 <li>Portland, Oregon</li>
-                <li>Partner: Next Chapter Travel</li>
-                <li>Also: To Be Read Bookstore</li>
+                <li>Owner &amp; CEO — Next Chapter Travel LLC</li>
+                <li>Disney · Universal · Royal Caribbean · Carnival</li>
               </ul>
             </div>
           </div>
