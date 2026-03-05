@@ -229,6 +229,49 @@ export async function markMessagesRead(toUserId: number, fromUserId: number) {
   return { success: true };
 }
 
+/**
+ * Get conversation threads.
+ * For admin: returns all unique users who have sent/received messages.
+ * For client: returns their thread with the admin.
+ */
+export async function getMessageThreads(userId: number, isAdmin: boolean) {
+  const db = await getDb();
+  if (!db) return [];
+
+  // Get all messages involving this user
+  const allMessages = await db.select().from(messages)
+    .where(or(eq(messages.fromUserId, userId), eq(messages.toUserId, userId)))
+    .orderBy(desc(messages.createdAt));
+
+  if (!isAdmin) {
+    // Client: just return their messages (single thread with Jessica)
+    return allMessages;
+  }
+
+  // Admin: group by the other party, return latest message per thread
+  const threadMap = new Map<number, typeof allMessages[0] & { unreadCount: number; otherUser?: typeof users.$inferSelect }>();
+  for (const msg of allMessages) {
+    const otherId = msg.fromUserId === userId ? msg.toUserId : msg.fromUserId;
+    if (!threadMap.has(otherId)) {
+      threadMap.set(otherId, { ...msg, unreadCount: 0 });
+    }
+    // Count unread messages TO admin FROM this user
+    if (msg.toUserId === userId && !msg.isRead) {
+      const existing = threadMap.get(otherId)!;
+      existing.unreadCount = (existing.unreadCount ?? 0) + 1;
+    }
+  }
+
+  // Enrich with user info
+  const threads = [];
+  for (const [otherId, latestMsg] of Array.from(threadMap.entries())) {
+    const otherUser = await getUserById(otherId);
+    threads.push({ ...latestMsg, otherUser: otherUser ?? null });
+  }
+
+  return threads;
+}
+
 // ─── Packing Items ────────────────────────────────────────────────────────────
 
 export async function getPackingItems(tripId: number, userId: number) {

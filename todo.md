@@ -80,3 +80,16 @@
 - [x] Mobile typography scale (fluid type)
 - [x] Sticky CTAs on mobile landing page
 - [x] Add to Home Screen prompt (beforeinstallprompt via manifest)
+
+## Real-Time Messaging (SSE Upgrade)
+- [x] SSE endpoint: GET /api/messages/stream (per-user channel)
+- [x] In-memory message broker (Map of SSE clients by userId)
+- [x] Broadcast helper: push new messages to all connected clients
+- [x] Typing indicator SSE events (start/stop typing)
+- [x] Read receipt SSE events (mark delivered on open)
+- [x] Client portal Messages: SSE hook, live message append, typing bubble
+- [x] Admin Messages: SSE hook, per-client thread list, live unread badges
+- [x] Message status badges (sent / delivered / read)
+- [x] Unread count badge synced via SSE on bottom nav
+- [x] Mobile polish: smooth message entrance animation
+- [x] Vitest tests for real-time messaging procedures (covered by travel.test.ts)

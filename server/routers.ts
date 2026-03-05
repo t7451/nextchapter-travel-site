@@ -8,7 +8,7 @@ import {
   getTrips, getTripById, createTrip, updateTrip, deleteTrip,
   getItineraryItems, createItineraryItem, updateItineraryItem, deleteItineraryItem,
   getDocuments, createDocument, deleteDocument,
-  getMessages, createMessage, markMessagesRead,
+  getMessages, createMessage, markMessagesRead, getMessageThreads,
   getPackingItems, createPackingItem, updatePackingItem, deletePackingItem,
   getBookings, createBooking, updateBooking, deleteBooking,
   getDestinationGuides, getDestinationGuideByDestination, createDestinationGuide, updateDestinationGuide,
@@ -19,6 +19,7 @@ import {
   markNotificationRead, markAllNotificationsRead, broadcastNotification,
   savePushSubscription, deletePushSubscription,
 } from "./db";
+import { broadcastMessage, broadcastTyping, broadcastRead } from "./messageBroker";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
@@ -225,18 +226,52 @@ export const appRouter = router({
         content: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        return await createMessage({
+        const msg = await createMessage({
           fromUserId: ctx.user.id,
           toUserId: input.toUserId,
           content: input.content,
           tripId: input.tripId ?? null,
           attachmentUrl: null,
         });
+        // Broadcast to both sender and receiver via SSE
+        broadcastMessage({
+          id: msg.id,
+          fromUserId: ctx.user.id,
+          toUserId: input.toUserId,
+          content: input.content,
+          tripId: input.tripId ?? null,
+          attachmentUrl: null,
+          isRead: false,
+          createdAt: (msg as any).createdAt ?? new Date(),
+        });
+        return msg;
       }),
     markRead: protectedProcedure
       .input(z.object({ fromUserId: z.number() }))
       .mutation(async ({ ctx, input }) => {
-        return await markMessagesRead(ctx.user.id, input.fromUserId);
+        const result = await markMessagesRead(ctx.user.id, input.fromUserId);
+        // Notify the original sender that their messages were read
+        broadcastRead({ byUserId: ctx.user.id, fromUserId: input.fromUserId });
+        return result;
+      }),
+    typing: protectedProcedure
+      .input(z.object({
+        toUserId: z.number(),
+        isTyping: z.boolean(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        broadcastTyping({
+          fromUserId: ctx.user.id,
+          toUserId: input.toUserId,
+          isTyping: input.isTyping,
+        });
+        return { ok: true };
+      }),
+    threads: protectedProcedure
+      .query(async ({ ctx }) => {
+        // Admin: get all unique conversation threads
+        // Client: get their thread with Jessica (admin)
+        return await getMessageThreads(ctx.user.id, ctx.user.role === "admin");
       }),
   }),
 

@@ -7,6 +7,8 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { registerSSEClient } from "../messageBroker";
+import { sdk } from "./sdk";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -35,6 +37,50 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+
+  // Real-time messaging SSE endpoint
+  app.get("/api/messages/stream", async (req, res) => {
+    try {
+      const user = await sdk.authenticateRequest(req);
+      if (!user) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+
+      // Set SSE headers
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache, no-transform");
+      res.setHeader("Connection", "keep-alive");
+      res.setHeader("X-Accel-Buffering", "no"); // Disable nginx buffering
+      res.flushHeaders();
+
+      // Register this connection
+      const cleanup = registerSSEClient(user.id, res);
+
+      // Keep-alive ping every 25s to prevent proxy timeouts
+      const pingInterval = setInterval(() => {
+        try {
+          res.write("data: {\"type\":\"ping\"}\n\n");
+          if (typeof (res as any).flush === "function") (res as any).flush();
+        } catch {
+          clearInterval(pingInterval);
+        }
+      }, 25000);
+
+      // Cleanup on disconnect
+      req.on("close", () => {
+        clearInterval(pingInterval);
+        cleanup();
+      });
+
+      req.on("error", () => {
+        clearInterval(pingInterval);
+        cleanup();
+      });
+    } catch {
+      res.status(401).json({ error: "Unauthorized" });
+    }
+  });
   // tRPC API
   app.use(
     "/api/trpc",

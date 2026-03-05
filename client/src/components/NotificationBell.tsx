@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useSSEMessages } from "@/hooks/useSSEMessages";
 
 const TYPE_ICONS: Record<string, React.ElementType> = {
   message: MessageSquare,
@@ -39,6 +40,12 @@ export default function NotificationBell() {
 
   const { data: unreadCount = 0, refetch: refetchCount } = trpc.notifications.unreadCount.useQuery(undefined, {
     refetchInterval: 30000, // poll every 30s
+  });
+
+  // Instantly bump unread count when a new message arrives via SSE
+  useSSEMessages({
+    onMessage: () => { refetchCount(); },
+    enabled: true,
   });
 
   const { data: notifications = [], refetch: refetchList } = trpc.notifications.list.useQuery(
