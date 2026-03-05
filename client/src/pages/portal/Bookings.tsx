@@ -1,0 +1,154 @@
+import PortalLayout from "@/components/PortalLayout";
+import { trpc } from "@/lib/trpc";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
+import { Plane, Hotel, Ship, Map, Car, ArrowRight, Hash, Calendar, DollarSign, Loader2 } from "lucide-react";
+
+const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; label: string }> = {
+  flight: { icon: Plane, color: "text-blue-600", bg: "bg-blue-50", label: "Flight" },
+  hotel: { icon: Hotel, color: "text-green-600", bg: "bg-green-50", label: "Hotel" },
+  cruise: { icon: Ship, color: "text-teal-600", bg: "bg-teal-50", label: "Cruise" },
+  tour: { icon: Map, color: "text-amber-600", bg: "bg-amber-50", label: "Tour" },
+  car_rental: { icon: Car, color: "text-purple-600", bg: "bg-purple-50", label: "Car Rental" },
+  transfer: { icon: ArrowRight, color: "text-indigo-600", bg: "bg-indigo-50", label: "Transfer" },
+  other: { icon: Calendar, color: "text-gray-600", bg: "bg-gray-50", label: "Other" },
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  pending: "bg-yellow-100 text-yellow-800",
+  confirmed: "bg-green-100 text-green-800",
+  cancelled: "bg-red-100 text-red-700",
+  waitlisted: "bg-orange-100 text-orange-800",
+};
+
+export default function Bookings() {
+  const { data: trips } = trpc.trips.list.useQuery();
+  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
+  const tripId = selectedTripId ?? trips?.[0]?.id ?? null;
+
+  const { data: bookings, isLoading } = trpc.bookings.list.useQuery(
+    { tripId: tripId! },
+    { enabled: !!tripId }
+  );
+
+  const confirmedCount = bookings?.filter(b => b.status === "confirmed").length ?? 0;
+  const pendingCount = bookings?.filter(b => b.status === "pending").length ?? 0;
+
+  return (
+    <PortalLayout title="Booking Tracker" subtitle="All your reservations in one place">
+      {/* Trip selector */}
+      {trips && trips.length > 1 && (
+        <div className="mb-6">
+          <Select value={tripId?.toString() ?? ""} onValueChange={v => setSelectedTripId(Number(v))}>
+            <SelectTrigger className="w-72 font-sans">
+              <SelectValue placeholder="Select a trip" />
+            </SelectTrigger>
+            <SelectContent>
+              {trips.map(t => (
+                <SelectItem key={t.id} value={t.id.toString()} className="font-sans">
+                  {t.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Stats */}
+      {bookings && bookings.length > 0 && (
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-center">
+            <div className="text-2xl font-serif font-bold text-green-700">{confirmedCount}</div>
+            <div className="text-xs font-sans text-green-600 mt-0.5">Confirmed</div>
+          </div>
+          <div className="p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-center">
+            <div className="text-2xl font-serif font-bold text-yellow-700">{pendingCount}</div>
+            <div className="text-xs font-sans text-yellow-600 mt-0.5">Pending</div>
+          </div>
+          <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-center">
+            <div className="text-2xl font-serif font-bold text-primary">{bookings.length}</div>
+            <div className="text-xs font-sans text-muted-foreground mt-0.5">Total</div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="w-8 h-8 animate-spin text-secondary" />
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!isLoading && tripId && (!bookings || bookings.length === 0) && (
+        <div className="text-center py-16">
+          <Plane className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+          <h3 className="text-lg font-serif font-semibold text-foreground mb-2">No Bookings Yet</h3>
+          <p className="text-muted-foreground font-sans text-sm">
+            Jessica will add your flight, hotel, and tour bookings here once confirmed.
+          </p>
+        </div>
+      )}
+
+      {/* Bookings list */}
+      <div className="space-y-4">
+        {bookings?.map(booking => {
+          const config = TYPE_CONFIG[booking.type] ?? TYPE_CONFIG.other;
+          const Icon = config.icon;
+          return (
+            <Card key={booking.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-5">
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${config.bg}`}>
+                    <Icon className={`w-6 h-6 ${config.color}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h4 className="font-serif font-semibold text-foreground">
+                          {booking.vendor ?? config.label}
+                        </h4>
+                        <Badge className={`text-xs font-sans mt-1 ${config.bg} ${config.color} border-0`}>
+                          {config.label}
+                        </Badge>
+                      </div>
+                      <Badge className={`text-xs font-sans flex-shrink-0 ${STATUS_COLORS[booking.status]}`}>
+                        {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-1 mt-3">
+                      {booking.confirmationNumber && (
+                        <div className="flex items-center gap-1.5 text-sm font-sans text-muted-foreground">
+                          <Hash className="w-3.5 h-3.5" />
+                          {booking.confirmationNumber}
+                        </div>
+                      )}
+                      {booking.checkIn && (
+                        <div className="flex items-center gap-1.5 text-sm font-sans text-muted-foreground">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {new Date(booking.checkIn).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                          {booking.checkOut && ` – ${new Date(booking.checkOut).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
+                        </div>
+                      )}
+                      {booking.amount && (
+                        <div className="flex items-center gap-1.5 text-sm font-sans text-muted-foreground">
+                          <DollarSign className="w-3.5 h-3.5" />
+                          {(booking.amount / 100).toLocaleString("en-US", { style: "currency", currency: booking.currency ?? "USD" })}
+                        </div>
+                      )}
+                    </div>
+                    {booking.notes && (
+                      <p className="text-muted-foreground font-sans text-xs mt-3 italic">{booking.notes}</p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </PortalLayout>
+  );
+}

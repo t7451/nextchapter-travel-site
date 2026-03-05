@@ -1,28 +1,437 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import {
+  getTrips, getTripById, createTrip, updateTrip, deleteTrip,
+  getItineraryItems, createItineraryItem, updateItineraryItem, deleteItineraryItem,
+  getDocuments, createDocument, deleteDocument,
+  getMessages, createMessage, markMessagesRead,
+  getPackingItems, createPackingItem, updatePackingItem, deletePackingItem,
+  getBookings, createBooking, updateBooking, deleteBooking,
+  getDestinationGuides, getDestinationGuideByDestination, createDestinationGuide, updateDestinationGuide,
+  getTravelAlerts, markAlertRead,
+  getAllUsers, getUserById, updateUserProfile,
+  getAdminStats,
+} from "./db";
+
+const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.user.role !== "admin") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+  }
+  return next({ ctx });
+});
 
 export const appRouter = router({
-    // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   auth: router({
-    me: publicProcedure.query(opts => opts.ctx.user),
+    me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
-      return {
-        success: true,
-      } as const;
+      return { success: true } as const;
     }),
+    updateProfile: protectedProcedure
+      .input(z.object({
+        name: z.string().optional(),
+        phone: z.string().optional(),
+        emergencyContactName: z.string().optional(),
+        emergencyContactPhone: z.string().optional(),
+        emergencyContactRelation: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await updateUserProfile(ctx.user.id, input);
+      }),
   }),
 
-  // TODO: add feature routers here, e.g.
-  // todo: router({
-  //   list: protectedProcedure.query(({ ctx }) =>
-  //     db.getUserTodos(ctx.user.id)
-  //   ),
-  // }),
+  trips: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role === "admin") {
+        return await getTrips(undefined); // admin sees all
+      }
+      return await getTrips(ctx.user.id);
+    }),
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ ctx, input }) => {
+        const trip = await getTripById(input.id);
+        if (!trip) throw new TRPCError({ code: "NOT_FOUND" });
+        if (ctx.user.role !== "admin" && trip.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN" });
+        }
+        return trip;
+      }),
+    create: adminProcedure
+      .input(z.object({
+        userId: z.number(),
+        title: z.string(),
+        destination: z.string(),
+        coverImageUrl: z.string().optional(),
+        startDate: z.date().optional(),
+        endDate: z.date().optional(),
+        status: z.enum(["planning", "confirmed", "active", "completed", "cancelled"]).optional(),
+        notes: z.string().optional(),
+        confirmationCode: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await createTrip({
+          userId: input.userId,
+          title: input.title,
+          destination: input.destination,
+          coverImageUrl: input.coverImageUrl ?? null,
+          startDate: input.startDate ?? null,
+          endDate: input.endDate ?? null,
+          status: input.status ?? 'planning',
+          notes: input.notes ?? null,
+          confirmationCode: input.confirmationCode ?? null,
+        });
+      }),
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        title: z.string().optional(),
+        destination: z.string().optional(),
+        coverImageUrl: z.string().optional(),
+        startDate: z.date().optional(),
+        endDate: z.date().optional(),
+        status: z.enum(["planning", "confirmed", "active", "completed", "cancelled"]).optional(),
+        notes: z.string().optional(),
+        confirmationCode: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        return await updateTrip(id, data);
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await deleteTrip(input.id);
+      }),
+  }),
+
+  itinerary: router({
+    list: protectedProcedure
+      .input(z.object({ tripId: z.number() }))
+      .query(async ({ input }) => {
+        return await getItineraryItems(input.tripId);
+      }),
+    create: adminProcedure
+      .input(z.object({
+        tripId: z.number(),
+        dayNumber: z.number(),
+        date: z.date().optional(),
+        time: z.string().optional(),
+        title: z.string(),
+        description: z.string().optional(),
+        location: z.string().optional(),
+        category: z.enum(["flight", "hotel", "activity", "dining", "transport", "free_time", "other"]).optional(),
+        confirmationNumber: z.string().optional(),
+        notes: z.string().optional(),
+        sortOrder: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await createItineraryItem({
+          tripId: input.tripId,
+          dayNumber: input.dayNumber,
+          date: input.date ?? null,
+          time: input.time ?? null,
+          title: input.title,
+          description: input.description ?? null,
+          location: input.location ?? null,
+          category: input.category ?? 'other',
+          confirmationNumber: input.confirmationNumber ?? null,
+          notes: input.notes ?? null,
+          sortOrder: input.sortOrder ?? 0,
+        });
+      }),
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        time: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+        location: z.string().optional(),
+        category: z.enum(["flight", "hotel", "activity", "dining", "transport", "free_time", "other"]).optional(),
+        confirmationNumber: z.string().optional(),
+        notes: z.string().optional(),
+        sortOrder: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        return await updateItineraryItem(id, data);
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await deleteItineraryItem(input.id);
+      }),
+  }),
+
+  documents: router({
+    list: protectedProcedure
+      .input(z.object({ tripId: z.number().optional() }))
+      .query(async ({ ctx, input }) => {
+        const userId = ctx.user.role === "admin" ? undefined : ctx.user.id;
+        return await getDocuments(userId, input.tripId);
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        tripId: z.number().optional(),
+        name: z.string(),
+        type: z.enum(["passport", "boarding_pass", "hotel_confirmation", "tour_confirmation", "travel_insurance", "visa", "other"]),
+        fileUrl: z.string(),
+        fileKey: z.string(),
+        mimeType: z.string().optional(),
+        fileSize: z.number().optional(),
+        expiryDate: z.date().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await createDocument({
+          userId: ctx.user.id,
+          tripId: input.tripId ?? null,
+          name: input.name,
+          type: input.type,
+          fileUrl: input.fileUrl,
+          fileKey: input.fileKey,
+          mimeType: input.mimeType ?? null,
+          fileSize: input.fileSize ?? null,
+          expiryDate: input.expiryDate ?? null,
+          notes: input.notes ?? null,
+        });
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await deleteDocument(input.id, ctx.user.id, ctx.user.role === "admin");
+      }),
+  }),
+
+  messages: router({
+    list: protectedProcedure
+      .input(z.object({ otherUserId: z.number().optional(), tripId: z.number().optional() }))
+      .query(async ({ ctx, input }) => {
+        return await getMessages(ctx.user.id, input.otherUserId, input.tripId);
+      }),
+    send: protectedProcedure
+      .input(z.object({
+        toUserId: z.number(),
+        tripId: z.number().optional(),
+        content: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await createMessage({
+          fromUserId: ctx.user.id,
+          toUserId: input.toUserId,
+          content: input.content,
+          tripId: input.tripId ?? null,
+          attachmentUrl: null,
+        });
+      }),
+    markRead: protectedProcedure
+      .input(z.object({ fromUserId: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await markMessagesRead(ctx.user.id, input.fromUserId);
+      }),
+  }),
+
+  packing: router({
+    list: protectedProcedure
+      .input(z.object({ tripId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return await getPackingItems(input.tripId, ctx.user.id);
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        tripId: z.number(),
+        category: z.string().optional(),
+        item: z.string(),
+        quantity: z.number().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        return await createPackingItem({
+          tripId: input.tripId,
+          userId: ctx.user.id,
+          category: input.category ?? null,
+          item: input.item,
+          quantity: input.quantity ?? 1,
+          notes: input.notes ?? null,
+          sortOrder: 0,
+        });
+      }),
+    toggle: protectedProcedure
+      .input(z.object({ id: z.number(), isPacked: z.boolean() }))
+      .mutation(async ({ input }) => {
+        return await updatePackingItem(input.id, { isPacked: input.isPacked });
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await deletePackingItem(input.id);
+      }),
+  }),
+
+  bookings: router({
+    list: protectedProcedure
+      .input(z.object({ tripId: z.number() }))
+      .query(async ({ input }) => {
+        return await getBookings(input.tripId);
+      }),
+    create: adminProcedure
+      .input(z.object({
+        tripId: z.number(),
+        userId: z.number(),
+        type: z.enum(["flight", "hotel", "cruise", "tour", "car_rental", "transfer", "other"]),
+        vendor: z.string().optional(),
+        confirmationNumber: z.string().optional(),
+        status: z.enum(["pending", "confirmed", "cancelled", "waitlisted"]).optional(),
+        checkIn: z.date().optional(),
+        checkOut: z.date().optional(),
+        amount: z.number().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await createBooking({
+          tripId: input.tripId,
+          userId: input.userId,
+          type: input.type,
+          vendor: input.vendor ?? null,
+          confirmationNumber: input.confirmationNumber ?? null,
+          status: input.status ?? 'pending',
+          checkIn: input.checkIn ?? null,
+          checkOut: input.checkOut ?? null,
+          amount: input.amount ?? null,
+          currency: 'USD',
+          notes: input.notes ?? null,
+          documentUrl: null,
+        });
+      }),
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        status: z.enum(["pending", "confirmed", "cancelled", "waitlisted"]).optional(),
+        confirmationNumber: z.string().optional(),
+        notes: z.string().optional(),
+        amount: z.number().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        return await updateBooking(id, data);
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await deleteBooking(input.id);
+      }),
+  }),
+
+  guides: router({
+    list: publicProcedure.query(async () => {
+      return await getDestinationGuides();
+    }),
+    getByDestination: publicProcedure
+      .input(z.object({ destination: z.string() }))
+      .query(async ({ input }) => {
+        return await getDestinationGuideByDestination(input.destination);
+      }),
+    create: adminProcedure
+      .input(z.object({
+        destination: z.string(),
+        country: z.string().optional(),
+        heroImageUrl: z.string().optional(),
+        overview: z.string().optional(),
+        currency: z.string().optional(),
+        language: z.string().optional(),
+        timezone: z.string().optional(),
+        bestTimeToVisit: z.string().optional(),
+        weatherInfo: z.string().optional(),
+        tipsJson: z.any().optional(),
+        emergencyNumbers: z.any().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        return await createDestinationGuide({
+          destination: input.destination,
+          country: input.country ?? null,
+          heroImageUrl: input.heroImageUrl ?? null,
+          overview: input.overview ?? null,
+          currency: input.currency ?? null,
+          language: input.language ?? null,
+          timezone: input.timezone ?? null,
+          bestTimeToVisit: input.bestTimeToVisit ?? null,
+          weatherInfo: input.weatherInfo ?? null,
+          tipsJson: input.tipsJson ?? null,
+          emergencyNumbers: input.emergencyNumbers ?? null,
+        });
+      }),
+    update: adminProcedure
+      .input(z.object({
+        id: z.number(),
+        overview: z.string().optional(),
+        currency: z.string().optional(),
+        language: z.string().optional(),
+        timezone: z.string().optional(),
+        bestTimeToVisit: z.string().optional(),
+        weatherInfo: z.string().optional(),
+        tipsJson: z.any().optional(),
+        emergencyNumbers: z.any().optional(),
+        heroImageUrl: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        return await updateDestinationGuide(id, data);
+      }),
+  }),
+
+  alerts: router({
+    list: protectedProcedure
+      .input(z.object({ tripId: z.number().optional() }))
+      .query(async ({ ctx, input }) => {
+        return await getTravelAlerts(ctx.user.id, input.tripId);
+      }),
+    markRead: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return await markAlertRead(input.id);
+      }),
+    create: adminProcedure
+      .input(z.object({
+        tripId: z.number().optional(),
+        userId: z.number().optional(),
+        title: z.string(),
+        content: z.string(),
+        severity: z.enum(["info", "warning", "urgent"]).optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { getDb } = await import("./db");
+        const { travelAlerts } = await import("../drizzle/schema");
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+        await db.insert(travelAlerts).values(input);
+        return { success: true };
+      }),
+  }),
+
+  admin: router({
+    stats: adminProcedure.query(async () => {
+      return await getAdminStats();
+    }),
+    clients: adminProcedure.query(async () => {
+      return await getAllUsers();
+    }),
+    getClient: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return await getUserById(input.id);
+      }),
+    getClientTrips: adminProcedure
+      .input(z.object({ userId: z.number() }))
+      .query(async ({ input }) => {
+        return await getTrips(input.userId);
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

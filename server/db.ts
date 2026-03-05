@@ -1,11 +1,15 @@
-import { eq } from "drizzle-orm";
+import { eq, and, or, desc, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  users, trips, itineraryItems, documents, messages, packingItems,
+  bookings, destinationGuides, travelAlerts,
+  InsertUser, Trip, ItineraryItem, Document, Message, PackingItem,
+  Booking, DestinationGuide, TravelAlert,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -18,26 +22,18 @@ export async function getDb() {
   return _db;
 }
 
-export async function upsertUser(user: InsertUser): Promise<void> {
-  if (!user.openId) {
-    throw new Error("User openId is required for upsert");
-  }
+// ─── Users ──────────────────────────────────────────────────────────────────
 
+export async function upsertUser(user: InsertUser): Promise<void> {
+  if (!user.openId) throw new Error("User openId is required for upsert");
   const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot upsert user: database not available");
-    return;
-  }
+  if (!db) { console.warn("[Database] Cannot upsert user: database not available"); return; }
 
   try {
-    const values: InsertUser = {
-      openId: user.openId,
-    };
+    const values: InsertUser = { openId: user.openId };
     const updateSet: Record<string, unknown> = {};
-
     const textFields = ["name", "email", "loginMethod"] as const;
     type TextField = (typeof textFields)[number];
-
     const assignNullable = (field: TextField) => {
       const value = user[field];
       if (value === undefined) return;
@@ -45,32 +41,13 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values[field] = normalized;
       updateSet[field] = normalized;
     };
-
     textFields.forEach(assignNullable);
-
-    if (user.lastSignedIn !== undefined) {
-      values.lastSignedIn = user.lastSignedIn;
-      updateSet.lastSignedIn = user.lastSignedIn;
-    }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
-    }
-
-    if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
-    }
-
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
-    });
+    if (user.lastSignedIn !== undefined) { values.lastSignedIn = user.lastSignedIn; updateSet.lastSignedIn = user.lastSignedIn; }
+    if (user.role !== undefined) { values.role = user.role; updateSet.role = user.role; }
+    else if (user.openId === ENV.ownerOpenId) { values.role = "admin"; updateSet.role = "admin"; }
+    if (!values.lastSignedIn) values.lastSignedIn = new Date();
+    if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
+    await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
@@ -79,14 +56,308 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot get user: database not available");
-    return undefined;
-  }
-
+  if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function getAllUsers() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(users).orderBy(desc(users.createdAt));
+}
+
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateUserProfile(id: number, data: Partial<{
+  name: string; phone: string; emergencyContactName: string;
+  emergencyContactPhone: string; emergencyContactRelation: string;
+}>) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set(data).where(eq(users.id, id));
+  return { success: true };
+}
+
+// ─── Trips ───────────────────────────────────────────────────────────────────
+
+export async function getTrips(userId?: number) {
+  const db = await getDb();
+  if (!db) return [];
+  if (userId) {
+    return await db.select().from(trips).where(eq(trips.userId, userId)).orderBy(desc(trips.startDate));
+  }
+  return await db.select().from(trips).orderBy(desc(trips.startDate));
+}
+
+export async function getTripById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(trips).where(eq(trips.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createTrip(data: Omit<Trip, "id" | "createdAt" | "updatedAt">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(trips).values(data);
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data };
+}
+
+export async function updateTrip(id: number, data: Partial<Omit<Trip, "id" | "createdAt" | "updatedAt">>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(trips).set(data).where(eq(trips.id, id));
+  return { success: true };
+}
+
+export async function deleteTrip(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(trips).where(eq(trips.id, id));
+  return { success: true };
+}
+
+// ─── Itinerary Items ──────────────────────────────────────────────────────────
+
+export async function getItineraryItems(tripId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(itineraryItems)
+    .where(eq(itineraryItems.tripId, tripId))
+    .orderBy(asc(itineraryItems.dayNumber), asc(itineraryItems.sortOrder));
+}
+
+export async function createItineraryItem(data: Omit<ItineraryItem, "id" | "createdAt">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(itineraryItems).values(data);
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data };
+}
+
+export async function updateItineraryItem(id: number, data: Partial<Omit<ItineraryItem, "id" | "createdAt">>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(itineraryItems).set(data).where(eq(itineraryItems.id, id));
+  return { success: true };
+}
+
+export async function deleteItineraryItem(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(itineraryItems).where(eq(itineraryItems.id, id));
+  return { success: true };
+}
+
+// ─── Documents ───────────────────────────────────────────────────────────────
+
+export async function getDocuments(userId?: number, tripId?: number) {
+  const db = await getDb();
+  if (!db) return [];
+  if (userId && tripId) {
+    return await db.select().from(documents)
+      .where(and(eq(documents.userId, userId), eq(documents.tripId, tripId)))
+      .orderBy(desc(documents.createdAt));
+  }
+  if (userId) {
+    return await db.select().from(documents)
+      .where(eq(documents.userId, userId))
+      .orderBy(desc(documents.createdAt));
+  }
+  if (tripId) {
+    return await db.select().from(documents)
+      .where(eq(documents.tripId, tripId))
+      .orderBy(desc(documents.createdAt));
+  }
+  return await db.select().from(documents).orderBy(desc(documents.createdAt));
+}
+
+export async function createDocument(data: Omit<Document, "id" | "createdAt">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(documents).values(data);
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data };
+}
+
+export async function deleteDocument(id: number, userId: number, isAdmin: boolean) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  if (isAdmin) {
+    await db.delete(documents).where(eq(documents.id, id));
+  } else {
+    await db.delete(documents).where(and(eq(documents.id, id), eq(documents.userId, userId)));
+  }
+  return { success: true };
+}
+
+// ─── Messages ────────────────────────────────────────────────────────────────
+
+export async function getMessages(userId: number, otherUserId?: number, tripId?: number) {
+  const db = await getDb();
+  if (!db) return [];
+  if (otherUserId) {
+    return await db.select().from(messages)
+      .where(or(
+        and(eq(messages.fromUserId, userId), eq(messages.toUserId, otherUserId)),
+        and(eq(messages.fromUserId, otherUserId), eq(messages.toUserId, userId))
+      ))
+      .orderBy(asc(messages.createdAt));
+  }
+  return await db.select().from(messages)
+    .where(or(eq(messages.fromUserId, userId), eq(messages.toUserId, userId)))
+    .orderBy(desc(messages.createdAt));
+}
+
+export async function createMessage(data: Omit<Message, "id" | "createdAt" | "isRead">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(messages).values({ ...data, isRead: false });
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data, isRead: false };
+}
+
+export async function markMessagesRead(toUserId: number, fromUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(messages)
+    .set({ isRead: true })
+    .where(and(eq(messages.toUserId, toUserId), eq(messages.fromUserId, fromUserId)));
+  return { success: true };
+}
+
+// ─── Packing Items ────────────────────────────────────────────────────────────
+
+export async function getPackingItems(tripId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(packingItems)
+    .where(and(eq(packingItems.tripId, tripId), eq(packingItems.userId, userId)))
+    .orderBy(asc(packingItems.sortOrder), asc(packingItems.createdAt));
+}
+
+export async function createPackingItem(data: Omit<PackingItem, "id" | "createdAt" | "isPacked">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(packingItems).values({ ...data, isPacked: false });
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data, isPacked: false };
+}
+
+export async function updatePackingItem(id: number, data: Partial<Pick<PackingItem, "isPacked" | "item" | "category" | "quantity" | "notes">>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(packingItems).set(data).where(eq(packingItems.id, id));
+  return { success: true };
+}
+
+export async function deletePackingItem(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(packingItems).where(eq(packingItems.id, id));
+  return { success: true };
+}
+
+// ─── Bookings ─────────────────────────────────────────────────────────────────
+
+export async function getBookings(tripId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(bookings)
+    .where(eq(bookings.tripId, tripId))
+    .orderBy(asc(bookings.checkIn));
+}
+
+export async function createBooking(data: Omit<Booking, "id" | "createdAt" | "updatedAt">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(bookings).values(data);
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data };
+}
+
+export async function updateBooking(id: number, data: Partial<Omit<Booking, "id" | "createdAt" | "updatedAt">>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(bookings).set(data).where(eq(bookings.id, id));
+  return { success: true };
+}
+
+export async function deleteBooking(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(bookings).where(eq(bookings.id, id));
+  return { success: true };
+}
+
+// ─── Destination Guides ───────────────────────────────────────────────────────
+
+export async function getDestinationGuides() {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(destinationGuides).orderBy(asc(destinationGuides.destination));
+}
+
+export async function getDestinationGuideByDestination(destination: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(destinationGuides)
+    .where(eq(destinationGuides.destination, destination)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createDestinationGuide(data: Omit<DestinationGuide, "id" | "createdAt" | "updatedAt">) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const result = await db.insert(destinationGuides).values(data);
+  return { id: Number((result as any)[0]?.insertId ?? 0), ...data };
+}
+
+export async function updateDestinationGuide(id: number, data: Partial<Omit<DestinationGuide, "id" | "createdAt" | "updatedAt">>) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(destinationGuides).set(data).where(eq(destinationGuides.id, id));
+  return { success: true };
+}
+
+// ─── Travel Alerts ────────────────────────────────────────────────────────────
+
+export async function getTravelAlerts(userId: number, tripId?: number) {
+  const db = await getDb();
+  if (!db) return [];
+  if (tripId) {
+    return await db.select().from(travelAlerts)
+      .where(and(eq(travelAlerts.userId, userId), eq(travelAlerts.tripId, tripId)))
+      .orderBy(desc(travelAlerts.createdAt));
+  }
+  return await db.select().from(travelAlerts)
+    .where(eq(travelAlerts.userId, userId))
+    .orderBy(desc(travelAlerts.createdAt));
+}
+
+export async function markAlertRead(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(travelAlerts).set({ isRead: true }).where(eq(travelAlerts.id, id));
+  return { success: true };
+}
+
+// ─── Admin Stats ──────────────────────────────────────────────────────────────
+
+export async function getAdminStats() {
+  const db = await getDb();
+  if (!db) return { totalClients: 0, activeTrips: 0, totalTrips: 0, unreadMessages: 0 };
+
+  const [clientCount] = await db.select().from(users).where(eq(users.role, "user"));
+  const allTrips = await db.select().from(trips);
+  const activeTrips = allTrips.filter(t => t.status === "active" || t.status === "confirmed");
+  const unread = await db.select().from(messages).where(eq(messages.isRead, false));
+
+  return {
+    totalClients: (await db.select().from(users).where(eq(users.role, "user"))).length,
+    activeTrips: activeTrips.length,
+    totalTrips: allTrips.length,
+    unreadMessages: unread.length,
+  };
+}
