@@ -112,9 +112,9 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
                   setVideoContext(item.videoKey);
                 }}
                 onMouseEnter={() => {
-                  // Preload video on hover for instant crossfade
-                  const entry = VIDEO_CATALOG[item.videoKey];
-                  if (entry) preloadVideo(entry.src);
+                  // Preload first video in pool on hover for instant crossfade
+                  const pool = VIDEO_CATALOG[item.videoKey];
+                  if (pool && pool.length > 0) preloadVideo(pool[0].src);
                 }}
               >
                 <item.icon className="w-4.5 h-4.5 flex-shrink-0" />

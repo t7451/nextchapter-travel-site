@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useVideoHero, VIDEO_CATALOG, VideoEntry } from "@/contexts/VideoHeroContext";
+import { useVideoHero, VideoEntry } from "@/contexts/VideoHeroContext";
 import { cn } from "@/lib/utils";
 
 /**

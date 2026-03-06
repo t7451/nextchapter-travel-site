@@ -161,3 +161,11 @@
 - [x] Audit dynamic switching: PortalLayout already wires all 8 routes to video contexts
 - [x] Admin routes intentionally keep the same video (management tool, not immersive)
 - [x] Test crossfade transitions: verified DAY BY DAY label shows on itinerary page
+
+## Session 5 — Expanded Video Library & Random Rotation
+- [x] Download 4-6 diverse videos per context: 5 landing, 5 dashboard, 5 itinerary, 6 documents, 6 messages, 6 packing, 6 bookings, 6 guides, 6 alerts (44 total)
+- [x] Compress all new videos to under 5MB each using ffmpeg
+- [x] Upload all 44 videos to CDN (100% success)
+- [x] Refactor VideoHeroContext: VIDEO_CATALOG is now Record<string, VideoEntry[]>
+- [x] Implement random video selection (pickRandom) per context on each navigation
+- [x] Test all 9 contexts: TypeScript clean, 21 tests passing
