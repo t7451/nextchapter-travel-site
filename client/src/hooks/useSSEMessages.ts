@@ -7,6 +7,9 @@ export type SSEMessagePayload = {
   content: string;
   tripId: number | null;
   attachmentUrl: string | null;
+  attachmentName: string | null;
+  attachmentType: string | null;
+  attachmentSize: number | null;
   isRead: boolean;
   createdAt: string; // ISO string over the wire
 };

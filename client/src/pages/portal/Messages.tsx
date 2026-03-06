@@ -10,6 +10,9 @@ import { Send, Wifi, WifiOff, CheckCheck, Check, MessageCircle, Sparkles } from 
 import { cn } from "@/lib/utils";
 import { useSSEMessages, SSEMessagePayload } from "@/hooks/useSSEMessages";
 import { toast } from "sonner";
+import {
+  AttachmentPicker, AttachmentPreview, AttachmentBubble, AttachmentMeta
+} from "@/components/ChatAttachment";
 
 type Message = {
   id: number;
@@ -18,6 +21,9 @@ type Message = {
   content: string;
   tripId: number | null;
   attachmentUrl: string | null;
+  attachmentName: string | null;
+  attachmentType: string | null;
+  attachmentSize: number | null;
   isRead: boolean;
   createdAt: string | Date;
 };
@@ -29,6 +35,7 @@ export default function Messages() {
   const [jessicaIsTyping, setJessicaIsTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [adminUserId, setAdminUserId] = useState<number | null>(null);
+  const [pendingAttachment, setPendingAttachment] = useState<AttachmentMeta | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -58,6 +65,7 @@ export default function Messages() {
 
   // Mark messages as read when conversation opens
   const markRead = trpc.messages.markRead.useMutation();
+
   useEffect(() => {
     if (adminUserId && messages.length > 0) {
       const hasUnread = messages.some(
@@ -125,23 +133,38 @@ export default function Messages() {
   });
 
   const handleSend = () => {
-    if (!input.trim() || !adminUserId) return;
-    const content = input.trim();
+    if ((!input.trim() && !pendingAttachment) || !adminUserId) return;
+    const content = input.trim() || (pendingAttachment ? "" : "");
+    const att = pendingAttachment;
+
     // Optimistic update
     const optimistic: Message = {
       id: Date.now(),
       fromUserId: user!.id,
       toUserId: adminUserId,
-      content,
+      content: content || " ",
       tripId: null,
-      attachmentUrl: null,
+      attachmentUrl: att?.url ?? null,
+      attachmentName: att?.fileName ?? null,
+      attachmentType: att?.mimeType ?? null,
+      attachmentSize: att?.fileSize ?? null,
       isRead: false,
       createdAt: new Date(),
     };
     setMessages((prev) => [...prev, optimistic]);
     setInput("");
+    setPendingAttachment(null);
     if (textareaRef.current) textareaRef.current.style.height = "auto";
-    sendMutation.mutate({ toUserId: adminUserId, content });
+
+    sendMutation.mutate({
+      toUserId: adminUserId,
+      content: content || " ",
+      attachmentUrl: att?.url,
+      attachmentName: att?.fileName,
+      attachmentType: att?.mimeType,
+      attachmentSize: att?.fileSize,
+    });
+
     if (typingTimeout) clearTimeout(typingTimeout);
     typingMutation.mutate({ toUserId: adminUserId, isTyping: false });
   };
@@ -192,6 +215,8 @@ export default function Messages() {
       groupedMessages.push({ date: dateLabel, msgs: [msg] });
     }
   }
+
+  const canSend = (input.trim().length > 0 || !!pendingAttachment) && !!adminUserId && !sendMutation.isPending;
 
   return (
     <PortalLayout title="Messages" subtitle="Chat with Jessica">
@@ -249,7 +274,7 @@ export default function Messages() {
               <div>
                 <p className="font-serif font-semibold text-foreground text-lg">Start the conversation</p>
                 <p className="text-sm text-muted-foreground mt-1 max-w-xs font-sans">
-                  Send Jessica a message about your upcoming trip, questions, or anything travel-related.
+                  Send Jessica a message, share a photo, or attach a document like your passport or boarding pass.
                 </p>
               </div>
             </div>
@@ -266,6 +291,7 @@ export default function Messages() {
               {msgs.map((msg, idx) => {
                 const isOwn = msg.fromUserId === user?.id;
                 const showAvatar = !isOwn && (idx === 0 || msgs[idx - 1]?.fromUserId !== msg.fromUserId);
+                const hasText = msg.content && msg.content.trim() && msg.content !== " ";
 
                 return (
                   <div key={msg.id} className={cn("flex items-end gap-2", isOwn ? "flex-row-reverse" : "flex-row")}>
@@ -279,15 +305,30 @@ export default function Messages() {
                       )}
                     </div>
 
-                    <div className={cn("max-w-[75%] sm:max-w-[65%] flex flex-col gap-0.5", isOwn ? "items-end" : "items-start")}>
-                      <div className={cn(
-                        "px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm font-sans",
-                        isOwn
-                          ? "bg-primary text-primary-foreground rounded-br-sm"
-                          : "bg-card border border-border text-foreground rounded-bl-sm"
-                      )}>
-                        {msg.content}
-                      </div>
+                    <div className={cn("max-w-[75%] sm:max-w-[65%] flex flex-col gap-1", isOwn ? "items-end" : "items-start")}>
+                      {/* Attachment bubble */}
+                      {msg.attachmentUrl && (
+                        <AttachmentBubble
+                          url={msg.attachmentUrl}
+                          fileName={msg.attachmentName}
+                          mimeType={msg.attachmentType}
+                          fileSize={msg.attachmentSize}
+                          isFromMe={isOwn}
+                        />
+                      )}
+
+                      {/* Text bubble (only if there's actual text) */}
+                      {hasText && (
+                        <div className={cn(
+                          "px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm font-sans",
+                          isOwn
+                            ? "bg-primary text-primary-foreground rounded-br-sm"
+                            : "bg-card border border-border text-foreground rounded-bl-sm"
+                        )}>
+                          {msg.content}
+                        </div>
+                      )}
+
                       <div className="flex items-center gap-1 px-1">
                         <span className="text-[10px] text-muted-foreground font-sans">{formatTime(msg.createdAt)}</span>
                         {isOwn && (
@@ -323,25 +364,39 @@ export default function Messages() {
           <div ref={bottomRef} />
         </div>
 
+        {/* Attachment Preview (before send) */}
+        {pendingAttachment && (
+          <AttachmentPreview
+            attachment={pendingAttachment}
+            onRemove={() => setPendingAttachment(null)}
+          />
+        )}
+
         {/* Input Area */}
-        <div className="flex items-end gap-2 p-3 sm:p-4 border-t border-border bg-card flex-shrink-0"
+        <div className="flex items-end gap-1 sm:gap-2 p-3 sm:p-4 border-t border-border bg-card flex-shrink-0"
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
+
+          <AttachmentPicker
+            onAttachment={setPendingAttachment}
+            disabled={sendMutation.isPending}
+          />
+
           <Textarea
             ref={textareaRef}
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Message Jessica..."
+            placeholder={pendingAttachment ? "Add a caption..." : "Message Jessica..."}
             className="flex-1 font-sans border-border resize-none min-h-[44px] max-h-[120px] py-2.5 text-sm leading-relaxed rounded-xl"
             rows={1}
           />
           <Button
             onClick={handleSend}
-            disabled={!input.trim() || sendMutation.isPending || !adminUserId}
+            disabled={!canSend}
             size="icon"
             className={cn(
               "h-11 w-11 rounded-full flex-shrink-0 transition-all duration-200",
-              input.trim() ? "bg-primary hover:bg-primary/90 active:scale-95" : "bg-muted text-muted-foreground"
+              canSend ? "bg-primary hover:bg-primary/90 active:scale-95" : "bg-muted text-muted-foreground"
             )}
           >
             <Send className="w-4 h-4" />

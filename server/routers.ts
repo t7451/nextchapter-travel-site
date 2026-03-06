@@ -20,6 +20,7 @@ import {
   savePushSubscription, deletePushSubscription,
 } from "./db";
 import { broadcastMessage, broadcastTyping, broadcastRead } from "./messageBroker";
+import { storagePut } from "./storage";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
@@ -214,6 +215,31 @@ export const appRouter = router({
   }),
 
   messages: router({
+    uploadAttachment: protectedProcedure
+      .input(z.object({
+        fileName: z.string(),
+        mimeType: z.string(),
+        base64Data: z.string(), // base64-encoded file content
+        fileSize: z.number().max(16 * 1024 * 1024, "File too large (max 16MB)"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const allowedTypes = [
+          "image/jpeg", "image/png", "image/gif", "image/webp", "image/heic",
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "text/plain",
+        ];
+        if (!allowedTypes.includes(input.mimeType)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "File type not allowed" });
+        }
+        const suffix = Math.random().toString(36).slice(2, 8);
+        const safeFileName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const key = `chat-attachments/${ctx.user.id}/${Date.now()}-${suffix}-${safeFileName}`;
+        const buffer = Buffer.from(input.base64Data, "base64");
+        const { url } = await storagePut(key, buffer, input.mimeType);
+        return { url, key, fileName: input.fileName, mimeType: input.mimeType, fileSize: input.fileSize };
+      }),
     list: protectedProcedure
       .input(z.object({ otherUserId: z.number().optional(), tripId: z.number().optional() }))
       .query(async ({ ctx, input }) => {
@@ -223,7 +249,11 @@ export const appRouter = router({
       .input(z.object({
         toUserId: z.number(),
         tripId: z.number().optional(),
-        content: z.string().min(1),
+        content: z.string().min(1).max(4000),
+        attachmentUrl: z.string().optional(),
+        attachmentName: z.string().optional(),
+        attachmentType: z.string().optional(),
+        attachmentSize: z.number().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         const msg = await createMessage({
@@ -231,7 +261,10 @@ export const appRouter = router({
           toUserId: input.toUserId,
           content: input.content,
           tripId: input.tripId ?? null,
-          attachmentUrl: null,
+          attachmentUrl: input.attachmentUrl ?? null,
+          attachmentName: input.attachmentName ?? null,
+          attachmentType: input.attachmentType ?? null,
+          attachmentSize: input.attachmentSize ?? null,
         });
         // Broadcast to both sender and receiver via SSE
         broadcastMessage({
@@ -240,7 +273,10 @@ export const appRouter = router({
           toUserId: input.toUserId,
           content: input.content,
           tripId: input.tripId ?? null,
-          attachmentUrl: null,
+          attachmentUrl: input.attachmentUrl ?? null,
+          attachmentName: input.attachmentName ?? null,
+          attachmentType: input.attachmentType ?? null,
+          attachmentSize: input.attachmentSize ?? null,
           isRead: false,
           createdAt: (msg as any).createdAt ?? new Date(),
         });

@@ -13,6 +13,9 @@ import {
 import { useSearch } from "wouter";
 import { cn } from "@/lib/utils";
 import { useSSEMessages, SSEMessagePayload } from "@/hooks/useSSEMessages";
+import {
+  AttachmentPicker, AttachmentPreview, AttachmentBubble, AttachmentMeta
+} from "@/components/ChatAttachment";
 
 type Message = {
   id: number;
@@ -21,6 +24,9 @@ type Message = {
   content: string;
   tripId: number | null;
   attachmentUrl: string | null;
+  attachmentName: string | null;
+  attachmentType: string | null;
+  attachmentSize: number | null;
   isRead: boolean;
   createdAt: string | Date;
 };
@@ -44,6 +50,7 @@ export default function AdminMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [clientTyping, setClientTyping] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [pendingAttachment, setPendingAttachment] = useState<AttachmentMeta | null>(null);
   // Track unread counts per client
   const [unreadCounts, setUnreadCounts] = useState<Record<number, number>>({});
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -141,22 +148,34 @@ export default function AdminMessages() {
   });
 
   const handleSend = () => {
-    if (!input.trim() || !selectedClientId) return;
+    if ((!input.trim() && !pendingAttachment) || !selectedClientId) return;
     const content = input.trim();
+    const att = pendingAttachment;
     const optimistic: Message = {
       id: Date.now(),
       fromUserId: user!.id,
       toUserId: selectedClientId,
-      content,
+      content: content || " ",
       tripId: null,
-      attachmentUrl: null,
+      attachmentUrl: att?.url ?? null,
+      attachmentName: att?.fileName ?? null,
+      attachmentType: att?.mimeType ?? null,
+      attachmentSize: att?.fileSize ?? null,
       isRead: false,
       createdAt: new Date(),
     };
     setMessages(prev => [...prev, optimistic]);
     setInput("");
+    setPendingAttachment(null);
     if (textareaRef.current) textareaRef.current.style.height = "auto";
-    sendMutation.mutate({ toUserId: selectedClientId, content });
+    sendMutation.mutate({
+      toUserId: selectedClientId,
+      content: content || " ",
+      attachmentUrl: att?.url,
+      attachmentName: att?.fileName,
+      attachmentType: att?.mimeType,
+      attachmentSize: att?.fileSize,
+    });
     if (typingTimeout) clearTimeout(typingTimeout);
     typingMutation.mutate({ toUserId: selectedClientId, isTyping: false });
   };
@@ -365,7 +384,17 @@ export default function AdminMessages() {
                               </Avatar>
                             )}
                           </div>
-                          <div className={cn("max-w-[70%] flex flex-col gap-0.5", isFromMe ? "items-end" : "items-start")}>
+                          <div className={cn("max-w-[70%] flex flex-col gap-1", isFromMe ? "items-end" : "items-start")}>
+                            {msg.attachmentUrl && (
+                              <AttachmentBubble
+                                url={msg.attachmentUrl}
+                                fileName={msg.attachmentName}
+                                mimeType={msg.attachmentType}
+                                fileSize={msg.attachmentSize}
+                                isFromMe={isFromMe}
+                              />
+                            )}
+                            {msg.content && msg.content.trim() && msg.content !== " " && (
                             <div className={cn(
                               "px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm font-sans",
                               isFromMe
@@ -374,6 +403,7 @@ export default function AdminMessages() {
                             )}>
                               {msg.content}
                             </div>
+                            )}
                             <div className="flex items-center gap-1 px-1">
                               <span className="text-[10px] text-muted-foreground font-sans">{formatTime(msg.createdAt)}</span>
                               {isFromMe && (
@@ -412,23 +442,33 @@ export default function AdminMessages() {
               </div>
 
               {/* Input */}
-              <div className="flex items-end gap-2 p-4 border-t border-border bg-card flex-shrink-0">
+              {pendingAttachment && (
+                <AttachmentPreview
+                  attachment={pendingAttachment}
+                  onRemove={() => setPendingAttachment(null)}
+                />
+              )}
+              <div className="flex items-end gap-1 p-4 border-t border-border bg-card flex-shrink-0">
+                <AttachmentPicker
+                  onAttachment={setPendingAttachment}
+                  disabled={sendMutation.isPending}
+                />
                 <Textarea
                   ref={textareaRef}
                   value={input}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
-                  placeholder={`Message ${selectedClient?.name ?? "client"}...`}
+                  placeholder={pendingAttachment ? "Add a caption..." : `Message ${selectedClient?.name ?? "client"}...`}
                   className="flex-1 font-sans border-border resize-none min-h-[44px] max-h-[120px] py-2.5 text-sm leading-relaxed rounded-xl"
                   rows={1}
                 />
                 <Button
                   onClick={handleSend}
-                  disabled={!input.trim() || sendMutation.isPending || !selectedClientId}
+                  disabled={(!input.trim() && !pendingAttachment) || sendMutation.isPending || !selectedClientId}
                   size="icon"
                   className={cn(
                     "h-11 w-11 rounded-full flex-shrink-0 transition-all duration-200",
-                    input.trim() ? "bg-primary hover:bg-primary/90 active:scale-95" : "bg-muted text-muted-foreground"
+                    (input.trim() || pendingAttachment) ? "bg-primary hover:bg-primary/90 active:scale-95" : "bg-muted text-muted-foreground"
                   )}
                 >
                   <Send className="w-4 h-4" />

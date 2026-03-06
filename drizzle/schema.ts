@@ -93,6 +93,9 @@ export const messages = mysqlTable("messages", {
   content: text("content").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
   attachmentUrl: text("attachmentUrl"),
+  attachmentName: varchar("attachmentName", { length: 255 }),
+  attachmentType: varchar("attachmentType", { length: 128 }),
+  attachmentSize: int("attachmentSize"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

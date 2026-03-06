@@ -93,3 +93,15 @@
 - [x] Unread count badge synced via SSE on bottom nav
 - [x] Mobile polish: smooth message entrance animation
 - [x] Vitest tests for real-time messaging procedures (covered by travel.test.ts)
+
+## Chat File Attachments
+- [x] messages table: add attachmentUrl, attachmentName, attachmentType, attachmentSize columns
+- [x] tRPC: messages.uploadAttachment procedure (base64 → S3, 16MB limit, type allowlist)
+- [x] tRPC: messages.send updated to accept attachment metadata
+- [x] Shared ChatAttachment component (image lightbox + PDF/doc icon)
+- [x] AttachmentPicker + AttachmentPreview + AttachmentBubble components
+- [x] Client portal Messages: attachment picker + display in bubbles
+- [x] Admin Messages: attachment picker + display in bubbles
+- [x] SSE broadcast includes attachment fields
+- [x] Mobile: camera capture button (capture=environment)
+- [x] File size validation (16MB max) and type whitelist
