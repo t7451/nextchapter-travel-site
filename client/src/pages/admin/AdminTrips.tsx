@@ -152,19 +152,26 @@ export function AdminTripsList() {
     <AdminLayout title="Trips" subtitle="Manage all client trips">
       <div className="flex items-center justify-between mb-6">
         <div />
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-primary text-primary-foreground font-sans">
-              <Plus className="w-4 h-4 mr-2" /> New Trip
+        <div className="flex gap-2">
+          <Link href={`/admin/trips/new${defaultClientId ? `?client=${defaultClientId}` : ''}`}>
+            <Button variant="outline" className="font-sans border-secondary text-secondary hover:bg-secondary/10">
+              <Plus className="w-4 h-4 mr-2" /> Trip Builder
             </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="font-serif">Create New Trip</DialogTitle>
-            </DialogHeader>
-            <TripForm onSuccess={() => { setOpen(false); refetch(); }} defaultClientId={defaultClientId} />
-          </DialogContent>
-        </Dialog>
+          </Link>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-primary text-primary-foreground font-sans">
+                <Plus className="w-4 h-4 mr-2" /> Quick Create
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="font-serif">Quick Create Trip</DialogTitle>
+              </DialogHeader>
+              <TripForm onSuccess={() => { setOpen(false); refetch(); }} defaultClientId={defaultClientId} />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {isLoading && <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-secondary" /></div>}

@@ -22,6 +22,7 @@ import {
 } from "./db";
 import { broadcastMessage, broadcastTyping, broadcastRead } from "./messageBroker";
 import { storagePut } from "./storage";
+import { sendInviteEmail } from "./email";
 
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
@@ -603,7 +604,22 @@ export const appRouter = router({
           ctx.user.id
         );
         const inviteUrl = `${input.origin}/join?token=${invite.token}`;
-        return { invite, inviteUrl };
+        // Send branded invite email automatically
+        let emailSent = false;
+        let emailError: string | undefined;
+        try {
+          const emailResult = await sendInviteEmail({
+            to: input.email,
+            clientName: input.name ?? input.email,
+            inviteUrl,
+            expiresInDays: 7,
+          });
+          emailSent = emailResult.success;
+          if (!emailResult.success) emailError = (emailResult as { error: string }).error;
+        } catch (e) {
+          emailError = e instanceof Error ? e.message : String(e);
+        }
+        return { invite, inviteUrl, emailSent, emailError };
       }),
     // Admin: list all invites they created
     list: adminProcedure.query(async ({ ctx }) => {

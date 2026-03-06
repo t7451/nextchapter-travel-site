@@ -2,8 +2,8 @@ import PortalLayout from "@/components/PortalLayout";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useTrip } from "@/contexts/TripContext";
 import {
   Plane, Hotel, Utensils, Activity, Bus, Clock, MapPin,
   Hash, Calendar, Loader2, Compass
@@ -20,11 +20,7 @@ const CATEGORY_CONFIG: Record<string, { icon: React.ElementType; color: string; 
 };
 
 export default function Itinerary() {
-  const { data: trips, isLoading: tripsLoading } = trpc.trips.list.useQuery();
-  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
-
-  const tripId = selectedTripId ?? trips?.[0]?.id ?? null;
-  const selectedTrip = trips?.find(t => t.id === tripId);
+  const { trips, tripsLoading, selectedTripId: tripId, selectedTrip } = useTrip();
 
   const { data: items, isLoading: itemsLoading } = trpc.itinerary.list.useQuery(
     { tripId: tripId! },
@@ -52,26 +48,7 @@ export default function Itinerary() {
 
   return (
     <PortalLayout title="Trip Itinerary" subtitle="Your day-by-day schedule">
-      {/* Trip selector */}
-      {trips && trips.length > 1 && (
-        <div className="mb-6">
-          <Select
-            value={tripId?.toString() ?? ""}
-            onValueChange={(v) => setSelectedTripId(Number(v))}
-          >
-            <SelectTrigger className="w-72 font-sans">
-              <SelectValue placeholder="Select a trip" />
-            </SelectTrigger>
-            <SelectContent>
-              {trips.map(t => (
-                <SelectItem key={t.id} value={t.id.toString()} className="font-sans">
-                  {t.title} — {t.destination}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+      {/* Trip selector is in the portal header (TripSwitcher) — no inline selector needed */}
 
       {/* Trip header */}
       {selectedTrip && (

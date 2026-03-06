@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useMemo } from "react";
+import { useTrip } from "@/contexts/TripContext";
 import { toast } from "sonner";
 import { Plus, Trash2, CheckSquare, Loader2, Package } from "lucide-react";
 
@@ -15,9 +16,7 @@ const CATEGORIES = [
 ];
 
 export default function PackingList() {
-  const { data: trips } = trpc.trips.list.useQuery();
-  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
-  const tripId = selectedTripId ?? trips?.[0]?.id ?? null;
+  const { selectedTripId: tripId } = useTrip();
 
   const { data: items, isLoading, refetch } = trpc.packing.list.useQuery(
     { tripId: tripId! },
@@ -63,26 +62,7 @@ export default function PackingList() {
 
   return (
     <PortalLayout title="Packing List" subtitle="Never forget a thing">
-      {/* Trip selector */}
-      {trips && trips.length > 1 && (
-        <div className="mb-6">
-          <Select
-            value={tripId?.toString() ?? ""}
-            onValueChange={v => setSelectedTripId(Number(v))}
-          >
-            <SelectTrigger className="w-72 font-sans">
-              <SelectValue placeholder="Select a trip" />
-            </SelectTrigger>
-            <SelectContent>
-              {trips.map(t => (
-                <SelectItem key={t.id} value={t.id.toString()} className="font-sans">
-                  {t.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+      {/* Trip selector is in the portal header (TripSwitcher) */}
 
       {/* Progress bar */}
       {totalItems > 0 && (

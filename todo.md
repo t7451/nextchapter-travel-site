@@ -169,3 +169,29 @@
 - [x] Refactor VideoHeroContext: VIDEO_CATALOG is now Record<string, VideoEntry[]>
 - [x] Implement random video selection (pickRandom) per context on each navigation
 - [x] Test all 9 contexts: TypeScript clean, 21 tests passing
+
+## Session 6 — Email Invites, Trip Builder, Multi-Trip Selector
+
+### Email Delivery for Invites
+- [x] Integrate Resend API for transactional email (RESEND_API_KEY validated, test email confirmed)
+- [x] Send branded invite email with magic link when admin clicks "Send Portal Invite"
+- [x] Email template: Next Chapter Travel branding, client name, CTA button, 7-day expiry notice
+- [x] Show "Email sent" / "Copy link" status in invite dialog after send
+- [x] RESEND_API_KEY added to secrets via webdev_request_secrets
+
+### Admin Trip Builder Wizard
+- [x] 5-step wizard: Step 1 (Client + Destination), Step 2 (Dates + Notes), Step 3 (Itinerary Items), Step 4 (Packing List), Step 5 (Bookings + Review)
+- [x] Step navigation with progress indicator (numbered steps + progress bar)
+- [x] Uses existing tRPC procedures: trips.create, itinerary.create, packing.create, bookings.create
+- [x] Wizard accessible from Admin → Trips → "Trip Builder" button
+- [x] On completion: redirect to trip detail view
+- [x] "Quick Create" button preserved for simple trip creation without wizard
+
+### Multi-Trip Selector in Portal
+- [x] TripContext: shared selected trip state across all portal pages
+- [x] TripSwitcher component: compact dropdown in portal header, only shows with 2+ trips
+- [x] TripProvider added to PortalLayout (wraps all portal pages)
+- [x] Itinerary, PackingList, Bookings pages refactored to use TripContext
+- [x] Trip selection persists across page navigation (no per-page reset)
+- [x] Shows trip title + status badge in dropdown
+- [x] 21 vitest tests passing, TypeScript clean

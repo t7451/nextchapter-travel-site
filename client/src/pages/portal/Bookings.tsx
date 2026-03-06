@@ -2,8 +2,7 @@ import PortalLayout from "@/components/PortalLayout";
 import { trpc } from "@/lib/trpc";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useTrip } from "@/contexts/TripContext";
 import { Plane, Hotel, Ship, Map, Car, ArrowRight, Hash, Calendar, DollarSign, Loader2 } from "lucide-react";
 
 const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; label: string }> = {
@@ -24,9 +23,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function Bookings() {
-  const { data: trips } = trpc.trips.list.useQuery();
-  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
-  const tripId = selectedTripId ?? trips?.[0]?.id ?? null;
+  const { selectedTripId: tripId } = useTrip();
 
   const { data: bookings, isLoading } = trpc.bookings.list.useQuery(
     { tripId: tripId! },
@@ -38,23 +35,7 @@ export default function Bookings() {
 
   return (
     <PortalLayout title="Booking Tracker" subtitle="All your reservations in one place">
-      {/* Trip selector */}
-      {trips && trips.length > 1 && (
-        <div className="mb-6">
-          <Select value={tripId?.toString() ?? ""} onValueChange={v => setSelectedTripId(Number(v))}>
-            <SelectTrigger className="w-72 font-sans">
-              <SelectValue placeholder="Select a trip" />
-            </SelectTrigger>
-            <SelectContent>
-              {trips.map(t => (
-                <SelectItem key={t.id} value={t.id.toString()} className="font-sans">
-                  {t.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+      {/* Trip selector is in the portal header (TripSwitcher) */}
 
       {/* Stats */}
       {bookings && bookings.length > 0 && (

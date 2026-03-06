@@ -14,6 +14,8 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 import { cn } from "@/lib/utils";
 import { useVideoHero, VIDEO_CATALOG } from "@/contexts/VideoHeroContext";
 import { preloadVideo } from "@/components/GlobalVideoBackground";
+import { TripProvider } from "@/contexts/TripContext";
+import TripSwitcher from "@/components/TripSwitcher";
 
 const NAV_ITEMS = [
   { href: "/portal", label: "Dashboard", icon: LayoutDashboard, exact: true, videoKey: "dashboard" },
@@ -142,6 +144,7 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
   );
 
   return (
+    <TripProvider>
     <div className="flex h-[100dvh] bg-background overflow-hidden">
       {/* Desktop Sidebar — hidden on mobile */}
       <aside className="hidden md:flex w-64 flex-col bg-sidebar flex-shrink-0">
@@ -194,6 +197,7 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            <TripSwitcher />
             <Badge className="bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs hidden sm:flex">
               Client Portal
             </Badge>
@@ -210,5 +214,6 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
       {/* Mobile bottom navigation */}
       <MobileBottomNav />
     </div>
+    </TripProvider>
   );
 }

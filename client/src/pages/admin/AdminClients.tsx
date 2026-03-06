@@ -26,6 +26,11 @@ export function AdminClientsList() {
   const createInvite = trpc.invites.create.useMutation({
     onSuccess: (data) => {
       setGeneratedLink(data.inviteUrl);
+      if (data.emailSent) {
+        toast.success(`Invite email sent to ${inviteEmail} ✉️`);
+      } else {
+        toast.warning(`Link created but email failed: ${data.emailError ?? "unknown error"}. Copy the link below.`);
+      }
     },
     onError: (err) => {
       toast.error("Failed to create invite: " + err.message);
@@ -131,7 +136,7 @@ export function AdminClientsList() {
                   ) : (
                     <Mail className="w-4 h-4 mr-2" />
                   )}
-                  Generate Invite Link
+                  Send Invite Email
                 </Button>
               </div>
             </div>
@@ -140,10 +145,15 @@ export function AdminClientsList() {
               <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle className="w-5 h-5 text-green-600" />
-                  <span className="font-sans font-medium text-green-800 text-sm">Invite link generated!</span>
+                  <span className="font-sans font-medium text-green-800 text-sm">
+                    {createInvite.data?.emailSent ? `Email sent to ${inviteEmail}!` : "Invite link generated!"}
+                  </span>
                 </div>
                 <p className="text-green-700 font-sans text-xs">
-                  This link expires in 7 days. Share it with {inviteName || inviteEmail} to give them access to their portal.
+                  {createInvite.data?.emailSent
+                    ? `${inviteName || inviteEmail} will receive a branded email with their portal link. It expires in 7 days.`
+                    : `This link expires in 7 days. Share it with ${inviteName || inviteEmail} to give them access to their portal.`
+                  }
                 </p>
               </div>
               <div className="bg-muted rounded-lg p-3">

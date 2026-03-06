@@ -29,6 +29,7 @@ import AdminMessages from "./pages/admin/AdminMessages";
 import AdminGuides from "./pages/admin/AdminGuides";
 import AdminAlerts from "./pages/admin/AdminAlerts";
 import AdminNotifications from "./pages/admin/AdminNotifications";
+import TripBuilderWizard from "./pages/admin/TripBuilderWizard";
 
 function Router() {
   return (
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/admin/clients" component={AdminClientsList} />
       <Route path="/admin/clients/:id" component={AdminClientDetail} />
       <Route path="/admin/trips" component={AdminTripsList} />
+      <Route path="/admin/trips/new" component={TripBuilderWizard} />
       <Route path="/admin/trips/:id" component={AdminTripDetail} />
       <Route path="/admin/messages" component={AdminMessages} />
       <Route path="/admin/guides" component={AdminGuides} />
