@@ -141,13 +141,13 @@ export default function GlobalVideoBackground() {
   const transitionStyle = `opacity ${FADE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden" style={{ backgroundColor: videoLoaded ? 'transparent' : '#0a1628' }}>
+    <div className="fixed inset-0 overflow-hidden" style={{ zIndex: -1, backgroundColor: videoLoaded ? 'transparent' : '#0a1628', transform: 'translateZ(0)', WebkitTransform: 'translateZ(0)', willChange: 'transform' }}>
       {/* Slot A */}
       <video
         ref={videoARef}
         key={`A-${slotA.key}`}
         className={videoBaseClass}
-        style={{ opacity: slotA.opacity, transition: transitionStyle }}
+        style={{ opacity: slotA.opacity, transition: transitionStyle, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
         src={slotA.entry.src}
         poster={slotA.entry.poster}
         autoPlay
@@ -170,7 +170,7 @@ export default function GlobalVideoBackground() {
         ref={videoBRef}
         key={`B-${slotB.key}`}
         className={videoBaseClass}
-        style={{ opacity: slotB.opacity, transition: transitionStyle }}
+        style={{ opacity: slotB.opacity, transition: transitionStyle, backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
         src={slotB.entry.src}
         poster={slotB.entry.poster}
         autoPlay
