@@ -345,17 +345,12 @@ export default function Home() {
             specializing in Disney, cruises, family adventures, and beyond.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center opacity-0 animate-fade-in-up animate-delay-300">
-            <a
-              href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto"
-            >
+            <Link href="/plan-my-trip" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans px-6 sm:px-8 py-5 sm:py-6 text-base min-h-[56px]">
                 Plan My Trip
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
-            </a>
+            </Link>
             <a href={getLoginUrl()} className="w-full sm:w-auto">
               <Button variant="outline" size="lg" className="w-full sm:w-auto border-white/60 text-white hover:bg-white/10 font-sans px-6 sm:px-8 py-5 sm:py-6 text-base bg-transparent min-h-[56px]">
                 Client Portal
@@ -377,17 +372,12 @@ export default function Home() {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="bg-primary/95 backdrop-blur-md border-t border-white/10 px-4 py-3">
-          <a
-            href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-          >
+          <Link href="/plan-my-trip" className="block">
             <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans min-h-[52px] text-base">
               Plan My Trip
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -561,17 +551,12 @@ export default function Home() {
               Jessica Seiders at Next Chapter Travel LLC has the expertise to plan any adventure you can imagine.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <a
-                href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block sm:inline-block"
-              >
+              <Link href="/plan-my-trip" className="block sm:inline-block">
                 <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans px-8 sm:px-10 py-5 sm:py-6 text-base min-h-[56px]">
                   Plan My Trip
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
-              </a>
+              </Link>
               <a href={getLoginUrl()} className="block sm:inline-block">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto border-primary/30 text-primary hover:bg-primary/5 font-sans px-8 sm:px-10 py-5 sm:py-6 text-base min-h-[56px] bg-transparent">
                   Client Portal
@@ -615,12 +600,7 @@ export default function Home() {
                 <li><a href="#about" className="hover:text-secondary transition-colors py-1 block">About Jessica</a></li>
                 <li><a href={getLoginUrl()} className="hover:text-secondary transition-colors py-1 block">Client Portal</a></li>
                 <li>
-                  <a
-                    href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-secondary transition-colors py-1 block"
-                  >Plan My Trip</a>
+                  <Link href="/plan-my-trip" className="hover:text-secondary transition-colors py-1 block">Plan My Trip</Link>
                 </li>
                 <li>
                   <a

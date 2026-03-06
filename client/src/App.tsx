@@ -10,6 +10,7 @@ import GlobalVideoBackground from "./components/GlobalVideoBackground";
 // Public pages
 import Home from "./pages/Home";
 import JoinPage from "./pages/JoinPage";
+import PlanMyTrip from "./pages/PlanMyTrip";
 
 // Client portal pages
 import PortalDashboard from "./pages/portal/Dashboard";
@@ -37,6 +38,7 @@ function Router() {
       {/* Public landing page */}
       <Route path="/" component={Home} />
       <Route path="/join" component={JoinPage} />
+      <Route path="/plan-my-trip" component={PlanMyTrip} />
 
       {/* Client portal */}
       <Route path="/portal" component={PortalDashboard} />

@@ -203,3 +203,10 @@
 - [x] Footer contact section updated: facebook.com/jessica.hoffman.520 → "Next Chapter Travel on Facebook"
 - [x] "Plan My Trip" added to footer Quick Links
 - [x] 21 vitest tests passing, TypeScript clean
+
+## Session 8 — Plan My Trip Embedded Page
+- [x] Create /plan-my-trip page with embedded TravelJoy iframe
+- [x] Add branded header, subheading, and trust badges above the form (Disney, NCL, Royal Caribbean, Carnival)
+- [x] Add route to App.tsx
+- [x] Update all "Plan My Trip" CTAs (hero, sticky mobile, CTA section, footer) to use internal /plan-my-trip route
+- [x] Set video context for the page (landing video)
