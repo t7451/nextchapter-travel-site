@@ -10,6 +10,7 @@ import {
   Plane, Shield, Star, ArrowRight, BookOpen, Globe, Users,
   Facebook, Sparkles, Menu, X
 } from "lucide-react";
+import { PartnershipDropdown } from "@/components/PartnershipDropdown";
 import { cn } from "@/lib/utils";
 
 const FEATURES = [
@@ -250,6 +251,7 @@ export default function Home() {
 
           {/* Desktop nav actions */}
           <div className="hidden sm:flex items-center gap-3">
+            <PartnershipDropdown />
             <a
               href="https://www.facebook.com/share/1BvCajFoBy/"
               target="_blank"

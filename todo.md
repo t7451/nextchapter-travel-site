@@ -225,3 +225,10 @@
 - [x] Optimize video preloading: preload all video pools on PortalLayout mount, stagger with 500ms delay
 - [x] Add onLoadedData handlers to both video slots to clear loading state
 - [x] 21 vitest tests passing, TypeScript clean
+
+## Session 11 — Header Dropdown Menu
+- [x] Create PartnershipDropdown component with Wendy's site + Jessica's portal cards
+- [x] Add to header navigation (desktop only, positioned before Facebook icon)
+- [x] Polished hover states: gradient backgrounds, smooth transitions, arrow indicators
+- [x] Footer note showing "Wendy (CEO) & Jessica (CFO)" partnership
+- [x] TypeScript clean, 21 tests passing
