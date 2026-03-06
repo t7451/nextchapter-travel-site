@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   MapPin, MessageSquare, FileText, CheckSquare, Calendar,
   Plane, Shield, Star, ArrowRight, BookOpen, Globe, Users,
-  Facebook, Sparkles, Menu, X
+  Facebook, Sparkles, Menu, X, Compass
 } from "lucide-react";
 import { PartnershipDropdown } from "@/components/PartnershipDropdown";
 import { cn } from "@/lib/utils";
@@ -315,6 +315,29 @@ export default function Home() {
                 {item.label}
               </a>
             ))}
+            {/* Divider */}
+            <div className="h-px bg-white/10 my-2" />
+            {/* Partner links */}
+            <a
+              href="https://www.thenextchaptertravel.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl text-white/80 hover:text-secondary font-sans text-sm min-h-[48px] transition-colors"
+            >
+              <Globe className="w-4 h-4" />
+              Wendy's Site (CEO)
+            </a>
+            <a
+              href="/portal"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl text-white/80 hover:text-secondary font-sans text-sm min-h-[48px] transition-colors"
+            >
+              <Compass className="w-4 h-4" />
+              Jessica's Portal (CFO)
+            </a>
+            {/* Divider */}
+            <div className="h-px bg-white/10 my-2" />
             <a
               href="https://www.facebook.com/share/1BvCajFoBy/"
               target="_blank"
