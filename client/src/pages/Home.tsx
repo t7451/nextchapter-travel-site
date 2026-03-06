@@ -333,7 +333,7 @@ export default function Home() {
 
         <div className="relative z-10 text-center text-white px-5 max-w-4xl mx-auto w-full">
           <Badge className="mb-4 sm:mb-6 bg-secondary/90 text-secondary-foreground border-0 font-sans text-[10px] sm:text-xs tracking-widest uppercase px-3 sm:px-4 py-1 sm:py-1.5">
-            Partner of Next Chapter Travel
+            Next Chapter Travel LLC
           </Badge>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold mb-4 sm:mb-6 leading-[1.1] opacity-0 animate-fade-in-up">
             Your Journey,
@@ -341,8 +341,8 @@ export default function Home() {
             <span className="italic text-secondary">Perfectly Planned</span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-white/80 mb-8 sm:mb-10 max-w-2xl mx-auto font-sans font-light leading-relaxed opacity-0 animate-fade-in-up animate-delay-200">
-            Owner & CEO of Next Chapter Travel LLC — Jessica Seiders is your certified travel professional
-            specializing in Disney, cruises, family adventures, and beyond.
+            CFO & Certified Travel Specialist at Next Chapter Travel LLC — Jessica Seiders brings
+            expert planning to Disney, cruises, family adventures, and beyond.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center opacity-0 animate-fade-in-up animate-delay-300">
             <Link href="/plan-my-trip" className="w-full sm:w-auto">
@@ -392,8 +392,30 @@ export default function Home() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-4 sm:mb-6 leading-tight">
                 Meet Jessica Seiders
               </h2>
+              {/* Partnership callout */}
+              <div className="mb-4 sm:mb-5 flex items-start gap-3 bg-secondary/10 border border-secondary/20 rounded-xl px-4 py-3">
+                <div className="flex-shrink-0 mt-0.5">
+                  <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center">
+                    <BookOpen className="w-3 h-3 text-secondary" />
+                  </div>
+                </div>
+                <p className="text-primary-foreground/70 text-sm font-sans leading-relaxed">
+                  Partner of{" "}
+                  <a
+                    href="https://www.thenextchaptertravel.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-secondary font-medium hover:underline"
+                  >
+                    The Next Chapter Travel
+                  </a>
+                  {" "}— founded by CEO{" "}
+                  <span className="text-primary-foreground/90 font-medium">Wendy</span>,
+                  curating luxury all-women group travel worldwide.
+                </p>
+              </div>
               <p className="text-primary-foreground/80 text-base sm:text-lg leading-relaxed mb-4 sm:mb-6 font-sans">
-                Jessica Seiders is the Owner, Manager, and CEO of{" "}
+                Jessica Seiders is the <span className="text-secondary font-medium">CFO &amp; Certified Travel Specialist</span> at{" "}
                 <span className="text-secondary font-medium">Next Chapter Travel LLC</span> — a Portland,
                 Oregon-based travel agency dedicated to planning every kind of vacation with precision and
                 heart. A certified Disney specialist with deep expertise across Universal, Norwegian Cruise
@@ -548,7 +570,7 @@ export default function Home() {
             </h2>
             <p className="text-muted-foreground text-base sm:text-lg mb-8 sm:mb-10 font-sans leading-relaxed">
               Certified in Disney, Universal, Norwegian Cruise Line, Royal Caribbean, Carnival, and more —
-              Jessica Seiders at Next Chapter Travel LLC has the expertise to plan any adventure you can imagine.
+              Jessica Seiders (CFO) at Next Chapter Travel LLC has the expertise to plan any adventure you can imagine.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Link href="/plan-my-trip" className="block sm:inline-block">
@@ -580,8 +602,10 @@ export default function Home() {
                 <span className="font-serif text-lg font-semibold">Next Chapter Travel</span>
               </div>
               <p className="text-primary-foreground/60 text-sm font-sans leading-relaxed mb-4">
-                Jessica Seiders — Owner & CEO, bringing certified expertise and personal warmth
-                to every trip she plans.
+                Jessica Seiders — CFO & Certified Travel Specialist, bringing expert planning and personal warmth
+                to every trip. Partner of{" "}
+                <a href="https://www.thenextchaptertravel.com/" target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline">The Next Chapter Travel</a>
+                , founded by CEO Wendy.
               </p>
               <a
                 href="https://www.facebook.com/share/1BvCajFoBy/"
@@ -616,7 +640,17 @@ export default function Home() {
               <h4 className="font-serif font-semibold mb-4">Contact Jessica</h4>
               <ul className="space-y-2 text-sm font-sans text-primary-foreground/60">
                 <li>Portland, Oregon</li>
-                <li>Owner &amp; CEO — Next Chapter Travel LLC</li>
+                <li>CFO &amp; Certified Travel Specialist — Next Chapter Travel LLC</li>
+                <li>
+                  <a
+                    href="https://www.thenextchaptertravel.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-secondary transition-colors"
+                  >
+                    thenextchaptertravel.com (CEO: Wendy)
+                  </a>
+                </li>
                 <li>Disney · Universal · Royal Caribbean · Carnival</li>
                 <li className="pt-1">
                   <a
@@ -634,7 +668,7 @@ export default function Home() {
           </div>
           <div className="border-t border-primary-foreground/10 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-primary-foreground/40 text-xs sm:text-sm font-sans text-center sm:text-left">
-              © 2026 Next Chapter Travel LLC — Jessica Seiders. All rights reserved.
+              © 2026 Next Chapter Travel LLC — Jessica Seiders, CFO. All rights reserved.
             </p>
             <div className="flex items-center gap-4 text-primary-foreground/40 text-sm font-sans">
               <div className="flex items-center gap-2">

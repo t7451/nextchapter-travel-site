@@ -8,7 +8,7 @@ const TRUST_BADGES = [
   { icon: Star, label: "Disney Certified Specialist" },
   { icon: CheckCircle, label: "Norwegian Cruise Line Expert" },
   { icon: Shield, label: "Royal Caribbean & Carnival" },
-  { icon: Clock, label: "Responds Within 24 Hours" },
+  { icon: Clock, label: "CFO — Next Chapter Travel LLC" },
 ];
 
 export default function PlanMyTrip() {

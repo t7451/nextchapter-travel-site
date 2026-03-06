@@ -210,3 +210,11 @@
 - [x] Add route to App.tsx
 - [x] Update all "Plan My Trip" CTAs (hero, sticky mobile, CTA section, footer) to use internal /plan-my-trip route
 - [x] Set video context for the page (landing video)
+
+## Session 9 — Partnership Correction & Wendy's Page
+- [x] Inspect thenextchaptertravel.com: Wendy is founder/CEO, curates luxury all-women group trips, 20+ countries, educator/travel consultant background
+- [x] Fix all "Owner & CEO" references for Jessica → "CFO & Certified Travel Specialist"
+- [x] Added partnership callout box in About section: links to thenextchaptertravel.com, names Wendy as CEO
+- [x] Updated hero subheading, About bio, CTA section, footer description, footer contact, PlanMyTrip trust badge
+- [x] Footer contact now shows thenextchaptertravel.com link with (CEO: Wendy) label
+- [x] TypeScript clean, 0 errors
