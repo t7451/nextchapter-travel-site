@@ -232,3 +232,9 @@
 - [x] Polished hover states: gradient backgrounds, smooth transitions, arrow indicators
 - [x] Footer note showing "Wendy (CEO) & Jessica (CFO)" partnership
 - [x] TypeScript clean, 21 tests passing
+
+## Session 12 — Thank You Page & TravelJoy Redirect
+- [x] Create ThankYou.tsx page with confirmation message, 5-step timeline, and contact cards
+- [x] Add /thank-you route to App.tsx
+- [x] Redirect URL configured: https://www.thenext-chapter-travel.club/thank-you (set in TravelJoy form settings)
+- [x] 21 vitest tests passing, TypeScript clean
