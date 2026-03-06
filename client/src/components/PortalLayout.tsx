@@ -6,22 +6,24 @@ import {
   LayoutDashboard, Calendar, FileText, Globe, MessageSquare,
   CheckSquare, Plane, Bell, LogOut, BookOpen, X, ChevronRight
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import NotificationBell from "@/components/NotificationBell";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import { cn } from "@/lib/utils";
+import { useVideoHero, VIDEO_CATALOG } from "@/contexts/VideoHeroContext";
+import { preloadVideo } from "@/components/GlobalVideoBackground";
 
 const NAV_ITEMS = [
-  { href: "/portal", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/portal/itinerary", label: "Itinerary", icon: Calendar },
-  { href: "/portal/documents", label: "Documents", icon: FileText },
-  { href: "/portal/guides", label: "Destination Guides", icon: Globe },
-  { href: "/portal/messages", label: "Messages", icon: MessageSquare },
-  { href: "/portal/packing", label: "Packing List", icon: CheckSquare },
-  { href: "/portal/bookings", label: "Bookings", icon: Plane },
-  { href: "/portal/alerts", label: "Alerts", icon: Bell },
+  { href: "/portal", label: "Dashboard", icon: LayoutDashboard, exact: true, videoKey: "dashboard" },
+  { href: "/portal/itinerary", label: "Itinerary", icon: Calendar, videoKey: "itinerary" },
+  { href: "/portal/documents", label: "Documents", icon: FileText, videoKey: "documents" },
+  { href: "/portal/guides", label: "Destination Guides", icon: Globe, videoKey: "guides" },
+  { href: "/portal/messages", label: "Messages", icon: MessageSquare, videoKey: "messages" },
+  { href: "/portal/packing", label: "Packing List", icon: CheckSquare, videoKey: "packing" },
+  { href: "/portal/bookings", label: "Bookings", icon: Plane, videoKey: "bookings" },
+  { href: "/portal/alerts", label: "Alerts", icon: Bell, videoKey: "alerts" },
 ];
 
 interface PortalLayoutProps {
@@ -34,6 +36,15 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
   const { user, logout } = useAuth();
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { setVideoContext } = useVideoHero();
+
+  // Set video context based on current route on mount and route change
+  useEffect(() => {
+    const matched = NAV_ITEMS.find(item =>
+      item.exact ? location === item.href : location.startsWith(item.href)
+    );
+    if (matched) setVideoContext(matched.videoKey);
+  }, [location, setVideoContext]);
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
@@ -88,7 +99,7 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href, item.exact);
           return (
-            <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={item.href}>
               <div
                 className={cn(
                   "flex items-center gap-3 px-3 py-3 rounded-xl transition-all cursor-pointer group",
@@ -96,7 +107,15 @@ export default function PortalLayout({ children, title, subtitle }: PortalLayout
                     ? "bg-sidebar-primary text-sidebar-primary-foreground"
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 )}
-                onClick={() => setSidebarOpen(false)}
+                onClick={() => {
+                  setSidebarOpen(false);
+                  setVideoContext(item.videoKey);
+                }}
+                onMouseEnter={() => {
+                  // Preload video on hover for instant crossfade
+                  const entry = VIDEO_CATALOG[item.videoKey];
+                  if (entry) preloadVideo(entry.src);
+                }}
               >
                 <item.icon className="w-4.5 h-4.5 flex-shrink-0" />
                 <span className="font-sans text-sm font-medium">{item.label}</span>

@@ -105,3 +105,19 @@
 - [x] SSE broadcast includes attachment fields
 - [x] Mobile: camera capture button (capture=environment)
 - [x] File size validation (16MB max) and type whitelist
+
+## Dynamic Context-Aware Video Hero
+- [x] Curate free CDN video URLs for each context (landing, itinerary, documents, messages, packing, bookings, guides, alerts, dashboard)
+- [x] VideoHeroContext provider + useVideoHero hook
+- [x] GlobalVideoBackground component with smooth crossfade transitions
+- [x] Landing page: cinematic travel montage loop
+- [x] Portal Dashboard: calm destination overview video
+- [x] Itinerary page: adventure/journey video
+- [x] Document Vault: airport/travel prep video
+- [x] Messages: cozy travel cafe / connection video
+- [x] Packing List: suitcase/packing video
+- [x] Bookings: flight/hotel video
+- [x] Destination Guides: destination-specific video (changes per guide)
+- [x] Alerts: dramatic sky/weather video
+- [x] Video preloading + fallback static image (preloadVideo on nav hover)
+- [x] Reduced-motion media query support (instant swap fallback)

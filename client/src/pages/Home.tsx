@@ -1,4 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
+import { useVideoHero } from "@/contexts/VideoHeroContext";
 import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -210,6 +211,12 @@ export default function Home() {
   const { user, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { setVideoContext } = useVideoHero();
+
+  // Set landing page video context on mount
+  useEffect(() => {
+    setVideoContext("landing");
+  }, [setVideoContext]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -320,16 +327,9 @@ export default function Home() {
       </nav>
 
       {/* ── Hero — Video Editorial ── */}
+      {/* GlobalVideoBackground (fixed -z-10) renders the cinematic video behind everything */}
       <section className="relative flex items-center justify-center overflow-hidden"
         style={{ height: "100dvh", minHeight: "580px" }}>
-        <video
-          autoPlay muted loop playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80"
-        >
-          <source src="https://player.vimeo.com/external/434045526.sd.mp4?s=c27eecc69a27dbc4ff2b87d38aae054b&profile_id=165" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 video-overlay" />
 
         <div className="relative z-10 text-center text-white px-5 max-w-4xl mx-auto w-full">
           <Badge className="mb-4 sm:mb-6 bg-secondary/90 text-secondary-foreground border-0 font-sans text-[10px] sm:text-xs tracking-widest uppercase px-3 sm:px-4 py-1 sm:py-1.5">

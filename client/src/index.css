@@ -358,3 +358,70 @@
 a, button, [role="button"] {
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
+
+/* ── Dynamic Video Background — Portal Glass Layer ── */
+/* When the global video background is active, portal cards get a glass effect */
+.portal-glass {
+  background: oklch(0.18 0.04 240 / 0.82);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid oklch(1 0 0 / 0.08);
+}
+
+.portal-glass-light {
+  background: oklch(0.97 0.008 75 / 0.88);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid oklch(0.22 0.06 240 / 0.1);
+}
+
+/* Video context label pill */
+.video-context-label {
+  position: fixed;
+  bottom: 5rem;
+  right: 1rem;
+  z-index: 35;
+  background: oklch(0.18 0.04 240 / 0.75);
+  backdrop-filter: blur(8px);
+  color: oklch(0.72 0.09 65);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid oklch(0.72 0.09 65 / 0.3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.video-context-label.visible {
+  opacity: 1;
+}
+
+/* Hero section — ensure text is readable over video */
+.hero-text-shadow {
+  text-shadow: 0 2px 20px oklch(0 0 0 / 0.5), 0 1px 4px oklch(0 0 0 / 0.3);
+}
+
+/* Video crossfade transition */
+@keyframes videoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.video-fade-in {
+  animation: videoFadeIn 1.2s ease forwards;
+}
+
+/* Ensure the portal layout background is slightly transparent to let video show through */
+.portal-layout-bg {
+  background: oklch(0.14 0.04 240 / 0.92);
+}
+
+/* Admin layout glass */
+.admin-layout-bg {
+  background: oklch(0.14 0.04 240 / 0.94);
+}

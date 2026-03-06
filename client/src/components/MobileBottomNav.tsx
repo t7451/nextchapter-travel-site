@@ -4,25 +4,27 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useVideoHero } from "@/contexts/VideoHeroContext";
 
 // Primary 4 tabs always visible + "More" overflow
 const PRIMARY_TABS = [
-  { href: "/portal", label: "Home", icon: LayoutDashboard, exact: true },
-  { href: "/portal/itinerary", label: "Itinerary", icon: Calendar },
-  { href: "/portal/messages", label: "Messages", icon: MessageSquare },
-  { href: "/portal/packing", label: "Packing", icon: CheckSquare },
+  { href: "/portal", label: "Home", icon: LayoutDashboard, exact: true, videoKey: "dashboard" },
+  { href: "/portal/itinerary", label: "Itinerary", icon: Calendar, videoKey: "itinerary" },
+  { href: "/portal/messages", label: "Messages", icon: MessageSquare, videoKey: "messages" },
+  { href: "/portal/packing", label: "Packing", icon: CheckSquare, videoKey: "packing" },
 ];
 
 const MORE_ITEMS = [
-  { href: "/portal/documents", label: "Documents", icon: FileText },
-  { href: "/portal/guides", label: "Guides", icon: Globe },
-  { href: "/portal/bookings", label: "Bookings", icon: Plane },
-  { href: "/portal/alerts", label: "Alerts", icon: Bell },
+  { href: "/portal/documents", label: "Documents", icon: FileText, videoKey: "documents" },
+  { href: "/portal/guides", label: "Guides", icon: Globe, videoKey: "guides" },
+  { href: "/portal/bookings", label: "Bookings", icon: Plane, videoKey: "bookings" },
+  { href: "/portal/alerts", label: "Alerts", icon: Bell, videoKey: "alerts" },
 ];
 
 export default function MobileBottomNav() {
   const [location] = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
+  const { setVideoContext } = useVideoHero();
 
   const { data: unreadCount = 0 } = trpc.notifications.unreadCount.useQuery(undefined, {
     refetchInterval: 30000,
@@ -45,7 +47,7 @@ export default function MobileBottomNav() {
             const active = isActive(tab.href, tab.exact);
             const isMessages = tab.href === "/portal/messages";
             return (
-              <Link key={tab.href} href={tab.href} className="flex-1">
+              <Link key={tab.href} href={tab.href} className="flex-1" onClick={() => setVideoContext(tab.videoKey)}>
                 <div className={cn(
                   "flex flex-col items-center justify-center h-full gap-0.5 relative transition-all duration-200 active:scale-95",
                   active ? "text-secondary" : "text-muted-foreground"
@@ -109,7 +111,7 @@ export default function MobileBottomNav() {
             {MORE_ITEMS.map((item) => {
               const active = isActive(item.href);
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={item.href} onClick={() => setVideoContext(item.videoKey)}>
                   <div
                     onClick={() => setMoreOpen(false)}
                     className={cn(

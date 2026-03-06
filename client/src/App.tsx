@@ -4,6 +4,8 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { VideoHeroProvider } from "./contexts/VideoHeroContext";
+import GlobalVideoBackground from "./components/GlobalVideoBackground";
 
 // Public pages
 import Home from "./pages/Home";
@@ -64,11 +66,15 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+      <ThemeProvider defaultTheme="dark">
+        <VideoHeroProvider>
+          <TooltipProvider>
+            <Toaster />
+            {/* Global cinematic video background — sits behind everything */}
+            <GlobalVideoBackground />
+            <Router />
+          </TooltipProvider>
+        </VideoHeroProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
