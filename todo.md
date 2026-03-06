@@ -195,3 +195,11 @@
 - [x] Trip selection persists across page navigation (no per-page reset)
 - [x] Shows trip title + status badge in dropdown
 - [x] 21 vitest tests passing, TypeScript clean
+
+## Session 7 — External Link Integrations
+- [x] TravelJoy trip inquiry form: hero CTA changed to "Plan My Trip" (opens TravelJoy in new tab), sticky mobile CTA updated, CTA section updated with dual buttons
+- [x] Typeform agent application: "Join Our Team" link added to footer Quick Links (opens Typeform in new tab)
+- [x] Facebook page link: all 6 Facebook links updated to correct URL (share/1BvCajFoBy/)
+- [x] Footer contact section updated: facebook.com/jessica.hoffman.520 → "Next Chapter Travel on Facebook"
+- [x] "Plan My Trip" added to footer Quick Links
+- [x] 21 vitest tests passing, TypeScript clean

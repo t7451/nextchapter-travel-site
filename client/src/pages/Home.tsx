@@ -251,7 +251,7 @@ export default function Home() {
           {/* Desktop nav actions */}
           <div className="hidden sm:flex items-center gap-3">
             <a
-              href="https://www.facebook.com/jessica.hoffman.520"
+              href="https://www.facebook.com/share/1BvCajFoBy/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/70 hover:text-secondary transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -314,7 +314,7 @@ export default function Home() {
               </a>
             ))}
             <a
-              href="https://www.facebook.com/jessica.hoffman.520"
+              href="https://www.facebook.com/share/1BvCajFoBy/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-3 rounded-xl text-white/80 hover:text-secondary font-sans text-sm min-h-[48px] transition-colors"
@@ -345,15 +345,20 @@ export default function Home() {
             specializing in Disney, cruises, family adventures, and beyond.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center opacity-0 animate-fade-in-up animate-delay-300">
-            <a href={getLoginUrl()} className="w-full sm:w-auto">
+            <a
+              href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
               <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans px-6 sm:px-8 py-5 sm:py-6 text-base min-h-[56px]">
-                Access Your Trip Portal
+                Plan My Trip
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </a>
-            <a href="#about" className="w-full sm:w-auto">
+            <a href={getLoginUrl()} className="w-full sm:w-auto">
               <Button variant="outline" size="lg" className="w-full sm:w-auto border-white/60 text-white hover:bg-white/10 font-sans px-6 sm:px-8 py-5 sm:py-6 text-base bg-transparent min-h-[56px]">
-                Meet Jessica
+                Client Portal
               </Button>
             </a>
           </div>
@@ -372,9 +377,14 @@ export default function Home() {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="bg-primary/95 backdrop-blur-md border-t border-white/10 px-4 py-3">
-          <a href={portalHref} className="block">
+          <a
+            href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
             <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans min-h-[52px] text-base">
-              {isAuthenticated ? "Open My Travel Portal" : "Get Started — It's Free"}
+              Plan My Trip
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </a>
@@ -411,7 +421,7 @@ export default function Home() {
                 ))}
               </div>
               <a
-                href="https://www.facebook.com/jessica.hoffman.520"
+                href="https://www.facebook.com/share/1BvCajFoBy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 bg-secondary/10 hover:bg-secondary/20 active:bg-secondary/30 border border-secondary/30 text-secondary rounded-xl px-4 sm:px-5 py-3 font-sans text-sm font-medium transition-all duration-200 min-h-[48px]"
@@ -550,12 +560,24 @@ export default function Home() {
               Certified in Disney, Universal, Norwegian Cruise Line, Royal Caribbean, Carnival, and more —
               Jessica Seiders at Next Chapter Travel LLC has the expertise to plan any adventure you can imagine.
             </p>
-            <a href={getLoginUrl()} className="block sm:inline-block">
-              <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 font-sans px-8 sm:px-10 py-5 sm:py-6 text-base min-h-[56px]">
-                Access Your Travel Portal
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <a
+                href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block sm:inline-block"
+              >
+                <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans px-8 sm:px-10 py-5 sm:py-6 text-base min-h-[56px]">
+                  Plan My Trip
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </a>
+              <a href={getLoginUrl()} className="block sm:inline-block">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-primary/30 text-primary hover:bg-primary/5 font-sans px-8 sm:px-10 py-5 sm:py-6 text-base min-h-[56px] bg-transparent">
+                  Client Portal
+                </Button>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -577,7 +599,7 @@ export default function Home() {
                 to every trip she plans.
               </p>
               <a
-                href="https://www.facebook.com/jessica.hoffman.520"
+                href="https://www.facebook.com/share/1BvCajFoBy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-primary-foreground/50 hover:text-secondary transition-colors text-sm font-sans min-h-[44px]"
@@ -592,7 +614,22 @@ export default function Home() {
                 <li><a href="#features" className="hover:text-secondary transition-colors py-1 block">Features</a></li>
                 <li><a href="#about" className="hover:text-secondary transition-colors py-1 block">About Jessica</a></li>
                 <li><a href={getLoginUrl()} className="hover:text-secondary transition-colors py-1 block">Client Portal</a></li>
-                <li><a href="https://nextchaptertravel.com" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors py-1 block">Next Chapter Travel</a></li>
+                <li>
+                  <a
+                    href="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-secondary transition-colors py-1 block"
+                  >Plan My Trip</a>
+                </li>
+                <li>
+                  <a
+                    href="https://form.typeform.com/to/BrcCMxGh"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-secondary transition-colors py-1 block"
+                  >Join Our Team</a>
+                </li>
               </ul>
             </div>
             <div>
@@ -603,13 +640,13 @@ export default function Home() {
                 <li>Disney · Universal · Royal Caribbean · Carnival</li>
                 <li className="pt-1">
                   <a
-                    href="https://www.facebook.com/jessica.hoffman.520"
+                    href="https://www.facebook.com/share/1BvCajFoBy/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 hover:text-secondary transition-colors min-h-[44px]"
                   >
                     <Facebook className="w-3.5 h-3.5" />
-                    facebook.com/jessica.hoffman.520
+                    Next Chapter Travel on Facebook
                   </a>
                 </li>
               </ul>
@@ -625,7 +662,7 @@ export default function Home() {
                 <span>Secure & Private</span>
               </div>
               <a
-                href="https://www.facebook.com/jessica.hoffman.520"
+                href="https://www.facebook.com/share/1BvCajFoBy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-secondary transition-colors p-1 min-h-[44px] min-w-[44px] flex items-center justify-center"
