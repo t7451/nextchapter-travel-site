@@ -353,8 +353,8 @@ export default function Home() {
 
       {/* ── Hero — Video Editorial ── */}
       {/* GlobalVideoBackground (fixed -z-10) renders the cinematic video behind everything */}
-      <section className="relative flex items-center justify-center overflow-hidden min-h-screen"
-        style={{ height: "100dvh" }}>
+      <section className="relative flex items-center justify-center overflow-hidden"
+        style={{ height: "100dvh", minHeight: "580px" }}>
 
         <div className="relative z-10 text-center text-white px-5 max-w-4xl mx-auto w-full">
           <Badge className="mb-4 sm:mb-6 bg-secondary/90 text-secondary-foreground border-0 font-sans text-[10px] sm:text-xs tracking-widest uppercase px-3 sm:px-4 py-1 sm:py-1.5">
@@ -478,7 +478,7 @@ export default function Home() {
       </section>
 
       {/* ── Features Grid ── */}
-      <section id="features" className="py-16 sm:py-24 bg-black/50 backdrop-blur-md">
+      <section id="features" className="py-16 sm:py-24 bg-black/40 backdrop-blur-sm">
         <div className="container">
           <div className="text-center mb-10 sm:mb-16">
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
@@ -516,7 +516,7 @@ export default function Home() {
       </section>
 
       {/* ── How It Works ── */}
-      <section id="how" className="py-16 sm:py-24 bg-primary/20">
+      <section id="how" className="py-16 sm:py-24 bg-accent/30">
         <div className="container">
           <div className="text-center mb-10 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
@@ -586,7 +586,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA Section ── */}
-      <section className="py-16 sm:py-24 bg-black/50 backdrop-blur-md">
+      <section className="py-16 sm:py-24 bg-black/40 backdrop-blur-sm">
         <div className="container text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-4 sm:mb-6">
