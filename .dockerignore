@@ -1,0 +1,17 @@
+**/node_modules
+dist/
+build/
+.pnpm-store/
+.env
+.env.*
+.git/
+.gitignore
+.manus-logs/
+*.log
+coverage/
+.vscode/
+.idea/
+**/*.test.ts
+**/*.spec.ts
+README.md
+DEPLOYMENT.md
