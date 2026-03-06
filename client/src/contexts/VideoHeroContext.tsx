@@ -3,6 +3,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 // ─── Video catalog — CDN-hosted MP4s (CloudFront, iOS Safari compatible) ──────
 // All videos are self-hosted on our CDN to ensure iOS Safari autoplay works.
 // Videos are muted, looping, and under 5MB each for fast mobile loading.
+// Source: Mixkit free stock video (mixkit.co) — commercial use permitted.
 export type VideoEntry = {
   src: string;
   poster: string;
@@ -12,57 +13,57 @@ export type VideoEntry = {
 const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663400814556/YzQ4CdxemtnRpcg9zzL4Fa";
 
 export const VIDEO_CATALOG: Record<string, VideoEntry> = {
-  // Landing page — cinematic travel aerial
+  // Landing page — aerial coastal view, beautiful turquoise water
   landing: {
-    src: `${CDN}/landing_c5e5dc41.mp4`,
+    src: `${CDN}/landing_805b577b.mp4`,
     poster: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1280&q=60",
     label: "Explore the World",
   },
-  // Dashboard — ocean coastline
+  // Dashboard — waves rolling onto a sandy beach
   dashboard: {
-    src: `${CDN}/dashboard_de8702c9.mp4`,
+    src: `${CDN}/dashboard_8a55c9d9.mp4`,
     poster: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1280&q=60",
     label: "Your Journey Awaits",
   },
-  // Itinerary — journey / road
+  // Itinerary — driving down a curved mountain highway
   itinerary: {
-    src: `${CDN}/itinerary_64381598.mp4`,
+    src: `${CDN}/itinerary_7348dd96.mp4`,
     poster: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1280&q=60",
     label: "Day by Day",
   },
-  // Documents — airport / travel prep
+  // Documents — flight crew preparing aircraft for departure
   documents: {
-    src: `${CDN}/documents_289f3a0c.mp4`,
+    src: `${CDN}/documents_1a88f454.mp4`,
     poster: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1280&q=60",
     label: "Travel Documents",
   },
-  // Messages — connection / cafe
+  // Messages — Venice canal at night, romantic connection
   messages: {
-    src: `${CDN}/messages_d26e6922.mp4`,
+    src: `${CDN}/messages_5d50481a.mp4`,
     poster: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1280&q=60",
     label: "Stay Connected",
   },
-  // Packing — suitcase / travel prep
+  // Packing — driving on an empty tree-lined road (journey prep)
   packing: {
-    src: `${CDN}/packing_f244ae98.mp4`,
+    src: `${CDN}/packing_aee5f9f2.mp4`,
     poster: "https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1280&q=60",
     label: "Pack Your Bags",
   },
-  // Bookings — flight / airplane
+  // Bookings — panoramic airplane window view at dusk
   bookings: {
-    src: `${CDN}/bookings_7a44b4d1.mp4`,
+    src: `${CDN}/bookings_2a93f868.mp4`,
     poster: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1280&q=60",
     label: "Your Bookings",
   },
-  // Destination guides — tropical / beach
+  // Destination guides — tropical beach from above, palm trees
   guides: {
-    src: `${CDN}/guides_018e7be3.mp4`,
+    src: `${CDN}/guides_103d6835.mp4`,
     poster: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1280&q=60",
     label: "Discover Your Destination",
   },
-  // Alerts — dramatic sky
+  // Alerts — dramatic sunset over a bay from above
   alerts: {
-    src: `${CDN}/alerts_30bd415e.mp4`,
+    src: `${CDN}/alerts_bcd3edf2.mp4`,
     poster: "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1280&q=60",
     label: "Travel Alerts",
   },

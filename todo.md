@@ -152,3 +152,12 @@
 - [x] Add /join route to App.tsx
 - [x] Add "Send Portal Invite" button + dialog to AdminClients page
 - [x] 21 vitest tests passing (5 new invite tests)
+
+## Session 4 — Real Travel Videos & Dynamic Switching
+- [x] Source real travel videos from Mixkit (free, commercial use): landing (aerial coast), dashboard (beach waves), itinerary (mountain highway), documents (airport departure), messages (Venice canal), packing (empty road), bookings (airplane window), guides (tropical beach), alerts (sunset bay)
+- [x] Download and compress all 9 videos to under 5MB each using ffmpeg
+- [x] Upload all 9 videos to CDN
+- [x] Update VideoHeroContext with new CDN URLs
+- [x] Audit dynamic switching: PortalLayout already wires all 8 routes to video contexts
+- [x] Admin routes intentionally keep the same video (management tool, not immersive)
+- [x] Test crossfade transitions: verified DAY BY DAY label shows on itinerary page
