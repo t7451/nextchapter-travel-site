@@ -1,0 +1,83 @@
+# ============================================================
+# Next Chapter Travel — Netlify Build Configuration
+# ============================================================
+# Architecture:
+#   Frontend (React/Vite)  → deployed to Netlify CDN
+#   Backend  (Express/tRPC) → deployed separately (Cloud Run / Render / Railway)
+#
+# Set VITE_API_URL in Netlify Environment Variables to point
+# to your backend URL, e.g. https://api.nextchaptertravel.com
+# All /api/* requests are proxied to that backend at runtime.
+# ============================================================
+
+[build]
+  # Run from repo root — Vite root is ./client, output goes to dist/public
+  command       = "pnpm install && pnpm run build"
+  publish       = "dist/public"
+  ignore        = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!*.md'"
+
+[build.environment]
+  NODE_VERSION  = "22"
+  PNPM_VERSION  = "9"
+
+# ── API proxy ────────────────────────────────────────────────
+# Rewrites /api/* to your backend server so the frontend never
+# needs to know the backend URL at build time.
+# Set BACKEND_URL in Netlify → Site configuration → Environment variables.
+# Example: https://nextchapter-api.onrender.com
+[[redirects]]
+  from   = "/api/*"
+  to     = ":BACKEND_URL/api/:splat"
+  status = 200
+  force  = true
+
+  [redirects.headers]
+    X-Forwarded-Host = ":host"
+
+# ── SSE streaming endpoint ───────────────────────────────────
+# Real-time messaging uses Server-Sent Events; must not be buffered.
+[[redirects]]
+  from   = "/api/messages/stream"
+  to     = ":BACKEND_URL/api/messages/stream"
+  status = 200
+  force  = true
+
+  [redirects.headers]
+    X-Forwarded-Host  = ":host"
+    Cache-Control     = "no-cache"
+
+# ── SPA catch-all ────────────────────────────────────────────
+# All non-asset routes fall through to index.html so wouter
+# client-side routing works on direct URL loads and refreshes.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Security & performance headers ───────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options           = "DENY"
+    X-Content-Type-Options    = "nosniff"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
+# Cache static assets aggressively (Vite hashes filenames)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Service worker must never be cached
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# PWA manifest
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
