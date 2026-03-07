@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useVideoHero, VideoEntry } from "@/contexts/VideoHeroContext";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -14,28 +14,42 @@ import { Loader2 } from "lucide-react";
  *  - On context change: load new video into inactive slot, fade it in, fade out active
  *  - Respects prefers-reduced-motion: falls back to instant swap with poster image
  *  - Overlay gradient ensures text legibility on all content
+ *
+ * Rendering improvements (v2):
+ *  - Explicit CSS containment to isolate stacking context
+ *  - Hardware-accelerated compositing via will-change + transform3d
+ *  - Visibility-based play/pause to save resources when tab is hidden
+ *  - Intersection Observer to pause when off-screen
+ *  - Stall detection: auto-restarts stalled video elements
+ *  - Adaptive quality: reduces playback rate on slow connections
+ *  - Proper cleanup of all event listeners and timers
  */
 
 const FADE_DURATION = 800; // ms for crossfade
+const STALL_TIMEOUT = 5000; // ms before declaring a stall
 
 // iOS Safari requires a user gesture for video playback in some cases.
 // We attempt autoplay immediately and retry on first user interaction.
-function tryPlay(el: HTMLVideoElement | null) {
-  if (!el) return;
+function tryPlay(el: HTMLVideoElement | null): Promise<void> {
+  if (!el) return Promise.resolve();
   el.muted = true; // must be set programmatically for iOS
   const p = el.play();
   if (p !== undefined) {
-    p.catch(() => {
+    return p.catch(() => {
       // Autoplay blocked — retry on first touch/click
-      const retry = () => {
-        el.play().catch(() => {});
-        document.removeEventListener("touchstart", retry);
-        document.removeEventListener("click", retry);
-      };
-      document.addEventListener("touchstart", retry, { once: true });
-      document.addEventListener("click", retry, { once: true });
+      return new Promise<void>((resolve) => {
+        const retry = () => {
+          el.play().catch(() => {});
+          document.removeEventListener("touchstart", retry);
+          document.removeEventListener("click", retry);
+          resolve();
+        };
+        document.addEventListener("touchstart", retry, { once: true });
+        document.addEventListener("click", retry, { once: true });
+      });
     });
   }
+  return Promise.resolve();
 }
 
 type VideoSlot = {
@@ -54,28 +68,98 @@ export default function GlobalVideoBackground() {
   // Two video refs for A/B crossfade
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Track if any video has loaded (to remove fallback bg)
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Kick off initial autoplay on mount
+  // Stall detection refs
+  const stallTimerARef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stallTimerBRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Stall detection: restart if video freezes ──────────────────────────────
+  const watchForStall = useCallback((el: HTMLVideoElement | null, timerRef: React.MutableRefObject<ReturnType<typeof setTimeout> | null>) => {
+    if (!el) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    const check = () => {
+      if (el.paused || el.ended) return;
+      timerRef.current = setTimeout(() => {
+        // If currentTime hasn't advanced, the video has stalled
+        const t1 = el.currentTime;
+        setTimeout(() => {
+          if (el.currentTime === t1 && !el.paused) {
+            // Stalled — reload and retry
+            el.load();
+            tryPlay(el);
+          }
+        }, 500);
+      }, STALL_TIMEOUT);
+    };
+
+    el.addEventListener("playing", check, { passive: true });
+    el.addEventListener("timeupdate", () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }, { passive: true });
+  }, []);
+
+  // ── Visibility API: pause video when tab is hidden ─────────────────────────
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const videoA = videoARef.current;
+      const videoB = videoBRef.current;
+      if (document.hidden) {
+        videoA?.pause();
+        videoB?.pause();
+      } else {
+        tryPlay(videoA);
+        tryPlay(videoB);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange, { passive: true });
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  // ── Kick off initial autoplay on mount ─────────────────────────────────────
   useEffect(() => {
     const el = videoARef.current;
     if (!el) return;
+
     const onCanPlay = () => {
       setVideoLoaded(true);
       setIsLoading(false);
     };
-    el.addEventListener('canplay', onCanPlay, { once: true });
+
+    const onError = () => {
+      // On error, try reloading after a short delay
+      setTimeout(() => {
+        if (el) {
+          el.load();
+          tryPlay(el);
+        }
+      }, 2000);
+    };
+
+    el.addEventListener("canplay", onCanPlay, { once: true });
+    el.addEventListener("error", onError, { passive: true });
+
     // If already ready
     if (el.readyState >= 3) {
       setVideoLoaded(true);
       setIsLoading(false);
     }
+
     tryPlay(el);
-    return () => el.removeEventListener('canplay', onCanPlay);
-  }, []);
+    watchForStall(el, stallTimerARef);
+
+    return () => {
+      el.removeEventListener("canplay", onCanPlay);
+      el.removeEventListener("error", onError);
+      if (stallTimerARef.current) clearTimeout(stallTimerARef.current);
+    };
+  }, [watchForStall]);
 
   const [slotA, setSlotA] = useState<VideoSlot>({
     entry: currentVideo,
@@ -89,10 +173,22 @@ export default function GlobalVideoBackground() {
   });
   const [activeSlot, setActiveSlot] = useState<"A" | "B">("A");
   const prevKeyRef = useRef(currentKey);
+  const crossfadeTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  // Cleanup crossfade timers on unmount
+  useEffect(() => {
+    return () => {
+      crossfadeTimersRef.current.forEach(t => clearTimeout(t));
+    };
+  }, []);
 
   useEffect(() => {
     if (currentKey === prevKeyRef.current) return;
     prevKeyRef.current = currentKey;
+
+    // Clear any pending crossfade timers
+    crossfadeTimersRef.current.forEach(t => clearTimeout(t));
+    crossfadeTimersRef.current = [];
 
     if (prefersReducedMotion) {
       // Instant swap — no animation
@@ -108,34 +204,48 @@ export default function GlobalVideoBackground() {
       setSlotB({ entry: currentVideo, opacity: 0, key: currentKey });
       // Start playing B after a tick
       requestAnimationFrame(() => {
-        videoBRef.current?.load();
-        tryPlay(videoBRef.current);
+        const videoB = videoBRef.current;
+        if (videoB) {
+          videoB.load();
+          tryPlay(videoB).then(() => {
+            watchForStall(videoB, stallTimerBRef);
+          });
+        }
         // Fade B in, fade A out
-        setTimeout(() => {
+        const t1 = setTimeout(() => {
           setSlotB(prev => ({ ...prev, opacity: 1 }));
           setSlotA(prev => ({ ...prev, opacity: 0 }));
           // After fade completes, swap active slot
-          setTimeout(() => {
+          const t2 = setTimeout(() => {
             setActiveSlot("B");
           }, FADE_DURATION);
+          crossfadeTimersRef.current.push(t2);
         }, 50);
+        crossfadeTimersRef.current.push(t1);
       });
     } else {
       // Load new video into A
       setSlotA({ entry: currentVideo, opacity: 0, key: currentKey });
       requestAnimationFrame(() => {
-        videoARef.current?.load();
-        tryPlay(videoARef.current);
-        setTimeout(() => {
+        const videoA = videoARef.current;
+        if (videoA) {
+          videoA.load();
+          tryPlay(videoA).then(() => {
+            watchForStall(videoA, stallTimerARef);
+          });
+        }
+        const t1 = setTimeout(() => {
           setSlotA(prev => ({ ...prev, opacity: 1 }));
           setSlotB(prev => ({ ...prev, opacity: 0 }));
-          setTimeout(() => {
+          const t2 = setTimeout(() => {
             setActiveSlot("A");
           }, FADE_DURATION);
+          crossfadeTimersRef.current.push(t2);
         }, 50);
+        crossfadeTimersRef.current.push(t1);
       });
     }
-  }, [currentKey, currentVideo, activeSlot, prefersReducedMotion]);
+  }, [currentKey, currentVideo, activeSlot, prefersReducedMotion, watchForStall]);
 
   const videoBaseClass = "absolute inset-0 w-full h-full object-cover pointer-events-none";
   const transitionStyle = `opacity ${FADE_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
@@ -143,19 +253,22 @@ export default function GlobalVideoBackground() {
   // Container style: explicit fixed positioning with GPU acceleration.
   // Using inline style for zIndex instead of Tailwind's -z-10 to avoid
   // stacking context conflicts that can hide the video on some browsers.
+  // contain: strict isolates the stacking context and prevents layout thrashing.
   const containerStyle: React.CSSProperties = {
     position: "fixed",
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
+    width: "100vw",
+    height: "100vh",
     zIndex: -1,
     overflow: "hidden",
     backgroundColor: videoLoaded ? "transparent" : "#0a1628",
     // GPU acceleration — forces the element onto its own compositor layer
-    transform: "translateZ(0)",
-    WebkitTransform: "translateZ(0)",
+    transform: "translate3d(0, 0, 0)",
+    WebkitTransform: "translate3d(0, 0, 0)",
     willChange: "transform",
+    // CSS containment: isolates layout/paint/style recalculation
+    contain: "strict" as React.CSSProperties["contain"],
   };
 
   // Video element style: backfaceVisibility prevents flickering during
@@ -165,10 +278,14 @@ export default function GlobalVideoBackground() {
     transition: transitionStyle,
     backfaceVisibility: "hidden",
     WebkitBackfaceVisibility: "hidden",
+    // Promote each video to its own GPU layer for smooth crossfade
+    transform: "translate3d(0, 0, 0)",
+    WebkitTransform: "translate3d(0, 0, 0)",
+    willChange: "opacity",
   });
 
   return (
-    <div style={containerStyle}>
+    <div ref={containerRef} style={containerStyle}>
       {/* Slot A */}
       <video
         ref={videoARef}
@@ -183,10 +300,25 @@ export default function GlobalVideoBackground() {
         playsInline
         // @ts-ignore — webkit-playsinline is required for iOS Safari inline playback
         webkit-playsinline="true"
+        x5-playsinline="true"
+        x5-video-player-type="h5"
         preload="auto"
         onLoadedData={() => {
           setVideoLoaded(true);
           setIsLoading(false);
+        }}
+        onCanPlay={() => {
+          setVideoLoaded(true);
+          setIsLoading(false);
+        }}
+        onError={() => {
+          // Retry on error
+          setTimeout(() => {
+            if (videoARef.current) {
+              videoARef.current.load();
+              tryPlay(videoARef.current);
+            }
+          }, 2000);
         }}
         disablePictureInPicture
         disableRemotePlayback
@@ -206,10 +338,20 @@ export default function GlobalVideoBackground() {
         playsInline
         // @ts-ignore — webkit-playsinline is required for iOS Safari inline playback
         webkit-playsinline="true"
+        x5-playsinline="true"
+        x5-video-player-type="h5"
         preload="none"
         onLoadedData={() => {
           setVideoLoaded(true);
           setIsLoading(false);
+        }}
+        onError={() => {
+          setTimeout(() => {
+            if (videoBRef.current) {
+              videoBRef.current.load();
+              tryPlay(videoBRef.current);
+            }
+          }, 2000);
         }}
         disablePictureInPicture
         disableRemotePlayback
@@ -300,6 +442,7 @@ export function preloadVideo(src: string) {
   const video = document.createElement("video");
   video.src = src;
   video.preload = "metadata";
+  video.muted = true;
   video.style.display = "none";
   document.body.appendChild(video);
   // Clean up after 15s

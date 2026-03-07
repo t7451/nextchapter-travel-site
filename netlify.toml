@@ -81,3 +81,10 @@
   for = "/manifest.json"
   [headers.values]
     Cache-Control = "public, max-age=86400"
+
+# HTML entry point — never cache to ensure fresh deploys are picked up
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma        = "no-cache"
