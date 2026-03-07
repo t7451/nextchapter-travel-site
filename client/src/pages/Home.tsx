@@ -51,24 +51,46 @@ const FEATURES = [
   },
 ];
 
-const TESTIMONIALS = [
+const UPCOMING_TRIPS = [
   {
-    name: "Sarah M.",
-    destination: "Maui, Hawaii",
-    quote: "Jessica thought of everything. The app had our boarding passes, hotel info, and even a restaurant list. It was like having a personal concierge in my pocket.",
-    rating: 5,
+    title: "Morocco: Intentional Group Travel",
+    date: "May 16-23, 2026",
+    location: "Morocco",
+    description: "Experiences designed with intention, grounded in feminism, and shaped by the women who make them possible.",
+    image: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
+    category: "Group Trip",
   },
   {
-    name: "Linda & Tom R.",
-    destination: "Tuscany, Italy",
-    quote: "We've traveled with many agents, but this level of organization is unmatched. Every day was laid out perfectly and we never had to worry about a thing.",
-    rating: 5,
+    title: "Greece: Mediterranean Escape",
+    date: "June 2-11, 2026",
+    location: "Greece",
+    description: "Explore the stunning islands and ancient history of Greece with a community of like-minded women.",
+    image: "https://images.unsplash.com/photo-1503152394-c571994fd383?auto=format&fit=crop&q=80&w=800",
+    category: "Luxury Group Trip",
   },
   {
-    name: "The Johnson Family",
-    destination: "Walt Disney World",
-    quote: "As a Disney specialist, Jessica knew every trick. The packing list alone saved us from forgetting half our gear. Absolute magic.",
-    rating: 5,
+    title: "Ireland: Emerald Isle Adventure",
+    date: "June 29 - July 9, 2026",
+    location: "Ireland",
+    description: "Discover the lush landscapes and vibrant culture of Ireland on this 10-day guided journey.",
+    image: "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&q=80&w=800",
+    category: "Group Trip",
+  },
+  {
+    title: "Italy: Tuscan Dreams",
+    date: "August 19-28, 2026",
+    location: "Italy",
+    description: "A journey through the heart of Tuscany, featuring world-class wine, art, and unforgettable landscapes.",
+    image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&q=80&w=800",
+    category: "Luxury Group Trip",
+  },
+  {
+    title: "Guatemala: Culture & Connection",
+    date: "Late 2026 (TBD)",
+    location: "Guatemala",
+    description: "Escape the ordinary and embark on a journey filled with adventure, culture, and empowerment in stunning Guatemala.",
+    image: "https://images.unsplash.com/photo-1528150177508-7cc0c36cda5c?auto=format&fit=crop&q=80&w=800",
+    category: "Group Trip",
   },
 ];
 
@@ -76,6 +98,16 @@ export default function Home() {
   const { setVideoContext } = useVideoHero();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const nextSlide = () => {
+    setCarouselIndex((prev) => (prev + 1) % UPCOMING_TRIPS.length);
+  };
+
+  const prevSlide = () => {
+    setCarouselIndex((prev) => (prev - 1 + UPCOMING_TRIPS.length) % UPCOMING_TRIPS.length);
+  };
 
   useEffect(() => {
     setVideoContext("landing");
@@ -87,167 +119,161 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [setVideoContext]);
 
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 6000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen font-serif selection:bg-secondary/30">
       {/* ── Navigation ── */}
       <nav className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b",
-        isScrolled 
-          ? "bg-background/80 backdrop-blur-md py-3 border-border shadow-sm" 
-          : "bg-transparent py-6 border-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        isScrolled ? "bg-primary/95 backdrop-blur-md shadow-lg" : "bg-transparent"
       )}>
-        <div className="container flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-              <Compass className="w-6 h-6 text-secondary-foreground" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-foreground">
+        <div className="container flex items-center justify-between h-16 sm:h-20">
+          <Link href="/">
+            <div className="text-xl sm:text-2xl font-serif font-bold text-secondary cursor-pointer hover:text-secondary/80 transition-colors">
               Next Chapter Travel
-            </span>
+            </div>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <PartnershipDropdown />
-            <a href="https://www.facebook.com/share/1BvCajFoBy/" target="_blank" rel="noopener noreferrer" className="text-sm font-sans font-medium text-muted-foreground hover:text-secondary transition-colors">
-              <Facebook className="w-5 h-5" />
-            </a>
-            <div className="h-4 w-px bg-border mx-2" />
-            <a href={getLoginUrl()} className="text-sm font-sans font-medium text-muted-foreground hover:text-secondary transition-colors">
-              Sign In
-            </a>
-            <Link href="/join">
-              <Button variant="secondary" size="sm" className="font-sans font-semibold px-6 rounded-full shadow-md hover:shadow-lg transition-all active:scale-95">
-                Get Started
+            <a href="#features" className="text-foreground hover:text-secondary transition-colors font-sans text-sm">Features</a>
+            <a href="#how-it-works" className="text-foreground hover:text-secondary transition-colors font-sans text-sm">How It Works</a>
+            <Link href="/plan">
+              <Button size="sm" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold">
+                Plan My Trip
               </Button>
             </Link>
+            <a href={getLoginUrl()}>
+              <Button size="sm" variant="outline" className="bg-background/40 backdrop-blur-md border-border hover:bg-background/60 font-sans font-bold">
+                Client Portal
+              </Button>
+            </a>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden p-2 text-foreground"
+          {/* Mobile Menu Button */}
+          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 hover:bg-secondary/10 rounded-lg transition-colors"
           >
-            {mobileMenuOpen ? <X /> : <Menu />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Menu Overlay */}
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border p-6 animate-in fade-in slide-in-from-top-5 duration-300">
-            <div className="flex flex-col gap-6">
-              <PartnershipDropdown />
-              <a href={getLoginUrl()} className="text-lg font-sans font-medium">Sign In</a>
-              <Link href="/join">
-                <Button className="w-full bg-secondary text-secondary-foreground font-sans font-bold py-6 text-lg">
-                  Get Started
+          <div className="md:hidden bg-primary/95 backdrop-blur-md border-t border-border">
+            <div className="container py-4 flex flex-col gap-4">
+              <a href="#features" className="text-foreground hover:text-secondary transition-colors font-sans">Features</a>
+              <a href="#how-it-works" className="text-foreground hover:text-secondary transition-colors font-sans">How It Works</a>
+              <Link href="/plan">
+                <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold">
+                  Plan My Trip
                 </Button>
               </Link>
+              <a href={getLoginUrl()} className="w-full">
+                <Button variant="outline" className="w-full bg-background/40 backdrop-blur-md border-border hover:bg-background/60 font-sans font-bold">
+                  Client Portal
+                </Button>
+              </a>
             </div>
           </div>
         )}
       </nav>
 
       {/* ── Hero Section ── */}
-      <section className="relative min-h-[100dvh] flex items-center pt-20 overflow-hidden">
-        <div className="container relative z-10">
-          <div className="max-w-3xl">
-            <Badge className="mb-6 bg-secondary/20 text-secondary border-secondary/30 px-4 py-1.5 font-sans text-xs tracking-[0.2em] uppercase backdrop-blur-sm">
-              Next Chapter Travel LLC
+      <section className="pt-32 sm:pt-40 md:pt-48 pb-16 sm:pb-24 md:pb-32 relative">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge className="mb-4 sm:mb-6 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase inline-block">
+              Your Personal Travel Concierge
             </Badge>
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold text-foreground mb-6 leading-[1.1] tracking-tight">
-              Your Journey, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-secondary/80 to-secondary/60">
-                Perfectly Planned
-              </span>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold mb-6 sm:mb-8 leading-tight">
+              Every Trip, Perfectly Planned
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl font-sans">
-              CFO & Certified Travel Specialist at Next Chapter Travel LLC — Jessica Seiders brings expert planning to Disney, cruises, family adventures, and beyond.
+            <p className="text-lg sm:text-xl text-muted-foreground mb-10 sm:mb-12 font-sans leading-relaxed max-w-2xl mx-auto">
+              From Disney magic to Caribbean cruises, Jessica Seiders (CFO) at Next Chapter Travel LLC creates unforgettable journeys with every detail handled.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
               <Link href="/plan">
-                <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-10 py-7 text-lg font-sans font-bold rounded-2xl shadow-xl shadow-secondary/20 group transition-all active:scale-95">
+                <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-12 py-8 text-xl font-sans font-bold rounded-2xl shadow-xl shadow-secondary/20 active:scale-95 transition-all">
                   Plan My Trip
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <a href={getLoginUrl()}>
-                <Button size="lg" variant="outline" className="bg-background/40 backdrop-blur-md border-border hover:bg-background/60 px-10 py-7 text-lg font-sans font-bold rounded-2xl transition-all active:scale-95">
+              <a href={getLoginUrl()} className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto bg-background/40 backdrop-blur-md border-border hover:bg-background/60 px-12 py-8 text-xl font-sans font-bold rounded-2xl active:scale-95 transition-all">
                   Client Portal
                 </Button>
               </a>
             </div>
           </div>
         </div>
-        
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce opacity-50">
-          <div className="w-px h-12 bg-gradient-to-b from-transparent via-secondary to-transparent" />
-          <span className="text-[10px] font-sans tracking-[0.3em] uppercase text-secondary">Explore the World</span>
+      </section>
+
+      {/* ── Features Grid ── */}
+      <section id="features" className="py-16 sm:py-24 bg-black/40 backdrop-blur-sm">
+        <div className="container">
+          <div className="text-center mb-10 sm:mb-16">
+            <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
+              Everything You Need
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
+              Your Complete Trip Companion
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
+              From planning to landing back home, every feature you need is built right in.
+            </p>
+          </div>
+          {/* 1-col mobile → 2-col tablet → 3-col desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {FEATURES.map((feature) => (
+              <div
+                key={feature.title}
+                className="group bg-card/50 backdrop-blur-sm p-6 sm:p-8 rounded-2xl border border-border hover:border-secondary/50 hover:shadow-lg transition-all"
+              >
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${feature.color} flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
+                  <feature.icon className="w-6 h-6 sm:w-7 sm:h-7" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{feature.title}</h3>
+                <p className="text-muted-foreground text-sm sm:text-base font-sans leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── About Jessica — with Professional Headshot ── */}
-      <section id="about" className="py-16 sm:py-24 bg-primary text-primary-foreground">
+      {/* ── About Jessica Section ── */}
+      <section className="py-16 sm:py-24 relative">
         <div className="container">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div>
-              <Badge className="mb-3 sm:mb-4 bg-secondary/20 text-secondary border-secondary/30 font-sans text-xs tracking-widest uppercase">
-                Your Travel Advisor
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+            <div className="order-last md:order-first">
+              <Badge className="mb-4 sm:mb-6 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
+                Meet Jessica
               </Badge>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-4 sm:mb-6 leading-tight">
-                Meet Jessica Seiders
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-6 sm:mb-8">
+                Your Travel Expert
               </h2>
-              {/* Partnership callout */}
-              <div className="mb-4 sm:mb-5 flex items-start gap-3 bg-secondary/10 border border-secondary/20 rounded-xl px-4 py-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center">
-                    <BookOpen className="w-3 h-3 text-secondary" />
-                  </div>
-                </div>
-                <p className="text-primary-foreground/70 text-sm font-sans leading-relaxed">
-                  Partner of{" "}
-                  <a
-                    href="https://www.thenextchaptertravel.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-secondary font-medium hover:underline"
-                  >
-                    The Next Chapter Travel
-                  </a>
-                  {" "}— founded by CEO{" "}
-                  <span className="text-primary-foreground/90 font-medium">Wendy</span>,
-                  curating luxury all-women group travel worldwide.
-                </p>
-              </div>
-              <p className="text-primary-foreground/80 text-base sm:text-lg leading-relaxed mb-4 sm:mb-6 font-sans">
-                Jessica Seiders is the <span className="text-secondary font-medium">CFO &amp; Certified Travel Specialist</span> at{" "}
-                <span className="text-secondary font-medium">Next Chapter Travel LLC</span> — a Portland,
-                Oregon-based travel agency dedicated to planning every kind of vacation with precision and
-                heart. A certified Disney specialist with deep expertise across Universal, Norwegian Cruise
-                Line, Royal Caribbean, Carnival Cruises, Expedia, and Viator.
+              <p className="text-muted-foreground text-base sm:text-lg font-sans mb-4 sm:mb-6 leading-relaxed">
+                Jessica Seiders, CFO of Next Chapter Travel LLC, is a certified travel specialist with expertise in Disney, Universal, Norwegian Cruise Line, Royal Caribbean, Carnival, and more. With years of experience crafting unforgettable journeys, Jessica transforms travel dreams into perfectly executed adventures.
               </p>
-              <p className="text-primary-foreground/80 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 font-sans">
-                With a background spanning healthcare (former ER Tech at Providence Health Systems) and
-                entrepreneurship, Jessica brings calm-under-pressure and meticulous planning to every trip.
+              <p className="text-muted-foreground text-base sm:text-lg font-sans mb-8 sm:mb-10 leading-relaxed">
+                Whether you're planning a romantic getaway, a family vacation, or a group adventure, Jessica handles every detail—from booking to itinerary planning to on-trip support.
               </p>
-              <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8">
-                {["Disney Specialist", "Universal Studios", "Norwegian Cruise Line", "Royal Caribbean", "Carnival Cruises", "Family Travel"].map((tag) => (
-                  <Badge key={tag} className="bg-secondary/20 text-secondary border-secondary/30 font-sans text-xs sm:text-sm">
-                    {tag}
-                  </Badge>
-                ))}
+              <Link href="/plan">
+                <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-8 py-3 text-lg font-sans font-bold rounded-xl">
+                  Start Planning With Jessica
+                </Button>
+              </Link>
+              <div className="mt-10 sm:mt-12 pt-10 sm:pt-12 border-t border-border">
+                <p className="text-sm font-sans text-muted-foreground mb-4">Connect with Jessica on social media:</p>
+                <a href="https://www.facebook.com/nextchaptertravel" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-secondary hover:text-secondary/80 transition-colors">
+                  <Facebook className="w-5 h-5" />
+                  <span className="font-sans font-semibold">Facebook</span>
+                </a>
               </div>
-              <a
-                href="https://www.facebook.com/share/1BvCajFoBy/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 bg-secondary/10 hover:bg-secondary/20 active:bg-secondary/30 border border-secondary/30 text-secondary rounded-xl px-4 sm:px-5 py-3 font-sans text-sm font-medium transition-all duration-200 min-h-[48px]"
-              >
-                <Facebook className="w-4 h-4" />
-                Connect with Jessica on Facebook
-                <ArrowRight className="w-3.5 h-3.5 opacity-60" />
-              </a>
             </div>
 
             {/* Jessica's Photo Gallery — three photos shown in a staggered grid */}
@@ -299,42 +325,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Features Grid ── */}
-      <section id="features" className="py-16 sm:py-24 bg-black/40 backdrop-blur-sm">
-        <div className="container">
-          <div className="text-center mb-10 sm:mb-16">
-            <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
-              Everything You Need
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
-              Your Complete Trip Companion
-            </h2>
-            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
-              From planning to landing back home, every feature you need is built right in.
-            </p>
-          </div>
-          {/* 1-col mobile → 2-col tablet → 3-col desktop */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            {FEATURES.map((feature) => (
-              <div
-                key={feature.title}
-                className="group p-5 sm:p-8 rounded-2xl border border-border bg-card hover:border-secondary/40 hover:shadow-lg active:scale-[0.98] transition-all duration-300 flex gap-4 sm:block"
-              >
-                <div className={cn("w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center mb-0 sm:mb-6 group-hover:scale-110 transition-transform duration-300 flex-shrink-0", feature.color)}>
-                  <feature.icon className="w-6 h-6 sm:w-7 sm:h-7" />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-3 group-hover:text-secondary transition-colors">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed font-sans">{feature.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── How It Works ── */}
-      <section className="py-16 sm:py-24 bg-primary text-primary-foreground">
+      <section id="how-it-works" className="py-16 sm:py-24 bg-primary text-primary-foreground">
         <div className="container">
           <div className="text-center mb-12 sm:mb-20">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold mb-4 sm:mb-6">How It Works</h2>
@@ -359,32 +351,105 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
+      {/* ── Upcoming Trips Carousel ── */}
       <section className="py-16 sm:py-24 bg-black/20 backdrop-blur-sm">
         <div className="container">
           <div className="text-center mb-12 sm:mb-16">
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
-              What Travelers Say
+              Upcoming Adventures
             </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
+              Explore Our 2026 Group Trips
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
+              Join Jessica and a community of like-minded women on transformative journeys around the world.
+            </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="bg-card p-6 sm:p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex gap-0.5 mb-4 sm:mb-6">
-                  {[...Array(t.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-secondary text-secondary" />)}
-                </div>
-                <p className="text-foreground text-base sm:text-lg italic mb-6 sm:mb-8 leading-relaxed font-serif">"{t.quote}"</p>
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold font-sans">
-                    {t.name[0]}
+
+          {/* Carousel */}
+          <div className="relative">
+            <div ref={carouselRef} className="relative h-[500px] sm:h-[600px] rounded-3xl overflow-hidden">
+              {UPCOMING_TRIPS.map((trip, idx) => (
+                <div
+                  key={idx}
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                    idx === carouselIndex ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  {/* Background Image */}
+                  <img
+                    src={trip.image}
+                    alt={trip.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+                  {/* Content */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-10">
+                    <div className="max-w-2xl">
+                      <div className="flex items-center gap-3 mb-3 sm:mb-4">
+                        <Badge className="bg-secondary text-secondary-foreground border-0 font-sans text-xs sm:text-sm">
+                          {trip.category}
+                        </Badge>
+                        <div className="flex items-center gap-2 text-secondary/80 font-sans text-sm">
+                          <MapPin className="w-4 h-4" />
+                          {trip.location}
+                        </div>
+                      </div>
+                      <h3 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-white mb-2 sm:mb-3">
+                        {trip.title}
+                      </h3>
+                      <p className="text-white/80 text-sm sm:text-base font-sans mb-4 sm:mb-6 leading-relaxed">
+                        {trip.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="text-secondary font-sans font-semibold text-base sm:text-lg">
+                          {trip.date}
+                        </div>
+                        <Link href="/plan">
+                          <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold px-6 sm:px-8 py-2 sm:py-3 rounded-xl">
+                            Learn More
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="font-bold text-sm sm:text-base">{t.name}</div>
-                    <div className="text-xs sm:text-sm text-muted-foreground font-sans">{t.destination}</div>
-                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all active:scale-95"
+              aria-label="Previous slide"
+            >
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-white rotate-180" />
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all active:scale-95"
+              aria-label="Next slide"
+            >
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </button>
+
+            {/* Dot Indicators */}
+            <div className="flex items-center justify-center gap-2 mt-6 sm:mt-8">
+              {UPCOMING_TRIPS.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCarouselIndex(idx)}
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
+                    idx === carouselIndex
+                      ? "bg-secondary w-8 sm:w-10"
+                      : "bg-secondary/30 hover:bg-secondary/50"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -418,46 +483,39 @@ export default function Home() {
       <footer className="py-12 sm:py-16 bg-primary text-primary-foreground border-t border-white/5">
         <div className="container">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-12 sm:mb-16">
-            <div className="col-span-1 lg:col-span-2">
-              <Link href="/" className="flex items-center gap-2.5 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-                  <Compass className="w-5 h-5 text-secondary-foreground" />
-                </div>
-                <span className="text-xl font-bold tracking-tight">Next Chapter Travel</span>
-              </Link>
-              <p className="text-primary-foreground/60 font-sans leading-relaxed max-w-sm mb-8">
-                Expertly curated travel experiences by Jessica Seiders. From magical Disney vacations to luxury cruises and family adventures worldwide.
+            <div>
+              <h3 className="font-serif font-bold text-lg mb-4">Next Chapter Travel</h3>
+              <p className="text-primary-foreground/60 text-sm font-sans leading-relaxed">
+                Your personal travel concierge, crafting unforgettable journeys with expert planning and care.
               </p>
-              <div className="flex gap-4">
-                <a href="https://www.facebook.com/share/1BvCajFoBy/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-all">
-                  <Facebook className="w-5 h-5" />
-                </a>
-              </div>
             </div>
             <div>
-              <h4 className="font-bold mb-6 font-sans uppercase tracking-widest text-xs text-secondary">Quick Links</h4>
-              <ul className="space-y-4 font-sans text-sm text-primary-foreground/60">
-                <li><a href="#features" className="hover:text-secondary transition-colors">Features</a></li>
-                <li><a href="#about" className="hover:text-secondary transition-colors">About Jessica</a></li>
-                <li><a href={getLoginUrl()} className="hover:text-secondary transition-colors">Client Portal</a></li>
-                <li><Link href="/plan" className="hover:text-secondary transition-colors">Plan My Trip</Link></li>
-                <li><Link href="/join" className="hover:text-secondary transition-colors">Join Our Team</Link></li>
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">Quick Links</h4>
+              <ul className="space-y-2 font-sans text-sm">
+                <li><a href="#features" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Features</a></li>
+                <li><a href="#how-it-works" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">How It Works</a></li>
+                <li><Link href="/plan" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Plan My Trip</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold mb-6 font-sans uppercase tracking-widest text-xs text-secondary">Partnerships</h4>
-              <ul className="space-y-4 font-sans text-sm text-primary-foreground/60">
-                <li><a href="https://www.thenextchaptertravel.com/" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">thenextchaptertravel.com (CEO: Wendy)</a></li>
-                <li><a href="https://www.facebook.com/groups/123456789" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">Next Chapter Travel on Facebook</a></li>
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">Company</h4>
+              <ul className="space-y-2 font-sans text-sm">
+                <li><a href="https://www.travelingwomenofficial.com" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Traveling Women Official</a></li>
+                <li><a href="https://www.facebook.com/nextchaptertravel" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Facebook</a></li>
               </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">Contact</h4>
+              <p className="text-primary-foreground/60 text-sm font-sans mb-2">
+                <a href="mailto:jessica@nextchaptertravel.com" className="hover:text-primary-foreground transition-colors">jessica@nextchaptertravel.com</a>
+              </p>
+              <p className="text-primary-foreground/60 text-sm font-sans">
+                Next Chapter Travel LLC
+              </p>
             </div>
           </div>
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-sans text-primary-foreground/40">
-            <p>© 2026 Next Chapter Travel LLC. All rights reserved.</p>
-            <div className="flex gap-8">
-              <a href="#" className="hover:text-secondary transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-secondary transition-colors">Terms of Service</a>
-            </div>
+          <div className="border-t border-white/10 pt-8 sm:pt-10 text-center text-primary-foreground/60 text-sm font-sans">
+            <p>&copy; 2026 Next Chapter Travel LLC. All rights reserved.</p>
           </div>
         </div>
       </footer>
