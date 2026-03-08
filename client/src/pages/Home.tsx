@@ -52,63 +52,14 @@ const FEATURES = [
   },
 ];
 
-const WENDY_GROUP_TRIPS = [
-  {
-    title: "Morocco: Intentional Group Travel",
-    date: "May 16-23, 2026",
-    location: "Morocco",
-    description: "Experiences designed with intention, grounded in feminism, and shaped by the women who make them possible.",
-    image: "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=800",
-    category: "Group Trip",
-  },
-  {
-    title: "Greece: Mediterranean Escape",
-    date: "June 2-11, 2026",
-    location: "Greece",
-    description: "Explore the stunning islands and ancient history of Greece with a community of like-minded women.",
-    image: "https://images.unsplash.com/photo-1503152394-c571994fd383?auto=format&fit=crop&q=80&w=800",
-    category: "Luxury Group Trip",
-  },
-  {
-    title: "Ireland: Emerald Isle Adventure",
-    date: "June 29 - July 9, 2026",
-    location: "Ireland",
-    description: "Discover the lush landscapes and vibrant culture of Ireland on this 10-day guided journey.",
-    image: "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&q=80&w=800",
-    category: "Group Trip",
-  },
-  {
-    title: "Italy: Tuscan Dreams",
-    date: "August 19-28, 2026",
-    location: "Italy",
-    description: "A journey through the heart of Tuscany, featuring world-class wine, art, and unforgettable landscapes.",
-    image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&q=80&w=800",
-    category: "Luxury Group Trip",
-  },
-  {
-    title: "Guatemala: Culture & Connection",
-    date: "Late 2026 (TBD)",
-    location: "Guatemala",
-    description: "Escape the ordinary and embark on a journey filled with adventure, culture, and empowerment in stunning Guatemala.",
-    image: "https://images.unsplash.com/photo-1528150177508-7cc0c36cda5c?auto=format&fit=crop&q=80&w=800",
-    category: "Group Trip",
-  },
-];
+
 
 export default function Home() {
   const { setVideoContext } = useVideoHero();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
 
-  const nextSlide = () => {
-    setCarouselIndex((prev) => (prev + 1) % WENDY_GROUP_TRIPS.length);
-  };
 
-  const prevSlide = () => {
-    setCarouselIndex((prev) => (prev - 1 + WENDY_GROUP_TRIPS.length) % WENDY_GROUP_TRIPS.length);
-  };
 
   useEffect(() => {
     setVideoContext("landing");
@@ -120,10 +71,7 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [setVideoContext]);
 
-  useEffect(() => {
-    const interval = setInterval(nextSlide, 6000);
-    return () => clearInterval(interval);
-  }, []);
+
 
   return (
     <div className="min-h-screen font-serif selection:bg-secondary/30">
@@ -394,108 +342,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Wendy's Group Trips Carousel ── */}
-      <section className="py-16 sm:py-24 bg-black/20 backdrop-blur-sm">
-        <div className="container">
-          <div className="text-center mb-12 sm:mb-16">
-            <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
-              Wendy's Signature Group Trips
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
-              The Next Chapter Group Travel
-            </h2>
-            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
-              Join Wendy and a community of like-minded women on transformative journeys around the world.
-            </p>
-          </div>
 
-          {/* Carousel */}
-          <div className="relative">
-            <div ref={carouselRef} className="relative h-[500px] sm:h-[600px] rounded-3xl overflow-hidden">
-              {WENDY_GROUP_TRIPS.map((trip, idx) => (
-                <div
-                  key={idx}
-                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                    idx === carouselIndex ? "opacity-100" : "opacity-0"
-                  }`}
-                >
-                  {/* Background Image */}
-                  <img
-                    src={trip.image}
-                    alt={trip.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Overlay Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-                  {/* Content */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-10">
-                    <div className="max-w-2xl">
-                      <div className="flex items-center gap-3 mb-3 sm:mb-4">
-                        <Badge className="bg-secondary text-secondary-foreground border-0 font-sans text-xs sm:text-sm">
-                          {trip.category}
-                        </Badge>
-                        <div className="flex items-center gap-2 text-secondary/80 font-sans text-sm">
-                          <MapPin className="w-4 h-4" />
-                          {trip.location}
-                        </div>
-                      </div>
-                      <h3 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-white mb-2 sm:mb-3">
-                        {trip.title}
-                      </h3>
-                      <p className="text-white/80 text-sm sm:text-base font-sans mb-4 sm:mb-6 leading-relaxed">
-                        {trip.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <div className="text-secondary font-sans font-semibold text-base sm:text-lg">
-                          {trip.date}
-                        </div>
-                        <Link href="/plan">
-                          <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold px-6 sm:px-8 py-2 sm:py-3 rounded-xl">
-                            Learn More
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all active:scale-95"
-              aria-label="Previous slide"
-            >
-              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-white rotate-180" />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all active:scale-95"
-              aria-label="Next slide"
-            >
-              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            </button>
-
-            {/* Dot Indicators */}
-            <div className="flex items-center justify-center gap-2 mt-6 sm:mt-8">
-              {WENDY_GROUP_TRIPS.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCarouselIndex(idx)}
-                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all ${
-                    idx === carouselIndex
-                      ? "bg-secondary w-8 sm:w-10"
-                      : "bg-secondary/30 hover:bg-secondary/50"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── CTA Section ── */}
       <section className="py-20 sm:py-32 relative overflow-hidden">
