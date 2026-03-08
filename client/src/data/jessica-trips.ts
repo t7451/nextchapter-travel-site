@@ -10,11 +10,11 @@ export const jessicaTrips = [
   },
   {
     id: 2,
-    title: "Norwegian Cruise Line",
+    title: "Royal Caribbean Cruise",
     destination: "Caribbean",
     date: "August 2026",
     image: "/jesshero2.jpeg",
-    description: "Sail the Caribbean with Norwegian Cruise Line and enjoy a worry-free vacation.",
+    description: "Experience the ultimate Caribbean adventure with Royal Caribbean's seamless booking and world-class amenities.",
     link: "https://www.thenext-chapter-travel.club/plan-my-trip"
   },
   {

@@ -370,7 +370,7 @@ export default function Home() {
             {jessicaTrips.map((trip) => (
               <div key={trip.id} className="group bg-card/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-border hover:border-secondary/50 transition-all hover:shadow-2xl">
                 <div className="relative h-48 sm:h-64 overflow-hidden">
-                  <img src={trip.image} alt={trip.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <img src={trip.image} alt={trip.title} className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-secondary text-secondary-foreground border-0 font-sans text-xs">{trip.date}</Badge>
                   </div>
