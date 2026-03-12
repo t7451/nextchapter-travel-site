@@ -1,5 +1,7 @@
 import { eq, and, or, desc, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { createPool } from "mysql2";
+import type { Pool, PoolOptions } from "mysql2/promise";
 import {
   users, trips, itineraryItems, documents, messages, packingItems,
   bookings, destinationGuides, travelAlerts, notifications, pushSubscriptions, inviteTokens,
@@ -8,18 +10,56 @@ import {
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
+let pool: Pool | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
-export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
-    try {
-      _db = drizzle(process.env.DATABASE_URL);
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
-    }
+function getPool(): Pool | null {
+  if (pool) return pool;
+
+  if (!ENV.databaseUrl) {
+    console.error("[Database] DATABASE_URL is missing; skipping pool creation");
+    return null;
   }
+
+  try {
+    const options: PoolOptions | string = ENV.databaseUrl;
+    pool = createPool(options).promise();
+  } catch (error) {
+    console.error("[Database] Failed to create pool:", error);
+    pool = null;
+  }
+
+  return pool;
+}
+
+export async function getDb() {
+  if (_db) return _db;
+
+  const activePool = getPool();
+  if (!activePool) return null;
+
+  try {
+    // Cast to align mysql2 promise pool type with drizzle's expected signature
+    _db = drizzle(activePool as any);
+  } catch (error) {
+    console.warn("[Database] Failed to initialize drizzle:", error);
+    _db = null;
+  }
+
   return _db;
+}
+
+export async function pingDatabase(): Promise<boolean> {
+  const activePool = getPool();
+  if (!activePool) return false;
+
+  try {
+    await activePool.query("SELECT 1");
+    return true;
+  } catch (error) {
+    console.warn("[Database] Ping failed:", error);
+    return false;
+  }
 }
 
 // ─── Users ──────────────────────────────────────────────────────────────────

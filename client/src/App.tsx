@@ -40,6 +40,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/join" component={JoinPage} />
       <Route path="/plan-my-trip" component={PlanMyTrip} />
+      <Route path="/plan" component={PlanMyTrip} />
       <Route path="/thank-you" component={ThankYou} />
 
       {/* Client portal */}

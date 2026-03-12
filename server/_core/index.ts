@@ -7,8 +7,12 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { registerSSEClient } from "../messageBroker";
+import { getConnectedCount, registerSSEClient } from "../messageBroker";
+import { pingDatabase } from "../db";
 import { sdk } from "./sdk";
+import { ENV, missingEnvVars } from "./env";
+import { requestLogger, errorHandler } from "./logging";
+import { getMetricsSnapshot, renderPrometheus } from "./metrics";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -32,7 +36,14 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  const startedAt = Date.now();
+
+  const missingEnv = missingEnvVars();
+  if (missingEnv.length > 0) {
+    console.warn(`[Env] Missing required vars: ${missingEnv.join(", ")}`);
+  }
   // Configure body parser with larger size limit for file uploads
+  app.use(requestLogger());
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
@@ -81,6 +92,47 @@ async function startServer() {
       res.status(401).json({ error: "Unauthorized" });
     }
   });
+
+  app.get("/api/health", async (_req, res) => {
+    const dbHealthy = await pingDatabase();
+    const envIssues = missingEnvVars();
+    const status = dbHealthy ? "ok" : "degraded";
+
+    res.status(dbHealthy ? 200 : 503).json({
+      status,
+      uptimeMs: Date.now() - startedAt,
+      db: dbHealthy ? "ok" : "unavailable",
+      sseClients: getConnectedCount(),
+      env: envIssues,
+    });
+  });
+
+  app.get("/api/metrics", (_req, res) => {
+    if (ENV.metricsToken) {
+      const headerToken = _req.headers["x-metrics-key"] ?? _req.headers.authorization?.replace("Bearer ", "");
+      if (headerToken !== ENV.metricsToken) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+    }
+
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.json(getMetricsSnapshot());
+  });
+
+  app.get("/api/metrics/prom", (_req, res) => {
+    if (ENV.metricsToken) {
+      const headerToken = _req.headers["x-metrics-key"] ?? _req.headers.authorization?.replace("Bearer ", "");
+      if (headerToken !== ENV.metricsToken) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+    }
+
+    res.setHeader("Content-Type", "text/plain; version=0.0.4");
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.send(renderPrometheus());
+  });
   // tRPC API
   app.use(
     "/api/trpc",
@@ -95,6 +147,8 @@ async function startServer() {
   } else {
     serveStatic(app);
   }
+
+  app.use(errorHandler);
 
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);

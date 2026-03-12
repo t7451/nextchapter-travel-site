@@ -18,37 +18,68 @@ const FEATURES = [
     icon: Calendar,
     title: "Day-by-Day Itinerary",
     desc: "Every moment of your trip organized beautifully, from sunrise excursions to evening dining reservations.",
+    example: "Day 2: Magic Kingdom — 9:00 Genie+ lightning lane, 1:00 lunch at Skipper Canteen, 7:30 fireworks.",
     color: "bg-blue-50 text-blue-600",
   },
   {
     icon: FileText,
     title: "Document Vault",
     desc: "Passports, boarding passes, hotel confirmations — all your travel documents secured in one place.",
+    example: "Boarding passes, cruise set-sail pass, airport transfer voucher stored with offline access.",
     color: "bg-green-50 text-green-600",
   },
   {
     icon: Globe,
     title: "Destination Guides",
     desc: "Curated local tips, currency info, emergency contacts, and insider knowledge for every destination.",
+    example: "Oahu: best reef-safe sunscreen spots, kid-friendly shave ice, 24/7 urgent care numbers.",
     color: "bg-teal-50 text-teal-600",
   },
   {
     icon: MessageSquare,
     title: "Direct Messaging",
     desc: "Reach Jessica instantly with questions, changes, or just to share your excitement before departure.",
+    example: "“Flight delayed” → Jessica rebooks transfers and pushes a new pickup time to your portal.",
     color: "bg-purple-50 text-purple-600",
   },
   {
     icon: CheckSquare,
     title: "Smart Packing Lists",
     desc: "Never forget a thing. Customized packing checklists organized by category for every trip.",
+    example: "Cruise carry-on: passports, swimsuits, chargers, motion bands, reef-safe sunscreen, lanyards.",
     color: "bg-amber-50 text-amber-600",
   },
   {
     icon: Plane,
     title: "Booking Tracker",
     desc: "Real-time status on flights, hotels, tours, and transfers — all your confirmations at a glance.",
+    example: "Flight UA1183 — gate C14, seats 18A/18B, hotel check-in 3pm, transfer driver WhatsApp link.",
     color: "bg-indigo-50 text-indigo-600",
+  },
+];
+
+const DESTINATION_EXAMPLES = [
+  "Orlando Theme Parks",
+  "Western Caribbean Cruise",
+  "Hawaiian Islands",
+  "European River Cruise",
+];
+
+const TESTIMONIALS = [
+  {
+    quote: "Jessica handled every change with grace — when our flight was delayed, she had our transfers rebooked before we landed.",
+    name: "The Parkers",
+    trip: "Orlando + Cruise Combo",
+  },
+  {
+    quote: "The portal made everything effortless. Passports, boarding passes, dining times — all in one place on my phone.",
+    name: "Morgan T.",
+    trip: "Western Caribbean Cruise",
+  },
+  {
+    quote: "She built a day-by-day plan that balanced kids’ energy with downtime. Best family trip we’ve ever had.",
+    name: "Chen Family",
+    trip: "Oahu + Aulani",
   },
 ];
 
@@ -91,7 +122,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-foreground hover:text-secondary transition-colors font-sans text-sm">Features</a>
             <a href="#how-it-works" className="text-foreground hover:text-secondary transition-colors font-sans text-sm">How It Works</a>
-            <Link href="/plan">
+              <Link href="/plan-my-trip">
               <Button size="sm" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold">
                 Plan My Trip
               </Button>
@@ -118,7 +149,7 @@ export default function Home() {
             <div className="container py-4 flex flex-col gap-4">
               <a href="#features" className="text-foreground hover:text-secondary transition-colors font-sans">Features</a>
               <a href="#how-it-works" className="text-foreground hover:text-secondary transition-colors font-sans">How It Works</a>
-              <Link href="/plan">
+                <Link href="/plan-my-trip">
                 <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold">
                   Plan My Trip
                 </Button>
@@ -147,7 +178,7 @@ export default function Home() {
               From Disney magic to Caribbean cruises, Jessica Seiders at Next Chapter Travel LLC creates unforgettable journeys with every detail handled.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-              <Link href="/plan">
+                <Link href="/plan-my-trip">
                 <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-12 py-8 text-xl font-sans font-bold rounded-2xl shadow-xl shadow-secondary/20 active:scale-95 transition-all">
                   Plan My Trip
                 </Button>
@@ -157,7 +188,92 @@ export default function Home() {
                   Client Portal
                 </Button>
               </a>
+              <a href="#how-it-works" className="w-full sm:w-auto">
+                <Button size="lg" variant="ghost" className="w-full sm:w-auto text-secondary hover:text-secondary/80 px-10 py-8 text-xl font-sans font-bold rounded-2xl active:scale-95 transition-all">
+                  See How It Works
+                </Button>
+              </a>
             </div>
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-left max-w-3xl mx-auto">
+              <div className="bg-secondary/10 border border-secondary/20 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 w-full sm:w-auto">
+                <Star className="w-6 h-6 text-secondary" />
+                <div>
+                  <p className="font-bold font-sans text-secondary">Trusted by 50+ families</p>
+                  <p className="text-sm text-muted-foreground font-sans">“Jessica handled every detail so we could just enjoy the trip.”</p>
+                </div>
+              </div>
+              <div className="bg-card/60 border border-border rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 w-full sm:w-auto">
+                <Shield className="w-6 h-6 text-secondary" />
+                <div>
+                  <p className="font-bold font-sans">Concierge support</p>
+                  <p className="text-sm text-muted-foreground font-sans">Real humans, real-time help while you travel.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Portal Value Recap ── */}
+      <section className="py-16 sm:py-24">
+        <div className="container">
+          <div className="text-center mb-10 sm:mb-14">
+            <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
+              What's in your portal
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
+              Everything arrives together once you book
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
+              Your portal ties booking to delivery: itinerary, documents, messaging, packing lists, guides, and live updates — all in one place.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            {FEATURES.map((feature) => (
+              <div key={`portal-${feature.title}`} className="bg-card/50 backdrop-blur-sm p-5 sm:p-6 rounded-2xl border border-border flex items-start gap-4">
+                <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${feature.color} flex items-center justify-center shrink-0`}>
+                  <feature.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold mb-1">{feature.title}</h3>
+                  <p className="text-muted-foreground text-sm sm:text-base font-sans leading-relaxed">{feature.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="py-16 sm:py-24 bg-black/40 backdrop-blur-sm">
+        <div className="container">
+          <div className="text-center mb-10 sm:mb-14">
+            <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
+              Client Voices
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-foreground mb-3 sm:mb-4">
+              Trusted trips, happy travelers
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
+              Real feedback from families and cruisers who planned with Jessica.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} className="bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-6 sm:p-7 shadow-lg shadow-black/10 flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-secondary/15 border border-secondary/30 flex items-center justify-center">
+                    <Star className="w-5 h-5 text-secondary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold font-sans text-foreground">{t.name}</p>
+                    <p className="text-xs text-muted-foreground font-sans">{t.trip}</p>
+                  </div>
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground font-sans leading-relaxed">“{t.quote}”</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -187,7 +303,11 @@ export default function Home() {
                   <feature.icon className="w-6 h-6 sm:w-7 sm:h-7" />
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm sm:text-base font-sans leading-relaxed">{feature.desc}</p>
+                <p className="text-muted-foreground text-sm sm:text-base font-sans leading-relaxed mb-3">{feature.desc}</p>
+                <div className="text-xs sm:text-sm text-secondary font-sans inline-flex items-center gap-2 bg-secondary/10 px-3 py-2 rounded-full border border-secondary/20">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Example: {feature.example}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -211,7 +331,7 @@ export default function Home() {
               <p className="text-muted-foreground text-base sm:text-lg font-sans mb-8 sm:mb-10 leading-relaxed">
                 My goal is to make your travel planning as stress-free as the vacation itself. From hand-picked destinations to personalized itineraries, I'm dedicated to crafting the perfect journey for you and your loved ones.
               </p>
-              <Link href="/plan">
+              <Link href="/plan-my-trip">
                 <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-8 py-3 text-lg font-sans font-bold rounded-xl">
                   Start Planning With Jessica
                 </Button>
@@ -273,9 +393,9 @@ export default function Home() {
             <div className="hidden md:block absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
             
             {[
-              { step: "01", title: "Book With Jessica", desc: "Connect with Jessica to plan your dream trip. She handles all the details, bookings, and logistics." },
-              { step: "02", title: "Get Your Portal", desc: "Receive access to your personalized travel portal with your complete itinerary and documents." },
-              { step: "03", title: "Travel With Confidence", desc: "Everything you need is in your pocket. Enjoy your trip knowing Jessica is just a message away." }
+              { step: "01", title: "Book With Jessica", desc: "Schedule a free 15-minute call or complete a 3-minute travel questionnaire to share your dates, travelers, and must-do moments." },
+              { step: "02", title: "Get Your Portal", desc: "Review a tailored proposal, approve, and receive your personal portal with itinerary, documents, guides, and messaging." },
+              { step: "03", title: "Travel With Confidence", desc: "Use your portal on the go. Get real-time help for delays, changes, and on-the-ground recommendations." }
             ].map((item, i) => (
               <div key={i} className="relative text-center group">
                 <div className="text-6xl sm:text-8xl font-serif font-black text-secondary/10 mb-[-30px] sm:mb-[-40px] group-hover:text-secondary/20 transition-colors">{item.step}</div>
@@ -300,6 +420,13 @@ export default function Home() {
             <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
               Explore these hand-picked destinations curated by Jessica. Perfect for families, couples, and solo travelers.
             </p>
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-4 sm:mt-6">
+              {DESTINATION_EXAMPLES.map((item) => (
+                <span key={item} className="text-xs sm:text-sm font-sans px-3 py-2 rounded-full bg-secondary/10 text-secondary border border-secondary/20">
+                  <Compass className="inline w-4 h-4 mr-1" />{item}
+                </span>
+              ))}
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {jessicaTrips.map((trip) => (
@@ -317,7 +444,7 @@ export default function Home() {
                   </div>
                   <h3 className="text-xl sm:text-2xl font-serif font-bold mb-3">{trip.title}</h3>
                   <p className="text-muted-foreground text-sm sm:text-base font-sans mb-6 leading-relaxed">{trip.description}</p>
-                  <Link href="/plan">
+                  <Link href="/plan-my-trip">
                     <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold rounded-xl">
                       Book This Trip
                     </Button>
@@ -341,7 +468,7 @@ export default function Home() {
               Certified in Disney, Universal, Norwegian Cruise Line, Royal Caribbean, Carnival, and more — Jessica Seiders at Next Chapter Travel LLC has the expertise to plan any adventure you can imagine.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-              <Link href="/plan">
+              <Link href="/plan-my-trip">
                 <Button size="lg" className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-12 py-8 text-xl font-sans font-bold rounded-2xl shadow-xl shadow-secondary/20 active:scale-95 transition-all">
                   Plan My Trip
                 </Button>
@@ -371,7 +498,7 @@ export default function Home() {
               <ul className="space-y-2 font-sans text-sm">
                 <li><a href="#features" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Features</a></li>
                 <li><a href="#how-it-works" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">How It Works</a></li>
-                <li><Link href="/plan" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Plan My Trip</Link></li>
+                <li><Link href="/plan-my-trip" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors">Plan My Trip</Link></li>
               </ul>
             </div>
             <div>

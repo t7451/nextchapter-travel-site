@@ -8,4 +8,17 @@ export const ENV = {
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   resendApiKey: process.env.RESEND_API_KEY ?? "",
+  metricsToken: process.env.METRICS_TOKEN ?? "",
 };
+
+export function missingEnvVars(): string[] {
+  const required = [
+    { key: "DATABASE_URL", value: ENV.databaseUrl },
+    { key: "JWT_SECRET", value: ENV.cookieSecret },
+    { key: "VITE_APP_ID", value: ENV.appId },
+  ];
+
+  return required
+    .filter(entry => !entry.value || entry.value.trim().length === 0)
+    .map(entry => entry.key);
+}
