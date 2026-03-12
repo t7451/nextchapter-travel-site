@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   LayoutDashboard, Calendar, FileText, Globe, MessageSquare,
   CheckSquare, Plane, Bell, LogOut, BookOpen, X, ChevronRight, Keyboard,
-  DollarSign, Shield, Cloud, Phone, Users, MapPin, AlertTriangle, Wallet, Heart, Building2, Backpack, Gift, Heart as HeartIcon, Languages
+  DollarSign, Shield, Cloud, Phone, Users, MapPin, AlertTriangle, Wallet, Heart, Building2, Backpack, Gift, Heart as HeartIcon, Languages, Lock, CreditCard
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
@@ -47,6 +47,10 @@ const NAV_ITEMS = [
   { href: "/portal/loyalty", label: "Loyalty Programs", icon: Gift, videoKey: "loyalty" },
   { href: "/portal/vaccination", label: "Vaccinations", icon: HeartIcon, videoKey: "vaccination" },
   { href: "/portal/translation", label: "Translation Helper", icon: Languages, videoKey: "translation" },
+  // Phase 3: Documents & Currency Features
+  { href: "/portal/documents-vault", label: "Document Vault", icon: Lock, videoKey: "documents-vault" },
+  { href: "/portal/insurance-tracker", label: "Insurance Tracker", icon: Shield, videoKey: "insurance-tracker" },
+  { href: "/portal/currency-converter", label: "Currency Converter", icon: CreditCard, videoKey: "currency-converter" },
 ];
 
 interface PortalLayoutProps {

@@ -38,6 +38,9 @@ import PackingPage from "./pages/portal/PackingPage";
 import LoyaltyPage from "./pages/portal/LoyaltyPage";
 import VaccinationPage from "./pages/portal/VaccinationPage";
 import TranslationPage from "./pages/portal/TranslationPage";
+import DocumentScannerPage from "./pages/portal/DocumentScannerPage";
+import TravelInsurancePage from "./pages/portal/TravelInsurancePage";
+import LocalCurrencyPage from "./pages/portal/LocalCurrencyPage";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -83,6 +86,9 @@ function Router() {
       <Route path="/portal/loyalty" component={LoyaltyPage} />
       <Route path="/portal/vaccination" component={VaccinationPage} />
       <Route path="/portal/translation" component={TranslationPage} />
+      <Route path="/portal/documents-vault" component={DocumentScannerPage} />
+      <Route path="/portal/insurance-tracker" component={TravelInsurancePage} />
+      <Route path="/portal/currency-converter" component={LocalCurrencyPage} />
 
       {/* Admin dashboard */}
       <Route path="/admin" component={AdminDashboard} />

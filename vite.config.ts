@@ -167,7 +167,34 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1000, // kB - suppress warning for large bundles
+    chunkSizeWarningLimit: 1200, // kB
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // Phase 3 components get their own chunks for lazy loading
+          if (id.includes("DocumentScanner")) return "portal-documents";
+          if (id.includes("TravelInsuranceTracker")) return "portal-insurance";
+          if (id.includes("LocalCurrencySimulator")) return "portal-currency";
+          
+          // Phase 2 components
+          if (id.includes("LoyaltyProgramTracker")) return "portal-loyalty";
+          if (id.includes("VaccinationRecordsManager")) return "portal-vaccination";
+          if (id.includes("TranslationHelper")) return "portal-translation";
+          
+          // Phase 1 components
+          if (id.includes("FlightTracker")) return "portal-flights";
+          if (id.includes("HotelBookingManager")) return "portal-hotels";
+          if (id.includes("PackingListGenerator")) return "portal-packing";
+          
+          // Vendor chunks
+          if (id.includes("node_modules")) {
+            if (id.includes("react")) return "vendor-react";
+            if (id.includes("zustand")) return "vendor-state";
+            return "vendor-common";
+          }
+        }
+      }
+    }
   },
   server: {
     host: true,
