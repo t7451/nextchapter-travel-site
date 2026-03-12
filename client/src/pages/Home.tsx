@@ -592,9 +592,22 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">Company</h4>
               <ul className="space-y-3 font-sans text-sm">
-                <li><a href="https://www.travelingwomenofficial.com" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block">Traveling Women Official</a></li>
-                <li><a href="https://www.facebook.com/nextchaptertravel" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block">Facebook</a></li>
+                <li><a href="https://www.facebook.com/nextchaptertravel/" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block">Facebook</a></li>
                 <li><a href="https://www.instagram.com/nextchaptertravelllc" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block">Instagram</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">Team</h4>
+              <ul className="space-y-3 font-sans text-sm">
+                <li className="text-primary-foreground/60">
+                  <span className="font-semibold">Jessica Seiders</span>
+                  <div className="text-xs text-primary-foreground/50">Chief Financial Officer (CFO)</div>
+                </li>
+                <li className="text-primary-foreground/60">
+                  <span className="font-semibold">Wendy</span>
+                  <div className="text-xs text-primary-foreground/50">Chief Operating Officer (COO)</div>
+                  <div className="text-xs text-primary-foreground/50 mt-1">Based in North Carolina. Craft business owner (wood crafts, candles, wax melts). Travel enthusiast, dog lover, motocross fan.</div>
+                </li>
               </ul>
             </div>
             <div>
