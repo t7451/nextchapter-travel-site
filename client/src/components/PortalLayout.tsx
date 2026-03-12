@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import {
   LayoutDashboard, Calendar, FileText, Globe, MessageSquare,
   CheckSquare, Plane, Bell, LogOut, BookOpen, X, ChevronRight, Keyboard,
-  DollarSign, Shield, Cloud, Phone, Users, MapPin, AlertTriangle, Wallet, Heart, Building2, Backpack, Gift, Heart as HeartIcon, Languages, Lock, CreditCard
+  DollarSign, Shield, Cloud, Phone, Users, MapPin, AlertTriangle, Wallet, Heart, Building2, Backpack, Gift, Heart as HeartIcon, Languages, Lock, CreditCard,
+  Clock, Navigation, Smartphone, AlertCircle, TrendingUp
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
@@ -51,6 +52,9 @@ const NAV_ITEMS = [
   { href: "/portal/documents-vault", label: "Document Vault", icon: Lock, videoKey: "documents-vault" },
   { href: "/portal/insurance-tracker", label: "Insurance Tracker", icon: Shield, videoKey: "insurance-tracker" },
   { href: "/portal/currency-converter", label: "Currency Converter", icon: CreditCard, videoKey: "currency-converter" },
+  // Phase 4: In-Trip Mobile Experience
+  { href: "/portal/live-itinerary", label: "Live Itinerary", icon: Clock, videoKey: "live-itinerary" },
+  { href: "/portal/family-checkin", label: "Family Check-in", icon: Users, videoKey: "family-checkin" },
 ];
 
 interface PortalLayoutProps {

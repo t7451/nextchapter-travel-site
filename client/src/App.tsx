@@ -42,6 +42,10 @@ import DocumentScannerPage from "./pages/portal/DocumentScannerPage";
 import TravelInsurancePage from "./pages/portal/TravelInsurancePage";
 import LocalCurrencyPage from "./pages/portal/LocalCurrencyPage";
 
+// Phase 4: In-Trip Mobile Experience
+import LiveItineraryPage from "./pages/portal/LiveItineraryPage";
+import FamilyCheckInPage from "./pages/portal/FamilyCheckInPage";
+
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { AdminClientsList, AdminClientDetail } from "./pages/admin/AdminClients";
@@ -89,6 +93,10 @@ function Router() {
       <Route path="/portal/documents-vault" component={DocumentScannerPage} />
       <Route path="/portal/insurance-tracker" component={TravelInsurancePage} />
       <Route path="/portal/currency-converter" component={LocalCurrencyPage} />
+
+      {/* Phase 4: In-Trip Mobile Experience */}
+      <Route path="/portal/live-itinerary" component={LiveItineraryPage} />
+      <Route path="/portal/family-checkin" component={FamilyCheckInPage} />
 
       {/* Admin dashboard */}
       <Route path="/admin" component={AdminDashboard} />
