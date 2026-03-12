@@ -22,6 +22,16 @@ import PortalPackingList from "./pages/portal/PackingList";
 import PortalBookings from "./pages/portal/Bookings";
 import PortalGuides from "./pages/portal/Guides";
 import PortalAlerts from "./pages/portal/Alerts";
+import TravelTimelinePage from "./pages/portal/TimelinePage";
+import BudgetPage from "./pages/portal/BudgetPage";
+import VisaPage from "./pages/portal/VisaPage";
+import WeatherPage from "./pages/portal/WeatherPage";
+import InsurancePage from "./pages/portal/InsurancePage";
+import CurrencyPage from "./pages/portal/CurrencyPage";
+import EmergencyPage from "./pages/portal/EmergencyPage";
+import TravelDocumentsPage from "./pages/portal/TravelDocumentsPage";
+import GroupTravelPage from "./pages/portal/GroupTravelPage";
+import RecommendationsPage from "./pages/portal/RecommendationsPage";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -46,12 +56,22 @@ function Router() {
       {/* Client portal */}
       <Route path="/portal" component={PortalDashboard} />
       <Route path="/portal/itinerary" component={PortalItinerary} />
+      <Route path="/portal/timeline" component={TravelTimelinePage} />
       <Route path="/portal/documents" component={PortalDocuments} />
+      <Route path="/portal/guides" component={PortalGuides} />
       <Route path="/portal/messages" component={PortalMessages} />
       <Route path="/portal/packing" component={PortalPackingList} />
       <Route path="/portal/bookings" component={PortalBookings} />
-      <Route path="/portal/guides" component={PortalGuides} />
       <Route path="/portal/alerts" component={PortalAlerts} />
+      <Route path="/portal/budget" component={BudgetPage} />
+      <Route path="/portal/visa" component={VisaPage} />
+      <Route path="/portal/weather" component={WeatherPage} />
+      <Route path="/portal/insurance" component={InsurancePage} />
+      <Route path="/portal/currency" component={CurrencyPage} />
+      <Route path="/portal/emergency" component={EmergencyPage} />
+      <Route path="/portal/travel-documents" component={TravelDocumentsPage} />
+      <Route path="/portal/group-travel" component={GroupTravelPage} />
+      <Route path="/portal/recommendations" component={RecommendationsPage} />
 
       {/* Admin dashboard */}
       <Route path="/admin" component={AdminDashboard} />

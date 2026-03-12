@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   LayoutDashboard, Calendar, FileText, Globe, MessageSquare,
-  CheckSquare, Plane, Bell, LogOut, BookOpen, X, ChevronRight, Keyboard
+  CheckSquare, Plane, Bell, LogOut, BookOpen, X, ChevronRight, Keyboard,
+  DollarSign, Shield, Cloud, Phone, Users, MapPin, AlertTriangle, Wallet, Heart
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
@@ -23,12 +24,23 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 const NAV_ITEMS = [
   { href: "/portal", label: "Dashboard", icon: LayoutDashboard, exact: true, videoKey: "dashboard" },
   { href: "/portal/itinerary", label: "Itinerary", icon: Calendar, videoKey: "itinerary" },
+  { href: "/portal/timeline", label: "Timeline", icon: AlertTriangle, videoKey: "timeline" },
   { href: "/portal/documents", label: "Documents", icon: FileText, videoKey: "documents" },
   { href: "/portal/guides", label: "Destination Guides", icon: Globe, videoKey: "guides" },
   { href: "/portal/messages", label: "Messages", icon: MessageSquare, videoKey: "messages" },
   { href: "/portal/packing", label: "Packing List", icon: CheckSquare, videoKey: "packing" },
   { href: "/portal/bookings", label: "Bookings", icon: Plane, videoKey: "bookings" },
   { href: "/portal/alerts", label: "Alerts", icon: Bell, videoKey: "alerts" },
+  // New Travel Agency Features
+  { href: "/portal/budget", label: "Budget Tracker", icon: Wallet, videoKey: "budget" },
+  { href: "/portal/visa", label: "Visa Checklist", icon: Shield, videoKey: "visa" },
+  { href: "/portal/weather", label: "Weather & Alerts", icon: Cloud, videoKey: "weather" },
+  { href: "/portal/insurance", label: "Travel Insurance", icon: Heart, videoKey: "insurance" },
+  { href: "/portal/currency", label: "Currency Converter", icon: DollarSign, videoKey: "currency" },
+  { href: "/portal/emergency", label: "Emergency Contacts", icon: Phone, videoKey: "emergency" },
+  { href: "/portal/travel-documents", label: "Travel Documents", icon: FileText, videoKey: "travel-documents" },
+  { href: "/portal/group-travel", label: "Group Travel", icon: Users, videoKey: "group-travel" },
+  { href: "/portal/recommendations", label: "Recommendations", icon: MapPin, videoKey: "recommendations" },
 ];
 
 interface PortalLayoutProps {
