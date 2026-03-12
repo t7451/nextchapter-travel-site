@@ -90,7 +90,7 @@ export default function PlanMyTrip() {
           )}
 
           <iframe
-            src="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w/link"
+            src="https://traveljoy.com/webforms/omtyxcxwds2mzw21lnthlkrk/forms/dbaww6cshuxeiaac8kanrn9w"
             title="Plan My Trip — Next Chapter Travel"
             onLoad={() => setIframeLoaded(true)}
             className={`w-full transition-opacity duration-500 ${iframeLoaded ? "opacity-100" : "opacity-0 h-0"}`}
