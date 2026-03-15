@@ -218,7 +218,8 @@ class FlightDisruptionService {
       const delay = action.delay || index * 500; // Stagger actions by 500ms
 
       setTimeout(() => {
-        if (action.condition === false) return;
+        const isDisabled = Object.prototype.hasOwnProperty.call(action, 'condition') && action.condition === false;
+        if (isDisabled) return;
 
         switch (action.type) {
           case 'notify':

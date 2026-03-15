@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plane, Plus, Trash2, AlertCircle, CheckCircle2, Clock, MapPin, Calendar } from "lucide-react";
+import { Plane, Plus, Trash2, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

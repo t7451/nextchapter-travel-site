@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DollarSign, Plus, Trash2, TrendingUp, Calculator, RefreshCw, ArrowRightLeft } from "lucide-react";
+import { DollarSign, Trash2, TrendingUp, Calculator, ArrowRightLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

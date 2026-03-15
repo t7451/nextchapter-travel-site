@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, Plus, Trash2, AlertCircle, CheckCircle2, MapPin, DollarSign, Clock } from "lucide-react";
+import { Shield, Plus, Trash2, AlertCircle} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
