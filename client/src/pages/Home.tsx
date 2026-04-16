@@ -3,7 +3,8 @@ import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { SEOHead } from "@/components/SEOHead";
 import {
   MapPin,
   MessageSquare,
@@ -13,7 +14,6 @@ import {
   Plane,
   Shield,
   Star,
-  ArrowRight,
   BookOpen,
   Globe,
   Users,
@@ -145,6 +145,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen font-serif selection:bg-secondary/30">
+      <SEOHead
+        canonical="/"
+        includeLocalBusiness
+      />
       {/* ── Navigation ── */}
       <nav
         className={cn(
@@ -308,28 +312,26 @@ export default function Home() {
                 </Button>
               </a>
             </div>
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-left max-w-3xl mx-auto">
-              <div className="bg-secondary/10 border border-secondary/20 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 w-full sm:w-auto">
-                <Star className="w-6 h-6 text-secondary" />
-                <div>
-                  <p className="font-bold font-sans text-secondary">
-                    Trusted by 50+ families
+            <div className="mt-10 sm:mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto w-full">
+              {[
+                { value: "50+", label: "Families Served", icon: Users },
+                { value: "100+", label: "Trips Planned", icon: Plane },
+                { value: "5★", label: "Average Rating", icon: Star },
+                { value: "Free", label: "Consultation", icon: Shield },
+              ].map(stat => (
+                <div
+                  key={stat.label}
+                  className="bg-card/40 backdrop-blur-md border border-border/60 rounded-2xl px-3 py-4 sm:px-4 sm:py-5 flex flex-col items-center gap-1 text-center hover:border-secondary/40 hover:bg-card/60 transition-all group"
+                >
+                  <stat.icon className="w-5 h-5 text-secondary mb-1 group-hover:scale-110 transition-transform" />
+                  <p className="text-xl sm:text-2xl font-serif font-bold text-secondary">
+                    {stat.value}
                   </p>
-                  <p className="text-sm text-muted-foreground font-sans">
-                    “Jessica handled every detail so we could just enjoy the
-                    trip.”
-                  </p>
-                </div>
-              </div>
-              <div className="bg-card/60 border border-border rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 w-full sm:w-auto">
-                <Shield className="w-6 h-6 text-secondary" />
-                <div>
-                  <p className="font-bold font-sans">Concierge support</p>
-                  <p className="text-sm text-muted-foreground font-sans">
-                    Real humans, real-time help while you travel.
+                  <p className="text-xs text-muted-foreground font-sans leading-tight">
+                    {stat.label}
                   </p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -395,14 +397,28 @@ export default function Home() {
             {TESTIMONIALS.map(t => (
               <div
                 key={t.name}
-                className="bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-6 sm:p-7 shadow-lg shadow-black/10 flex flex-col gap-4"
+                className="bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-6 sm:p-7 shadow-lg shadow-black/10 flex flex-col gap-4 hover:border-secondary/30 transition-all"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-secondary/15 border border-secondary/30 flex items-center justify-center">
-                    <Star className="w-5 h-5 text-secondary" />
+                {/* 5-star rating */}
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-4 h-4 text-secondary fill-secondary"
+                    />
+                  ))}
+                </div>
+                <p className="text-sm sm:text-base text-muted-foreground font-sans leading-relaxed flex-1">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div className="flex items-center gap-3 pt-2 border-t border-border/50">
+                  <div className="w-9 h-9 rounded-full bg-secondary/15 border border-secondary/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-secondary font-sans">
+                      {t.name.charAt(0)}
+                    </span>
                   </div>
                   <div>
-                    <p className="font-semibold font-sans text-foreground">
+                    <p className="font-semibold font-sans text-foreground text-sm">
                       {t.name}
                     </p>
                     <p className="text-xs text-muted-foreground font-sans">
@@ -410,9 +426,6 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-                <p className="text-sm sm:text-base text-muted-foreground font-sans leading-relaxed">
-                  “{t.quote}”
-                </p>
               </div>
             ))}
           </div>
@@ -726,25 +739,33 @@ export default function Home() {
 
       {/* ── CTA Section ── */}
       <section className="py-20 sm:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-secondary/10 backdrop-blur-sm" />
+        {/* Background layers */}
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/5 via-secondary/10 to-secondary/5 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.72_0.09_65/0.12)_0%,transparent_70%)]" />
         <div className="container relative z-10 text-center">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold mb-6 sm:mb-8">
-              Ready to Start Your Next Chapter?
+            <Badge className="mb-6 bg-secondary/10 text-secondary border-secondary/30 font-sans text-xs tracking-widest uppercase">
+              Your Dream Vacation Awaits
+            </Badge>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold mb-6 sm:mb-8 leading-tight">
+              Ready to Start Your{" "}
+              <span className="gold-shimmer">Next Chapter?</span>
             </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-10 sm:mb-12 font-sans leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-4 font-sans leading-relaxed">
               Certified in Disney, Universal, Norwegian Cruise Line, Royal
               Caribbean, Carnival, and more — Jessica Seiders at Next Chapter
-              Travel LLC has the expertise to plan any adventure you can
-              imagine.
+              Travel LLC has the expertise to plan any adventure you can imagine.
+            </p>
+            <p className="text-sm text-muted-foreground/70 font-sans mb-10 sm:mb-12">
+              Free consultation. No hidden fees. Just unforgettable memories.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
               <Link href="/plan-my-trip">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-12 py-8 text-xl font-sans font-bold rounded-2xl shadow-xl shadow-secondary/20 active:scale-95 transition-all"
+                  className="w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-12 py-8 text-xl font-sans font-bold rounded-2xl shadow-xl shadow-secondary/20 active:scale-95 transition-all glow-secondary"
                 >
-                  Plan My Trip
+                  Plan My Trip — Free
                 </Button>
               </Link>
               <a href={getLoginUrl()} className="w-full sm:w-auto">
@@ -757,132 +778,174 @@ export default function Home() {
                 </Button>
               </a>
             </div>
+            {/* Certification strip */}
+            <div className="mt-10 flex flex-wrap justify-center gap-2 sm:gap-3">
+              {["Disney Specialist", "Royal Caribbean Expert", "Universal Studios", "Carnival Certified", "Norwegian Cruise Line"].map(cert => (
+                <span key={cert} className="text-xs font-sans text-muted-foreground/60 px-3 py-1 rounded-full border border-border/40 bg-card/30">
+                  {cert}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-12 sm:py-16 bg-primary text-primary-foreground border-t border-white/5">
+      <footer className="py-12 sm:py-16 bg-primary text-primary-foreground border-t border-white/10">
         <div className="container">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-12 sm:mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-10 sm:mb-14">
+            {/* Brand column */}
             <div>
-              <h3 className="font-serif font-bold text-lg mb-4">
-                Next Chapter Travel
-              </h3>
-              <p className="text-primary-foreground/60 text-sm font-sans leading-relaxed">
+              <div className="flex items-center gap-2 mb-4">
+                <BookOpen className="w-5 h-5 text-secondary" />
+                <h3 className="font-serif font-bold text-lg text-secondary">
+                  Next Chapter Travel
+                </h3>
+              </div>
+              <p className="text-primary-foreground/60 text-sm font-sans leading-relaxed mb-4">
                 Your personal travel concierge, crafting unforgettable journeys
-                with expert planning and care.
+                with expert planning and genuine care.
               </p>
+              <div className="flex gap-3">
+                <a
+                  href="https://www.facebook.com/nextchaptertravel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-secondary/20 border border-white/10 hover:border-secondary/40 flex items-center justify-center transition-all"
+                >
+                  <Facebook className="w-4 h-4 text-primary-foreground/70" />
+                </a>
+                <a
+                  href="https://www.instagram.com/nextchaptertravelllc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-secondary/20 border border-white/10 hover:border-secondary/40 flex items-center justify-center transition-all"
+                >
+                  <Instagram className="w-4 h-4 text-primary-foreground/70" />
+                </a>
+              </div>
             </div>
+
+            {/* Quick Links */}
             <div>
-              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest text-secondary/80">
                 Quick Links
+              </h4>
+              <ul className="space-y-2 font-sans text-sm">
+                {[
+                  { label: "Features", href: "#features", internal: false },
+                  { label: "How It Works", href: "#how-it-works", internal: false },
+                  { label: "About Jessica", href: "#about-jessica", internal: false },
+                  { label: "Plan My Trip", href: "/plan-my-trip", internal: true },
+                  { label: "Client Portal", href: null, external: true },
+                ].map(link =>
+                  link.href === null ? (
+                    <li key={link.label}>
+                      <a
+                        href={getLoginUrl()}
+                        className="text-primary-foreground/60 hover:text-secondary transition-colors py-0.5 inline-block"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ) : link.internal ? (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-primary-foreground/60 hover:text-secondary transition-colors py-0.5 inline-block"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ) : (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className="text-primary-foreground/60 hover:text-secondary transition-colors py-0.5 inline-block"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  )
+                )}
+              </ul>
+            </div>
+
+            {/* Destinations */}
+            <div>
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest text-secondary/80">
+                Specialties
+              </h4>
+              <ul className="space-y-2 font-sans text-sm text-primary-foreground/60">
+                {[
+                  "Disney World & Disneyland",
+                  "Caribbean Cruises",
+                  "Universal Studios",
+                  "All-Inclusive Resorts",
+                  "Hawaiian Getaways",
+                  "European River Cruises",
+                ].map(dest => (
+                  <li key={dest} className="flex items-center gap-2">
+                    <Compass className="w-3 h-3 text-secondary/50 flex-shrink-0" />
+                    {dest}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest text-secondary/80">
+                Contact
               </h4>
               <ul className="space-y-3 font-sans text-sm">
                 <li>
+                  <p className="text-primary-foreground/40 text-xs uppercase tracking-wider mb-0.5">
+                    Email
+                  </p>
                   <a
-                    href="#features"
-                    className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block"
+                    href="mailto:jessica@nextchaptertravel.com"
+                    className="text-primary-foreground/70 hover:text-secondary transition-colors"
                   >
-                    Features
+                    jessica@nextchaptertravel.com
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#how-it-works"
-                    className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block"
-                  >
-                    How It Works
-                  </a>
+                  <p className="text-primary-foreground/40 text-xs uppercase tracking-wider mb-0.5">
+                    Company
+                  </p>
+                  <p className="text-primary-foreground/60">
+                    Next Chapter Travel LLC
+                  </p>
                 </li>
-                <li>
-                  <a
-                    href="#about-jessica"
-                    className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block"
-                  >
-                    About Jessica
-                  </a>
-                </li>
-                <li>
-                  <Link
-                    href="/plan-my-trip"
-                    className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block"
-                  >
-                    Plan My Trip
+                <li className="pt-2">
+                  <Link href="/plan-my-trip">
+                    <Button
+                      size="sm"
+                      className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold text-xs rounded-lg"
+                    >
+                      Start Planning — Free
+                    </Button>
                   </Link>
                 </li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">
-                Company
-              </h4>
-              <ul className="space-y-3 font-sans text-sm">
-                <li>
-                  <a
-                    href="https://www.facebook.com/nextchaptertravel/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block"
-                  >
-                    Facebook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.instagram.com/nextchaptertravelllc"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-foreground/60 hover:text-primary-foreground transition-colors py-1 inline-block"
-                  >
-                    Instagram
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">
-                Team
-              </h4>
-              <ul className="space-y-3 font-sans text-sm">
-                <li className="text-primary-foreground/60">
-                  <span className="font-semibold">Jessica Seiders</span>
-                  <div className="text-xs text-primary-foreground/50">
-                    Chief Financial Officer (CFO)
-                  </div>
-                </li>
-                <li className="text-primary-foreground/60">
-                  <span className="font-semibold">Wendy</span>
-                  <div className="text-xs text-primary-foreground/50">
-                    Chief Operating Officer (COO)
-                  </div>
-                  <div className="text-xs text-primary-foreground/50 mt-1">
-                    Based in North Carolina. Craft business owner (wood crafts,
-                    candles, wax melts). Travel enthusiast, dog lover, motocross
-                    fan.
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4 font-sans text-sm uppercase tracking-widest">
-                Contact
-              </h4>
-              <p className="text-primary-foreground/60 text-sm font-sans mb-2">
-                <a
-                  href="mailto:jessica@nextchaptertravel.com"
-                  className="hover:text-primary-foreground transition-colors"
-                >
-                  jessica@nextchaptertravel.com
-                </a>
-              </p>
-              <p className="text-primary-foreground/60 text-sm font-sans">
-                Next Chapter Travel LLC
-              </p>
-            </div>
           </div>
-          <div className="border-t border-white/10 pt-8 sm:pt-10 text-center text-primary-foreground/60 text-sm font-sans">
+
+          {/* Bottom bar */}
+          <div className="border-t border-white/10 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-primary-foreground/40 text-xs font-sans">
             <p>&copy; 2026 Next Chapter Travel LLC. All rights reserved.</p>
+            <p>
+              <a href="/sitemap.xml" className="hover:text-primary-foreground/60 transition-colors">
+                Sitemap
+              </a>
+              <span className="mx-2">·</span>
+              <a href="mailto:jessica@nextchaptertravel.com" className="hover:text-primary-foreground/60 transition-colors">
+                Privacy
+              </a>
+            </p>
           </div>
         </div>
       </footer>
