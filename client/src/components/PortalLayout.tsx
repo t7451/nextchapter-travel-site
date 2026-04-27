@@ -8,14 +8,12 @@ import {
   FileText,
   Globe,
   MessageSquare,
-  CheckSquare,
   Plane,
   Bell,
   LogOut,
   BookOpen,
   X,
   ChevronRight,
-  Keyboard,
   DollarSign,
   Shield,
   Cloud,
@@ -34,13 +32,9 @@ import {
   CreditCard,
   Clock,
   Navigation,
-  Smartphone,
-  AlertCircle,
-  TrendingUp,
   Zap,
   Images,
   Archive,
-  Compass,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";

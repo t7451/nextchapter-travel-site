@@ -3,9 +3,7 @@ import PortalLayout from "@/components/PortalLayout";
 import { BusinessOperationsSkeleton } from "@/components/ui/skeletons";
 
 const CrmDashboard = lazy(() =>
-  import("../../components/CrmDashboard").then(module => ({
-    default: module.CrmDashboard,
-  }))
+  import("../../components/CRMDashboard")
 );
 const AICopilot = lazy(() =>
   import("../../components/AICopilot").then(module => ({

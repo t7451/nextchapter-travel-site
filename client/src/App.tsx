@@ -8,7 +8,7 @@ import { VideoHeroProvider } from "./contexts/VideoHeroContext";
 import GlobalVideoBackground from "./components/GlobalVideoBackground";
 import RouteLoadingScreen from "./components/RouteLoadingScreen";
 
-const lazyWithRetry = <T extends ComponentType<any>>(
+const lazyWithRetry = <T extends ComponentType<unknown>>(
   importer: () => Promise<{ default: T }>,
   key: string
 ): LazyExoticComponent<T> =>
