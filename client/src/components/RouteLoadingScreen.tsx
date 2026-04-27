@@ -1,12 +1,15 @@
 import { Loader2 } from "lucide-react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
+const ROUTE_LOADING_Z_INDEX = 70;
+
 export default function RouteLoadingScreen() {
   const reducedMotion = useReducedMotion();
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-gradient-to-br from-slate-950/65 via-slate-900/35 to-slate-950/70 backdrop-blur-sm"
+      className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-slate-950/65 via-slate-900/35 to-slate-950/70 backdrop-blur-sm"
+      style={{ zIndex: ROUTE_LOADING_Z_INDEX }}
       role="status"
       aria-live="polite"
       aria-label="Loading page"

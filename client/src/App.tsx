@@ -14,22 +14,14 @@ const lazyWithRetry = <T extends ComponentType<unknown>>(
 ): LazyExoticComponent<T> =>
   lazy(async () => {
     try {
-      const component = await importer();
-      if (typeof window !== "undefined") {
-        sessionStorage.removeItem(`lazy-retried:${key}`);
-      }
-      return component;
+      return await importer();
     } catch (error) {
-      if (typeof window !== "undefined") {
-        const retryKey = `lazy-retried:${key}`;
-        const alreadyRetried = sessionStorage.getItem(retryKey);
-        if (!alreadyRetried) {
-          sessionStorage.setItem(retryKey, "true");
-          window.location.reload();
-          return new Promise<never>(() => {});
-        }
+      // Retry once without forcing a full page reload so local app state is preserved.
+      try {
+        return await importer();
+      } catch {
+        throw error;
       }
-      throw error;
     }
   });
 

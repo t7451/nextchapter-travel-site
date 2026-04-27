@@ -408,6 +408,8 @@ html, body {
 }
 .route-progress-bar {
   height: 100%;
+  /* 45% keeps the bar visually substantial while preserving trailing space
+     so movement remains obvious on ultra-wide screens. */
   width: 45%;
   background: linear-gradient(90deg, oklch(0.72 0.09 65 / 0.55), oklch(0.82 0.09 75 / 0.95));
   animation: routeProgress 1.1s linear infinite;
