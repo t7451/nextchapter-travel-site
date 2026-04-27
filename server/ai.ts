@@ -268,9 +268,26 @@ export function mockParseItineraryFromText(text: string): ParsedItinerary {
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) continue;
-    const dayMatch = line.match(/^Day\s+(\d+)/i);
+    const dayMatch = line.match(/^Day\s+(\d+)\s*:?\s*(.*)$/i);
     if (dayMatch) {
       currentDay = parseInt(dayMatch[1], 10) || currentDay;
+      const rest = dayMatch[2]?.trim();
+      if (rest && rest.length >= 3) {
+        items.push({
+          dayNumber: currentDay,
+          title: rest.slice(0, 80),
+          description: rest,
+          category: /flight|airport|airline/i.test(rest)
+            ? "flight"
+            : /hotel|resort|check.?in/i.test(rest)
+              ? "hotel"
+              : /dinner|lunch|breakfast|restaurant/i.test(rest)
+                ? "dining"
+                : /transfer|car|train|bus|taxi/i.test(rest)
+                  ? "transport"
+                  : "activity",
+        });
+      }
       continue;
     }
     if (line.length < 6) continue;
