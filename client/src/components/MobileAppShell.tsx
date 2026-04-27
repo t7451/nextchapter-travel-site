@@ -181,7 +181,7 @@ export function MobileAppShell({
               <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
                 💰
               </div>
-              <span>Expenses</span>
+              <span>Budget</span>
             </a>
 
             <a
@@ -199,9 +199,9 @@ export function MobileAppShell({
               className="flex-1 flex flex-col items-center justify-center gap-1 text-xs hover:text-primary transition-colors"
             >
               <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
-                👤
+                💬
               </div>
-              <span>Profile</span>
+              <span>Messages</span>
             </a>
           </div>
         </nav>

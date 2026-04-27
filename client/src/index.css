@@ -276,10 +276,18 @@ html, body {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
 .animate-fade-in-up { animation: fadeInUp 0.7s ease-out forwards; }
-.animate-fade-in { animation: videoFadeIn 0.45s ease-out forwards; }
+.animate-fade-in { animation: fadeIn 0.45s ease-out forwards; }
 .animate-scale-in {
-  animation: success-scale 0.22s ease-out forwards;
+  animation: scaleIn 0.22s ease-out forwards;
 }
 .animate-delay-100 { animation-delay: 0.1s; }
 .animate-delay-200 { animation-delay: 0.2s; }
