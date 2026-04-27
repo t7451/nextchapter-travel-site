@@ -116,7 +116,8 @@ export default function PlanMyTrip() {
             onLoad={() => setIframeLoaded(true)}
             className={`w-full transition-opacity duration-500 ${iframeLoaded ? "opacity-100" : "opacity-0 h-0"}`}
             style={{
-              height: iframeLoaded ? "calc(100vh - 120px)" : "0",
+              // 100dvh handles iOS Safari address-bar collapse; 100vh is fallback
+              height: iframeLoaded ? "calc(100dvh - 120px)" : "0",
               minHeight: iframeLoaded ? "700px" : "0",
               border: "none",
               borderRadius: "0 0 1rem 1rem",
@@ -169,13 +170,13 @@ export default function PlanMyTrip() {
                 key={i}
                 className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden"
               >
-                <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-sans font-medium text-sm sm:text-base select-none hover:bg-white/5 transition-colors">
-                  {item.q}
-                  <span className="text-secondary flex-shrink-0 text-lg leading-none group-open:rotate-45 transition-transform duration-200">
+                <summary className="flex items-center justify-between gap-4 px-4 sm:px-5 py-4 min-h-[56px] cursor-pointer list-none text-white font-sans font-medium text-[15px] sm:text-base leading-snug select-none hover:bg-white/5 active:bg-white/10 transition-colors">
+                  <span className="flex-1">{item.q}</span>
+                  <span className="text-secondary flex-shrink-0 text-2xl leading-none group-open:rotate-45 transition-transform duration-200">
                     +
                   </span>
                 </summary>
-                <div className="px-5 pb-5 text-white/70 font-sans text-sm leading-relaxed border-t border-white/10 pt-4">
+                <div className="px-4 sm:px-5 pb-5 text-white/70 font-sans text-sm leading-relaxed border-t border-white/10 pt-4">
                   {item.a}
                 </div>
               </details>
