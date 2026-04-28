@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/const";
 import { useVideoHero } from "@/contexts/VideoHeroContext";
@@ -23,6 +23,7 @@ export default function SiteNav({ alwaysSolid = false, ctaPreloadContext }: Site
   const { preloadContext } = useVideoHero();
   const [isScrolled, setIsScrolled] = useState(alwaysSolid);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [location] = useLocation();
 
   useEffect(() => {
     if (alwaysSolid) return;
@@ -58,19 +59,31 @@ export default function SiteNav({ alwaysSolid = false, ctaPreloadContext }: Site
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-7">
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-foreground hover:text-secondary transition-colors font-sans text-sm"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map(link => {
+            const isActive = location === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "nav-link-underline relative text-foreground hover:text-secondary transition-colors font-sans text-sm pb-0.5",
+                  isActive && "text-secondary"
+                )}
+              >
+                {link.label}
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="absolute bottom-[-3px] left-0 right-0 h-[2px] rounded bg-gradient-to-r from-secondary to-secondary/70"
+                  />
+                )}
+              </Link>
+            );
+          })}
           <Link href="/plan-my-trip">
             <Button
               size="sm"
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold"
+              className="btn-shimmer bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold"
               onMouseEnter={handleCtaHover}
               onFocus={handleCtaHover}
             >
@@ -115,16 +128,24 @@ export default function SiteNav({ alwaysSolid = false, ctaPreloadContext }: Site
           className="container py-6 flex flex-col gap-3"
           style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom, 0px))" }}
         >
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-foreground hover:text-secondary transition-colors font-sans py-3 px-4 rounded-xl hover:bg-secondary/10 min-h-[48px] flex items-center active:scale-[0.98]"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map(link => {
+            const isActive = location === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "transition-colors font-sans py-3 px-4 rounded-xl min-h-[48px] flex items-center active:scale-[0.98]",
+                  isActive
+                    ? "text-secondary bg-secondary/15 border border-secondary/30"
+                    : "text-foreground hover:text-secondary hover:bg-secondary/10"
+                )}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <div className="pt-3 border-t border-border/50 flex flex-col gap-3">
             <Link
               href="/plan-my-trip"
@@ -132,7 +153,7 @@ export default function SiteNav({ alwaysSolid = false, ctaPreloadContext }: Site
               onMouseEnter={handleCtaHover}
               onFocus={handleCtaHover}
             >
-              <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold min-h-[52px] text-base rounded-xl active:scale-[0.98] transition-transform">
+              <Button className="btn-shimmer w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold min-h-[52px] text-base rounded-xl active:scale-[0.98] transition-transform">
                 Plan My Trip
               </Button>
             </Link>

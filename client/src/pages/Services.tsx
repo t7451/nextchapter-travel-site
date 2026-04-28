@@ -177,7 +177,7 @@ export default function Services() {
 
       {/* ── Hero ── */}
       <section className="pt-24 sm:pt-32 md:pt-44 pb-14 sm:pb-24 relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 -z-10">
           <span className="aurora-blob gold" style={{ width: "44rem", height: "44rem", top: "-12rem", left: "-10rem" }} />
           <span className="aurora-blob navy" style={{ width: "40rem", height: "40rem", top: "-6rem", right: "-12rem" }} />
           <span className="aurora-blob cream" style={{ width: "32rem", height: "32rem", bottom: "-10rem", left: "30%" }} />
@@ -193,7 +193,7 @@ export default function Services() {
           <h1
             data-reveal
             data-reveal-delay="100"
-            className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-7xl font-serif font-bold mb-5 sm:mb-8 tracking-tight hero-text-shadow"
+            className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-7xl font-serif font-bold mb-5 sm:mb-8 tracking-tight heading-glow"
           >
             Travel Planning{" "}
             <span className="text-gradient-gold italic">Made Simple</span>
@@ -214,7 +214,7 @@ export default function Services() {
             <Link href="/plan-my-trip" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-12 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-12 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
               >
                 <span>Get My Free Proposal</span>
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
@@ -269,7 +269,7 @@ export default function Services() {
                 key={service.title}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className={`gradient-border-gold bg-card/55 backdrop-blur-md p-6 sm:p-8 rounded-2xl lift-on-hover ${service.highlight ? "ring-2 ring-secondary/40 ring-offset-2 ring-offset-background" : ""}`}
+                className={`gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md p-6 sm:p-8 rounded-2xl lift-on-hover tilt-card ${service.highlight ? "ring-2 ring-secondary/40 ring-offset-2 ring-offset-background" : ""}`}
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-4 sm:mb-6">
                   <service.icon className="w-6 h-6 sm:w-7 sm:h-7 text-secondary" />
@@ -293,7 +293,7 @@ export default function Services() {
 
       {/* ── How It Works ── */}
       <section className="py-16 sm:py-24 bg-primary text-primary-foreground relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0">
           <span className="aurora-blob gold" style={{ width: "30rem", height: "30rem", top: "-8rem", left: "10%", opacity: 0.25 }} />
           <span className="aurora-blob navy" style={{ width: "30rem", height: "30rem", bottom: "-10rem", right: "5%", opacity: 0.4 }} />
         </div>
@@ -313,7 +313,9 @@ export default function Services() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 relative">
             {/* Connector line for large screens */}
-            <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-px bg-gradient-to-r from-transparent via-secondary/40 to-transparent" />
+            <div className="hidden lg:block absolute top-10 left-[12%] right-[12%] h-[2px] overflow-hidden" aria-hidden={true}>
+              <div className="h-full bg-gradient-to-r from-secondary/20 via-secondary/60 to-secondary/20 connector-line-animated" data-connector />
+            </div>
 
             {HOW_IT_WORKS.map((item, i) => (
               <div
@@ -322,8 +324,11 @@ export default function Services() {
                 data-reveal-delay={String((i + 1) * 150)}
                 className="relative text-center group"
               >
-                <div className="relative mx-auto mb-5 sm:mb-6 w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-secondary via-secondary/90 to-secondary/70 text-secondary-foreground shadow-[0_0_30px_-4px_oklch(0.72_0.09_65/0.6)] group-hover:scale-110 transition-transform">
-                  <span className="text-2xl font-serif font-black">{item.step}</span>
+                <div className="relative mx-auto mb-5 sm:mb-6 w-20 h-20">
+                  <div className="absolute inset-0 rounded-full bg-secondary/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500" />
+                  <div className="relative w-full h-full rounded-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary via-secondary/90 to-secondary/70 text-secondary-foreground shadow-[0_0_30px_-4px_oklch(0.72_0.09_65/0.6)] group-hover:scale-110 transition-transform z-10">
+                    <span className="text-xl font-serif font-black">{item.step}</span>
+                  </div>
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">{item.title}</h3>
                 <p className="text-primary-foreground/75 text-sm sm:text-base leading-relaxed font-sans max-w-[260px] mx-auto">
@@ -337,7 +342,7 @@ export default function Services() {
             <Link href="/plan-my-trip">
               <Button
                 size="lg"
-                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-10 py-6 text-lg font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-10 py-6 text-lg font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
               >
                 <span>Start Step One — It's Free</span>
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
@@ -348,7 +353,7 @@ export default function Services() {
       </section>
 
       {/* ── Client Portal Features ── */}
-      <section className="py-16 sm:py-24">
+      <section className="py-16 sm:py-24 dot-grid-bg relative">
         <div className="container">
           <div className="text-center mb-10 sm:mb-16" data-reveal>
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
@@ -369,10 +374,10 @@ export default function Services() {
                 key={feature.title}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="gradient-border-gold bg-card/55 backdrop-blur-md p-5 sm:p-6 rounded-2xl flex items-start gap-4 lift-on-hover"
+                className="gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md p-5 sm:p-6 rounded-2xl flex items-start gap-4 lift-on-hover tilt-card group"
               >
                 <div
-                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${feature.color} border flex items-center justify-center shrink-0 shadow-lg`}
+                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${feature.color} border flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform`}
                 >
                   <feature.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
@@ -396,7 +401,7 @@ export default function Services() {
       <section className="py-20 sm:py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/5 via-secondary/10 to-secondary/5 backdrop-blur-sm" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.72_0.09_65/0.18)_0%,transparent_70%)]" />
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0">
           <span className="aurora-blob gold" style={{ width: "36rem", height: "36rem", top: "-8rem", left: "10%" }} />
           <span className="aurora-blob navy" style={{ width: "32rem", height: "32rem", bottom: "-10rem", right: "10%", opacity: 0.4 }} />
         </div>
@@ -417,7 +422,7 @@ export default function Services() {
             <Link href="/plan-my-trip">
               <Button
                 size="lg"
-                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-14 py-8 text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-14 py-8 text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
               >
                 <span>Get My Free Proposal</span>
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />

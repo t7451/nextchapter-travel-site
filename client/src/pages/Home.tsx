@@ -24,6 +24,7 @@ import {
   Sparkles,
   Compass,
   ChevronUp,
+  ChevronDown,
   Award,
   Heart,
   Ship,
@@ -31,6 +32,8 @@ import {
   ArrowRight,
   Quote,
   Clock,
+  Anchor,
+  SunMedium,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -173,11 +176,34 @@ export default function Home() {
       {/* ── Hero Section ── */}
       <section className="pt-24 sm:pt-32 md:pt-44 pb-14 sm:pb-24 md:pb-32 relative overflow-hidden">
         {/* Aurora gradient mesh — purely decorative, behind hero copy */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 -z-10">
           <span className="aurora-blob gold" style={{ width: "44rem", height: "44rem", top: "-12rem", left: "-10rem" }} />
           <span className="aurora-blob navy" style={{ width: "40rem", height: "40rem", top: "-6rem", right: "-12rem" }} />
           <span className="aurora-blob cream" style={{ width: "32rem", height: "32rem", bottom: "-10rem", left: "30%" }} />
         </div>
+
+        {/* Floating decorative travel icons */}
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="float-icon-1 absolute top-[18%] left-[6%] opacity-20 hidden sm:block">
+            <Plane className="w-8 h-8 text-secondary -rotate-12" />
+          </div>
+          <div className="float-icon-2 absolute top-[30%] right-[7%] opacity-15 hidden sm:block">
+            <Ship className="w-10 h-10 text-secondary rotate-6" />
+          </div>
+          <div className="float-icon-3 absolute bottom-[25%] left-[9%] opacity-15 hidden md:block">
+            <Globe className="w-7 h-7 text-secondary/80" />
+          </div>
+          <div className="float-icon-4 absolute top-[55%] right-[5%] opacity-10 hidden md:block">
+            <Anchor className="w-6 h-6 text-secondary rotate-12" />
+          </div>
+          <div className="float-icon-1 absolute top-[12%] right-[22%] opacity-10 hidden lg:block" style={{ animationDelay: "3s" }}>
+            <SunMedium className="w-9 h-9 text-secondary/70" />
+          </div>
+          <div className="float-icon-3 absolute bottom-[40%] right-[14%] opacity-10 hidden lg:block" style={{ animationDelay: "1.5s" }}>
+            <Compass className="w-8 h-8 text-secondary/80" />
+          </div>
+        </div>
+
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <Badge
@@ -190,7 +216,7 @@ export default function Home() {
             <h1
               data-reveal
               data-reveal-delay="100"
-              className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-[5.25rem] font-serif font-bold mb-5 sm:mb-8 sm:leading-[1.05] tracking-tight hero-text-shadow"
+              className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-7xl lg:text-[5.25rem] font-serif font-bold mb-5 sm:mb-8 sm:leading-[1.05] tracking-tight heading-glow"
             >
               Every Trip,{" "}
               <span className="text-gradient-gold italic">
@@ -217,7 +243,7 @@ export default function Home() {
               <Link href="/plan-my-trip" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-12 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                  className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-12 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
                   onMouseEnter={() => preloadContext("plan-my-trip")}
                   onFocus={() => preloadContext("plan-my-trip")}
                 >
@@ -286,6 +312,20 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Scroll-down indicator */}
+        <div className="flex justify-center mt-12 sm:mt-16" data-reveal data-reveal-delay="500">
+          <a
+            href="#portal-value"
+            aria-label="Scroll down"
+            className="flex flex-col items-center gap-1.5 text-muted-foreground/50 hover:text-secondary transition-colors group"
+          >
+            <span className="text-[10px] font-sans uppercase tracking-[0.2em] opacity-60 group-hover:opacity-100 transition-opacity">
+              Discover
+            </span>
+            <ChevronDown className="w-5 h-5 animate-bounce-down" />
+          </a>
+        </div>
       </section>
 
       {/* ── Brand / Trust Marquee ── */}
@@ -297,7 +337,7 @@ export default function Home() {
           <p className="text-center text-[10px] sm:text-xs uppercase tracking-[0.28em] text-muted-foreground/70 font-sans mb-4">
             Certified Specialist · Trusted Partners
           </p>
-          <div className="marquee" aria-hidden>
+          <div className="marquee" aria-hidden={true}>
             {[0, 1].map(loop => (
               <ul
                 key={loop}
@@ -323,7 +363,7 @@ export default function Home() {
       </section>
 
       {/* ── Portal Value Recap ── */}
-      <section className="py-16 sm:py-24">
+      <section id="portal-value" className="py-16 sm:py-24 dot-grid-bg relative">
         <div className="container">
           <div className="text-center mb-10 sm:mb-14" data-reveal>
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
@@ -345,7 +385,7 @@ export default function Home() {
                 key={`portal-${feature.title}`}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="gradient-border-gold bg-card/55 backdrop-blur-md p-5 sm:p-6 rounded-2xl flex items-start gap-4 lift-on-hover"
+                className="gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md p-5 sm:p-6 rounded-2xl flex items-start gap-4 lift-on-hover tilt-card"
               >
                 <div
                   className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${feature.color} flex items-center justify-center shrink-0 shadow-lg`}
@@ -368,9 +408,12 @@ export default function Home() {
 
       {/* ── Testimonials ── */}
       <section className="py-16 sm:py-24 bg-black/40 backdrop-blur-sm relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 -z-0">
           <span className="aurora-blob gold" style={{ width: "30rem", height: "30rem", top: "-6rem", right: "-6rem", opacity: 0.35 }} />
+          <span className="aurora-blob navy" style={{ width: "24rem", height: "24rem", bottom: "-4rem", left: "-4rem", opacity: 0.2 }} />
         </div>
+        {/* Decorative dot grid */}
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 dot-grid-bg opacity-30" />
         <div className="container relative">
           <div className="text-center mb-10 sm:mb-14" data-reveal>
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
@@ -391,15 +434,15 @@ export default function Home() {
                 key={t.name}
                 data-reveal
                 data-reveal-delay={String((idx + 1) * 100)}
-                className="gradient-border-gold relative bg-card/65 backdrop-blur-md rounded-2xl p-6 sm:p-7 shadow-xl shadow-black/20 flex flex-col gap-4 lift-on-hover"
+                className="card-accent-gold gradient-border-gold relative bg-card/65 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-xl shadow-black/20 flex flex-col gap-4 lift-on-hover tilt-card"
               >
                 {/* Decorative giant quote mark */}
                 <Quote
-                  className="absolute -top-3 -left-1 w-12 h-12 text-secondary/25 fill-secondary/15 rotate-180"
-                  aria-hidden
+                  className="absolute top-4 right-5 w-14 h-14 text-secondary/10 fill-secondary/8"
+                  aria-hidden={true}
                 />
                 {/* 5-star rating */}
-                <div className="flex gap-1 relative">
+                <div className="flex gap-0.5 relative">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
@@ -407,11 +450,11 @@ export default function Home() {
                     />
                   ))}
                 </div>
-                <p className="text-sm sm:text-base text-foreground/85 font-sans leading-relaxed flex-1 relative">
+                <p className="text-sm sm:text-base text-foreground/85 font-sans leading-relaxed flex-1 relative italic">
                   &ldquo;{t.quote}&rdquo;
                 </p>
-                <div className="flex items-center gap-3 pt-2 border-t border-border/50 relative">
-                  <div className="w-10 h-10 rounded-full bg-secondary/15 ring-2 ring-secondary/40 ring-offset-2 ring-offset-card flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-3 pt-3 border-t border-border/40 relative">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-secondary/30 to-secondary/10 ring-2 ring-secondary/40 ring-offset-2 ring-offset-card/80 flex items-center justify-center flex-shrink-0 shadow-md">
                     <span className="text-sm font-bold text-secondary font-sans">
                       {t.name.charAt(0)}
                     </span>
@@ -420,7 +463,8 @@ export default function Home() {
                     <p className="font-semibold font-sans text-foreground text-sm">
                       {t.name}
                     </p>
-                    <p className="text-xs text-muted-foreground font-sans">
+                    <p className="text-xs text-secondary/70 font-sans flex items-center gap-1">
+                      <MapPin className="w-3 h-3 inline" />
                       {t.trip}
                     </p>
                   </div>
@@ -456,7 +500,7 @@ export default function Home() {
                 key={feature.title}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="group gradient-border-gold bg-card/55 backdrop-blur-md p-6 sm:p-8 rounded-2xl lift-on-hover"
+                className="group gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md p-6 sm:p-8 rounded-2xl lift-on-hover tilt-card"
               >
                 <div
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl ${feature.color} flex items-center justify-center mb-4 sm:mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform`}
@@ -622,10 +666,12 @@ export default function Home() {
         id="how-it-works"
         className="py-16 sm:py-24 bg-primary text-primary-foreground relative overflow-hidden"
       >
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0">
           <span className="aurora-blob gold" style={{ width: "30rem", height: "30rem", top: "-8rem", left: "10%", opacity: 0.25 }} />
           <span className="aurora-blob navy" style={{ width: "30rem", height: "30rem", bottom: "-10rem", right: "5%", opacity: 0.4 }} />
         </div>
+        {/* Dot grid overlay for texture */}
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 dot-grid-bg opacity-10" />
         <div className="container relative">
           <div className="text-center mb-12 sm:mb-20" data-reveal>
             <Badge className="mb-3 sm:mb-4 bg-secondary/15 text-secondary border-secondary/30 font-sans text-xs tracking-widest uppercase">
@@ -640,24 +686,32 @@ export default function Home() {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-10 sm:gap-12 relative">
-            {/* Connector line for desktop */}
-            <div className="hidden md:block absolute top-10 left-[16%] right-[16%] h-px bg-gradient-to-r from-transparent via-secondary/40 to-transparent" />
+            {/* Animated connector line for desktop */}
+            <div
+              className="hidden md:block absolute top-10 left-[16%] right-[16%] h-[2px] overflow-hidden"
+              aria-hidden={true}
+            >
+              <div className="h-full bg-gradient-to-r from-secondary/20 via-secondary/60 to-secondary/20 connector-line-animated" data-connector />
+            </div>
 
             {[
               {
                 step: "01",
                 title: "Book With Jessica",
                 desc: "Schedule a free 15-minute call or complete a 3-minute travel questionnaire to share your dates, travelers, and must-do moments.",
+                icon: Compass,
               },
               {
                 step: "02",
                 title: "Get Your Portal",
                 desc: "Review a tailored proposal, approve, and receive your personal portal with itinerary, documents, guides, and messaging.",
+                icon: Globe,
               },
               {
                 step: "03",
                 title: "Travel With Confidence",
                 desc: "Use your portal on the go. Get real-time help for delays, changes, and on-the-ground recommendations.",
+                icon: Plane,
               },
             ].map((item, i) => (
               <div
@@ -666,11 +720,14 @@ export default function Home() {
                 data-reveal-delay={String((i + 1) * 150)}
                 className="relative text-center group"
               >
-                {/* Gradient step circle */}
-                <div className="relative mx-auto mb-5 sm:mb-6 w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br from-secondary via-secondary/90 to-secondary/70 text-secondary-foreground shadow-[0_0_30px_-4px_oklch(0.72_0.09_65/0.6)] group-hover:scale-110 transition-transform">
-                  <span className="text-2xl font-serif font-black">
-                    {item.step}
-                  </span>
+                {/* Gradient step circle with outer ring glow */}
+                <div className="relative mx-auto mb-5 sm:mb-6 w-20 h-20">
+                  {/* Outer glow ring */}
+                  <div className="absolute inset-0 rounded-full bg-secondary/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500" />
+                  <div className="relative w-full h-full rounded-full flex flex-col items-center justify-center bg-gradient-to-br from-secondary via-secondary/90 to-secondary/70 text-secondary-foreground shadow-[0_0_30px_-4px_oklch(0.72_0.09_65/0.6)] group-hover:scale-110 transition-transform z-10">
+                    <span className="text-xs font-sans font-bold opacity-70 -mb-0.5">{item.step}</span>
+                    <item.icon className="w-6 h-6" />
+                  </div>
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 relative z-10">
                   {item.title}
@@ -716,9 +773,9 @@ export default function Home() {
                 key={trip.id}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="group gradient-border-gold bg-card/55 backdrop-blur-md rounded-2xl overflow-hidden lift-on-hover"
+                className="group gradient-border-gold bg-card/55 backdrop-blur-md rounded-2xl overflow-hidden lift-on-hover tilt-card"
               >
-                <div className="relative h-44 sm:h-64 overflow-hidden">
+                <div className="relative h-44 sm:h-64 img-parallax-wrap">
                   <LazyImage
                     src={trip.image}
                     alt={trip.title}
@@ -726,18 +783,27 @@ export default function Home() {
                     height="500"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                  {/* Category icon overlay */}
+                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                    <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                      <trip.icon className="w-4 h-4 text-secondary" />
+                    </div>
+                  </div>
                   <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
                     <Badge className="bg-secondary text-secondary-foreground border-0 font-sans text-[10px] sm:text-xs shadow-lg">
                       {trip.date}
                     </Badge>
                   </div>
+                  {/* Destination title overlay at bottom */}
+                  <div className="absolute bottom-3 left-4 right-4">
+                    <div className="flex items-center gap-1.5 text-white/90 font-sans text-xs tracking-wide uppercase">
+                      <MapPin className="w-3 h-3 text-secondary" />
+                      {trip.destination}
+                    </div>
+                  </div>
                 </div>
                 <div className="p-5 sm:p-8">
-                  <div className="flex items-center gap-2 text-secondary/85 font-sans text-xs mb-2 tracking-wide uppercase">
-                    <MapPin className="w-3 h-3" />
-                    {trip.destination}
-                  </div>
                   <h3 className="text-xl sm:text-2xl font-serif font-bold mb-3">
                     {trip.title}
                   </h3>
@@ -773,7 +839,7 @@ export default function Home() {
         {/* Background layers — CTA */}
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/5 via-secondary/10 to-secondary/5 backdrop-blur-sm" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,oklch(0.72_0.09_65/0.18)_0%,transparent_70%)]" />
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0">
           <span className="aurora-blob gold" style={{ width: "36rem", height: "36rem", top: "-8rem", left: "10%" }} />
           <span className="aurora-blob navy" style={{ width: "32rem", height: "32rem", bottom: "-10rem", right: "10%", opacity: 0.4 }} />
         </div>
@@ -803,7 +869,7 @@ export default function Home() {
               <Link href="/plan-my-trip" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-14 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                  className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-14 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
                 >
                   <span>Get My Free Proposal</span>
                   <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />

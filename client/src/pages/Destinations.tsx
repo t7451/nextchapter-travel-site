@@ -356,7 +356,7 @@ export default function Destinations() {
 
       {/* ── Hero ── */}
       <section className="pt-24 sm:pt-32 md:pt-44 pb-14 sm:pb-20 relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0 -z-10">
           <span className="aurora-blob gold" style={{ width: "44rem", height: "44rem", top: "-12rem", left: "-10rem" }} />
           <span className="aurora-blob navy" style={{ width: "40rem", height: "40rem", top: "-6rem", right: "-12rem" }} />
           <span className="aurora-blob cream" style={{ width: "32rem", height: "32rem", bottom: "-10rem", left: "30%" }} />
@@ -372,7 +372,7 @@ export default function Destinations() {
           <h1
             data-reveal
             data-reveal-delay="100"
-            className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-7xl font-serif font-bold mb-5 sm:mb-8 tracking-tight hero-text-shadow"
+            className="text-[2.5rem] leading-[1.05] sm:text-6xl md:text-7xl font-serif font-bold mb-5 sm:mb-8 tracking-tight heading-glow"
           >
             Your Trip,{" "}
             <span className="text-gradient-gold italic">Your Way</span>
@@ -454,7 +454,7 @@ export default function Destinations() {
       </section>
 
       {/* ── Filter + Grid ── */}
-      <section className="py-6 sm:py-10 pb-20 sm:pb-28">
+      <section className="py-6 sm:py-10 pb-20 sm:pb-28 dot-grid-bg relative">
         <div className="container">
           {/* Category filter */}
           <div
@@ -484,9 +484,9 @@ export default function Destinations() {
                 key={dest.id}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="group gradient-border-gold bg-card/55 backdrop-blur-md rounded-2xl overflow-hidden lift-on-hover flex flex-col"
+                className="group gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md rounded-2xl overflow-hidden lift-on-hover tilt-card flex flex-col"
               >
-                <div className="relative h-52 sm:h-64 overflow-hidden">
+                <div className="relative h-52 sm:h-64 img-parallax-wrap">
                   <LazyImage
                     src={dest.image}
                     alt={dest.title}
@@ -494,7 +494,7 @@ export default function Destinations() {
                     height="500"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
                   {dest.badge && (
                     <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
                       <Badge className="bg-secondary text-secondary-foreground border-0 font-sans text-[10px] sm:text-xs shadow-lg">
@@ -502,6 +502,12 @@ export default function Destinations() {
                       </Badge>
                     </div>
                   )}
+                  {/* Category icon badge in top-left */}
+                  <div className="absolute top-3 left-3">
+                    <div className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                      <dest.icon className="w-4 h-4 text-secondary" />
+                    </div>
+                  </div>
                   <div className="absolute bottom-3 left-3">
                     <div className="flex items-center gap-1.5 text-white/90 font-sans text-xs tracking-wide uppercase">
                       <MapPin className="w-3 h-3 text-secondary" />
@@ -511,14 +517,9 @@ export default function Destinations() {
                 </div>
 
                 <div className="p-5 sm:p-7 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-secondary/10 border border-secondary/20 flex items-center justify-center flex-shrink-0">
-                      <dest.icon className="w-4 h-4 text-secondary" />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-serif font-bold leading-tight">
-                      {dest.title}
-                    </h3>
-                  </div>
+                  <h3 className="text-lg sm:text-xl font-serif font-bold leading-tight mb-2">
+                    {dest.title}
+                  </h3>
                   <p className="text-muted-foreground text-sm sm:text-base font-sans mb-4 leading-relaxed flex-1">
                     {dest.description}
                   </p>
@@ -564,7 +565,7 @@ export default function Destinations() {
 
       {/* ── Why Book With Jessica ── */}
       <section className="py-16 sm:py-24 bg-primary text-primary-foreground relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0">
           <span className="aurora-blob gold" style={{ width: "30rem", height: "30rem", top: "-8rem", left: "10%", opacity: 0.25 }} />
           <span className="aurora-blob navy" style={{ width: "30rem", height: "30rem", bottom: "-10rem", right: "5%", opacity: 0.4 }} />
         </div>
@@ -589,7 +590,7 @@ export default function Destinations() {
               <Link href="/plan-my-trip" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-14 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                  className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-14 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
                 >
                   <span>Get My Free Proposal</span>
                   <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />

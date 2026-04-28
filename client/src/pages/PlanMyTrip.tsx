@@ -109,7 +109,7 @@ export default function PlanMyTrip() {
         }}
       >
         {/* Aurora backdrop */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div aria-hidden={true} className="pointer-events-none absolute inset-0">
           <span className="aurora-blob gold" style={{ width: "32rem", height: "32rem", top: "-10rem", left: "-6rem", opacity: 0.4 }} />
           <span className="aurora-blob navy" style={{ width: "30rem", height: "30rem", top: "-6rem", right: "-6rem", opacity: 0.5 }} />
         </div>
@@ -124,7 +124,7 @@ export default function PlanMyTrip() {
           <h1
             data-reveal
             data-reveal-delay="100"
-            className="text-3xl sm:text-5xl md:text-6xl font-serif font-bold text-white mb-3 sm:mb-5 leading-[1.05] tracking-tight"
+            className="text-3xl sm:text-5xl md:text-6xl font-serif font-bold text-white mb-3 sm:mb-5 leading-[1.05] tracking-tight heading-glow"
           >
             Tell Me About Your{" "}
             <span className="text-gradient-gold italic">Dream Trip</span>
@@ -187,10 +187,10 @@ export default function PlanMyTrip() {
             ].map(item => (
               <div
                 key={item.step}
-                className="gradient-border-gold relative bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-5 lift-on-hover"
+                className="gradient-border-gold card-accent-gold relative bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-5 lift-on-hover tilt-card group"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-secondary to-secondary/70 text-secondary-foreground flex items-center justify-center font-serif font-bold text-sm shadow-lg shadow-secondary/40">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-secondary to-secondary/70 text-secondary-foreground flex items-center justify-center font-serif font-bold text-sm shadow-lg shadow-secondary/40 group-hover:scale-110 transition-transform">
                     {item.step}
                   </div>
                   <item.icon className="w-4 h-4 text-secondary" />
@@ -255,7 +255,7 @@ export default function PlanMyTrip() {
                 <div className="flex flex-col gap-3">
                   <Button
                     asChild
-                    className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold min-h-[52px] rounded-xl active:scale-[0.99] transition-transform"
+                    className="btn-shimmer w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-sans font-bold min-h-[52px] rounded-xl active:scale-[0.99] transition-transform"
                   >
                     <a
                       href="mailto:seidersconsulting@gmail.com?subject=Plan%20My%20Trip&body=Hi%20Jessica%2C%0A%0AI%27d%20like%20to%20start%20planning%20a%20trip.%20Here%27s%20a%20bit%20about%20what%20we%27re%20looking%20for%3A%0A%0A%E2%80%A2%20Travelers%3A%0A%E2%80%A2%20Travel%20dates%3A%0A%E2%80%A2%20Destination(s)%3A%0A%E2%80%A2%20Approximate%20budget%3A%0A%E2%80%A2%20Anything%20else%3A%0A%0AThanks%21"

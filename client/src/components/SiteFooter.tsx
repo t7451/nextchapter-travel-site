@@ -23,11 +23,34 @@ const SPECIALTIES = [
 export default function SiteFooter() {
   return (
     <footer
-      className="py-12 sm:py-16 bg-primary text-primary-foreground border-t border-white/10"
+      className="relative bg-primary text-primary-foreground"
       style={{ paddingBottom: "max(3rem, calc(2rem + env(safe-area-inset-bottom, 0px)))" }}
     >
-      <div className="container">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-10 sm:mb-14">
+      {/* Wave SVG divider at top — bridges from dark section to navy footer */}
+      <div className="wave-divider overflow-hidden leading-[0]" aria-hidden={true}>
+        <svg
+          viewBox="0 0 1440 60"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+          className="w-full h-10 sm:h-16 block"
+          style={{ display: "block", marginBottom: "-1px" }}
+        >
+          <path
+            d="M0 0C360 60 720 60 1080 30C1260 15 1350 5 1440 0V60H0V0Z"
+            fill="oklch(0.22 0.06 240)"
+            fillOpacity="0.85"
+          />
+          <path
+            d="M0 20C240 50 600 55 960 35C1200 20 1350 10 1440 20V60H0V20Z"
+            fill="oklch(0.22 0.06 240)"
+          />
+        </svg>
+      </div>
+
+      <div className="py-10 sm:py-14">
+        <div className="container">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-10 sm:mb-14">
           {/* Brand column */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -167,6 +190,7 @@ export default function SiteFooter() {
               Privacy
             </a>
           </p>
+        </div>
         </div>
       </div>
     </footer>
