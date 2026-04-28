@@ -14,7 +14,7 @@ interface SEOHeadProps {
 }
 
 const SITE_NAME = "Next Chapter Travel — Jessica Seiders";
-const BASE_URL = "https://nextchaptertravel.com";
+const BASE_URL = "https://next-chapter-travel.netlify.app";
 const DEFAULT_DESCRIPTION =
   "Jessica Seiders at Next Chapter Travel LLC creates unforgettable vacations — Disney, cruises, all-inclusive resorts, and more. Get a personal travel advisor, free of charge.";
 const DEFAULT_OG_IMAGE = `${BASE_URL}/jesshero.jpeg`;
