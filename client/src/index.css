@@ -883,9 +883,11 @@ a, button, [role="button"] {
   transform: translateY(0);
 }
 [data-reveal-delay="100"] { transition-delay: 0.1s; }
+[data-reveal-delay="150"] { transition-delay: 0.15s; }
 [data-reveal-delay="200"] { transition-delay: 0.2s; }
 [data-reveal-delay="300"] { transition-delay: 0.3s; }
 [data-reveal-delay="400"] { transition-delay: 0.4s; }
+[data-reveal-delay="450"] { transition-delay: 0.45s; }
 [data-reveal-delay="500"] { transition-delay: 0.5s; }
 
 /* Marquee — auto-scrolling brand strip ("As certified specialists in...") */
