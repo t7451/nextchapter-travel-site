@@ -1,3 +1,5 @@
+import { Castle, Ship, TreePalm } from "lucide-react";
+
 export const jessicaTrips = [
   {
     id: 1,
@@ -8,6 +10,7 @@ export const jessicaTrips = [
     description:
       "Experience the magic of Disney with a personalized itinerary and insider tips.",
     link: "https://www.thenext-chapter-travel.club/plan-my-trip",
+    icon: Castle,
   },
   {
     id: 2,
@@ -18,6 +21,7 @@ export const jessicaTrips = [
     description:
       "Experience the ultimate Caribbean adventure with Royal Caribbean's seamless booking and world-class amenities.",
     link: "https://www.thenext-chapter-travel.club/plan-my-trip",
+    icon: Ship,
   },
   {
     id: 3,
@@ -28,5 +32,6 @@ export const jessicaTrips = [
     description:
       "Relax and unwind in Maui with a custom-crafted family getaway.",
     link: "https://www.thenext-chapter-travel.club/plan-my-trip",
+    icon: TreePalm,
   },
 ];

@@ -981,6 +981,228 @@ a, button, [role="button"] {
   background-size: 100% 100%;
 }
 
+/* ── Grain / noise texture overlay ──────────────────────────────────────────
+   A subtle film-grain layer that adds premium depth to sections.
+   Rendered as an SVG turbulence filter via a data-URI background-image.
+   Set opacity low so it's barely noticeable but adds tactile texture.     */
+.grain-overlay {
+  position: relative;
+}
+.grain-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+/* ── Dot grid background ─────────────────────────────────────────────────── */
+.dot-grid-bg {
+  background-image: radial-gradient(
+    circle,
+    oklch(0.72 0.09 65 / 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* ── Animated floating elements (hero decoration) ───────────────────────── */
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-14px) rotate(6deg); }
+  66%       { transform: translateY(-7px) rotate(-4deg); }
+}
+@keyframes floatIconAlt {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  40%       { transform: translateY(-18px) rotate(-8deg); }
+  70%       { transform: translateY(-5px) rotate(5deg); }
+}
+.float-icon-1 {
+  animation: floatIcon 6s ease-in-out infinite;
+}
+.float-icon-2 {
+  animation: floatIconAlt 7.5s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+.float-icon-3 {
+  animation: floatIcon 8s ease-in-out infinite;
+  animation-delay: 2.4s;
+}
+.float-icon-4 {
+  animation: floatIconAlt 9s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+
+/* ── Scroll-down bounce indicator ────────────────────────────────────────── */
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50%       { transform: translateY(8px); opacity: 1; }
+}
+.animate-bounce-down {
+  animation: bounceDown 1.8s ease-in-out infinite;
+}
+
+/* ── Nav link center-expand underline ────────────────────────────────────── */
+.nav-link-underline {
+  position: relative;
+}
+.nav-link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, oklch(0.72 0.09 65), oklch(0.88 0.1 75));
+  border-radius: 2px;
+  transition: left 0.25s ease, right 0.25s ease;
+}
+.nav-link-underline:hover::after {
+  left: 0;
+  right: 0;
+}
+
+/* ── Wave SVG footer divider ─────────────────────────────────────────────── */
+.wave-divider {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+.wave-divider svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Testimonial card top accent ──────────────────────────────────────────── */
+.card-accent-gold {
+  position: relative;
+  overflow: hidden;
+}
+.card-accent-gold::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    oklch(0.82 0.1 80 / 0.9),
+    oklch(0.92 0.09 90) 50%,
+    oklch(0.72 0.09 65 / 0.9)
+  );
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+  border-radius: 1rem 1rem 0 0;
+}
+
+/* ── Rotating gradient border (highlight cards) ──────────────────────────── */
+@keyframes borderRotate {
+  to { --border-angle: 1turn; }
+}
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0turn;
+  inherits: false;
+}
+.gradient-border-animated {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--card, oklch(1 0 0)), var(--card, oklch(1 0 0))) padding-box,
+    conic-gradient(
+      from var(--border-angle),
+      oklch(0.82 0.1 80 / 0.85),
+      oklch(0.45 0.18 240 / 0.4),
+      oklch(0.92 0.09 90 / 0.8),
+      oklch(0.72 0.09 65 / 0.9),
+      oklch(0.82 0.1 80 / 0.85)
+    ) border-box;
+  animation: borderRotate 6s linear infinite;
+}
+
+/* ── Tilt-hover on destination / feature cards ───────────────────────────── */
+.tilt-card {
+  transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+              box-shadow 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-card:hover {
+  transform: perspective(900px) rotateX(2deg) rotateY(-3deg) translateY(-6px);
+  box-shadow:
+    0 28px 56px -20px oklch(0 0 0 / 0.5),
+    0 0 0 1px oklch(0.72 0.09 65 / 0.3);
+}
+
+/* ── Step connector animated fill ────────────────────────────────────────── */
+@keyframes connectorFill {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+.connector-line-animated {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s;
+}
+.connector-line-animated.revealed {
+  transform: scaleX(1);
+}
+
+/* ── Sparkle burst ────────────────────────────────────────────────────────── */
+@keyframes sparklePop {
+  0%   { transform: scale(0) rotate(0deg); opacity: 1; }
+  60%  { transform: scale(1.4) rotate(45deg); opacity: 0.8; }
+  100% { transform: scale(0.8) rotate(90deg); opacity: 0; }
+}
+.sparkle-burst {
+  animation: sparklePop 0.7s ease-out forwards;
+}
+
+/* ── Pulsing dot (trust/status indicators) ───────────────────────────────── */
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.6); opacity: 0.4; }
+}
+.dot-pulse {
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+/* ── Glowing heading accent ──────────────────────────────────────────────── */
+.heading-glow {
+  text-shadow:
+    0 0 40px oklch(0.82 0.1 80 / 0.35),
+    0 2px 20px oklch(0 0 0 / 0.5),
+    0 1px 4px oklch(0 0 0 / 0.3);
+}
+
+/* ── Image parallax scale on hover ──────────────────────────────────────── */
+.img-parallax-wrap {
+  overflow: hidden;
+}
+.img-parallax-wrap img,
+.img-parallax-wrap .lazy-img {
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.img-parallax-wrap:hover img,
+.img-parallax-wrap:hover .lazy-img {
+  transform: scale(1.08);
+}
+
+/* ── Staggered section intro fade ────────────────────────────────────────── */
+.stagger-reveal > [data-reveal]:nth-child(1) { transition-delay: 0.05s; }
+.stagger-reveal > [data-reveal]:nth-child(2) { transition-delay: 0.15s; }
+.stagger-reveal > [data-reveal]:nth-child(3) { transition-delay: 0.25s; }
+.stagger-reveal > [data-reveal]:nth-child(4) { transition-delay: 0.35s; }
+.stagger-reveal > [data-reveal]:nth-child(5) { transition-delay: 0.45s; }
+.stagger-reveal > [data-reveal]:nth-child(6) { transition-delay: 0.55s; }
+
 /* ── Reduced-motion overrides for new utilities ── */
 @media (prefers-reduced-motion: reduce) {
   .aurora-blob,
@@ -995,6 +1217,18 @@ a, button, [role="button"] {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  .float-icon-1,
+  .float-icon-2,
+  .float-icon-3,
+  .float-icon-4,
+  .animate-bounce-down,
+  .card-accent-gold::before,
+  .gradient-border-animated,
+  .tilt-card:hover,
+  .connector-line-animated {
+    animation: none !important;
+    transform: none !important;
   }
 }
 

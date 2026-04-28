@@ -134,7 +134,7 @@ export default function About() {
                 <Sparkles className="w-3 h-3" />
                 Meet Your Travel Expert
               </Badge>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold mb-3 sm:mb-4 leading-[1.05] tracking-tight hero-text-shadow">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold mb-3 sm:mb-4 leading-[1.05] tracking-tight heading-glow">
                 Jessica{" "}
                 <span className="text-gradient-gold italic">Seiders</span>
               </h1>
@@ -296,7 +296,7 @@ export default function About() {
       </section>
 
       {/* ── Why Choose Jessica ── */}
-      <section className="py-16 sm:py-24">
+      <section className="py-16 sm:py-24 dot-grid-bg relative">
         <div className="container">
           <div className="text-center mb-10 sm:mb-16" data-reveal>
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
@@ -317,9 +317,9 @@ export default function About() {
                 key={item.title}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="gradient-border-gold bg-card/55 backdrop-blur-md p-6 sm:p-8 rounded-2xl lift-on-hover"
+                className="gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md p-6 sm:p-8 rounded-2xl lift-on-hover tilt-card group"
               >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-4 sm:mb-6 shadow-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center mb-4 sm:mb-6 shadow-lg group-hover:scale-110 group-hover:bg-secondary/20 transition-all">
                   <item.icon className="w-6 h-6 sm:w-7 sm:h-7 text-secondary" />
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">
@@ -357,9 +357,9 @@ export default function About() {
                 key={cert.label}
                 data-reveal
                 data-reveal-delay={String(((idx % 3) + 1) * 100)}
-                className="gradient-border-gold bg-card/55 backdrop-blur-md p-5 sm:p-6 rounded-2xl flex items-start gap-4 lift-on-hover"
+                className="gradient-border-gold card-accent-gold bg-card/55 backdrop-blur-md p-5 sm:p-6 rounded-2xl flex items-start gap-4 lift-on-hover tilt-card group"
               >
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center shrink-0 shadow-lg">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center shrink-0 shadow-lg group-hover:bg-secondary/20 transition-colors">
                   <cert.icon className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
                 </div>
                 <div>
@@ -380,7 +380,9 @@ export default function About() {
       <section className="py-16 sm:py-24 relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-0">
           <span className="aurora-blob gold" style={{ width: "30rem", height: "30rem", top: "-6rem", right: "-6rem", opacity: 0.35 }} />
+          <span className="aurora-blob navy" style={{ width: "24rem", height: "24rem", bottom: "-4rem", left: "-4rem", opacity: 0.2 }} />
         </div>
+        <div aria-hidden className="pointer-events-none absolute inset-0 dot-grid-bg opacity-20" />
         <div className="container relative">
           <div className="text-center mb-10 sm:mb-14" data-reveal>
             <Badge className="mb-3 sm:mb-4 bg-secondary/10 text-secondary border-secondary/20 font-sans text-xs tracking-widest uppercase">
@@ -397,29 +399,32 @@ export default function About() {
                 key={t.name}
                 data-reveal
                 data-reveal-delay={String((idx + 1) * 100)}
-                className="gradient-border-gold relative bg-card/65 backdrop-blur-md rounded-2xl p-6 sm:p-7 shadow-xl shadow-black/20 flex flex-col gap-4 lift-on-hover"
+                className="card-accent-gold gradient-border-gold relative bg-card/65 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-xl shadow-black/20 flex flex-col gap-4 lift-on-hover tilt-card"
               >
                 <Quote
-                  className="absolute -top-3 -left-1 w-12 h-12 text-secondary/25 fill-secondary/15 rotate-180"
+                  className="absolute top-4 right-5 w-14 h-14 text-secondary/10 fill-secondary/8"
                   aria-hidden
                 />
-                <div className="flex gap-1 relative">
+                <div className="flex gap-0.5 relative">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-secondary fill-secondary" />
                   ))}
                 </div>
-                <p className="text-sm sm:text-base text-foreground/85 font-sans leading-relaxed flex-1 relative">
+                <p className="text-sm sm:text-base text-foreground/85 font-sans leading-relaxed flex-1 relative italic">
                   &ldquo;{t.quote}&rdquo;
                 </p>
-                <div className="flex items-center gap-3 pt-2 border-t border-border/50 relative">
-                  <div className="w-10 h-10 rounded-full bg-secondary/15 ring-2 ring-secondary/40 ring-offset-2 ring-offset-card flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center gap-3 pt-3 border-t border-border/40 relative">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-secondary/30 to-secondary/10 ring-2 ring-secondary/40 ring-offset-2 ring-offset-card/80 flex items-center justify-center flex-shrink-0 shadow-md">
                     <span className="text-sm font-bold text-secondary font-sans">
                       {t.name.charAt(0)}
                     </span>
                   </div>
                   <div>
                     <p className="font-semibold font-sans text-foreground text-sm">{t.name}</p>
-                    <p className="text-xs text-muted-foreground font-sans">{t.trip}</p>
+                    <p className="text-xs text-secondary/70 font-sans flex items-center gap-1">
+                      <MapPin className="w-3 h-3 inline" />
+                      {t.trip}
+                    </p>
                   </div>
                 </div>
               </div>

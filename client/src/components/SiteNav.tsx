@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { getLoginUrl } from "@/const";
 import { useVideoHero } from "@/contexts/VideoHeroContext";
@@ -23,6 +23,7 @@ export default function SiteNav({ alwaysSolid = false, ctaPreloadContext }: Site
   const { preloadContext } = useVideoHero();
   const [isScrolled, setIsScrolled] = useState(alwaysSolid);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [location] = useLocation();
 
   useEffect(() => {
     if (alwaysSolid) return;
@@ -58,15 +59,27 @@ export default function SiteNav({ alwaysSolid = false, ctaPreloadContext }: Site
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-7">
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-foreground hover:text-secondary transition-colors font-sans text-sm"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map(link => {
+            const isActive = location === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "nav-link-underline relative text-foreground hover:text-secondary transition-colors font-sans text-sm pb-0.5",
+                  isActive && "text-secondary"
+                )}
+              >
+                {link.label}
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="absolute bottom-[-3px] left-0 right-0 h-[2px] rounded bg-gradient-to-r from-secondary to-secondary/70"
+                  />
+                )}
+              </Link>
+            );
+          })}
           <Link href="/plan-my-trip">
             <Button
               size="sm"
