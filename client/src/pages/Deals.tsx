@@ -16,6 +16,7 @@ import {
   Castle,
   TreePalm,
   Plane,
+  Globe,
   Star,
   Clock,
   Shield,
@@ -26,181 +27,36 @@ import {
   Calendar,
   Users,
   Percent,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import dealsData from "@/data/deals.json";
+import type { DealCategory, DealIconName, RawDeal } from "@shared/dealTypes";
 
-type DealCategory =
-  | "All"
-  | "Cruises"
-  | "Disney"
-  | "All-Inclusive"
-  | "Hawaii"
-  | "Europe"
-  | "Bundles";
+// Map serialized iconName strings → Lucide React components
+const ICON_MAP: Record<DealIconName, React.ElementType> = {
+  Ship,
+  Castle,
+  TreePalm,
+  Plane,
+  Globe,
+};
 
-interface Deal {
-  id: number;
-  title: string;
-  destination: string;
-  category: Exclude<DealCategory, "All">[];
-  image: string;
-  description: string;
-  perks: string[];
-  icon: React.ElementType;
-  /** Headline price label, e.g. "From $1,899/person" */
-  priceFrom: string;
-  /** Marketing-style "was" price for visual savings, e.g. "$2,499" */
-  priceWas?: string;
-  /** Bookable window label, e.g. "Book by Jul 31" */
-  bookBy: string;
-  /** Travel window label, e.g. "Travel Sep – Dec 2026" */
-  travelWindow: string;
-  /** Top-line badge, e.g. "Hot Deal", "Bonus Commission", "Exclusive Bundle" */
-  badge?: string;
-  /** Whether this is a featured / hero deal */
-  featured?: boolean;
-}
+type FilterCategory = "All" | DealCategory;
 
-// Curated promotions Jessica earns extra commission on (supplier overrides,
-// preferred-partner bonuses, and bundled cross-sell incentives).
-const DEALS: Deal[] = [
-  {
-    id: 1,
-    title: "7-Night Caribbean Cruise + Pre-Stay Bundle",
-    destination: "Eastern Caribbean • Royal Caribbean",
-    category: ["Cruises", "Bundles"],
-    image:
-      "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1200&q=80",
-    description:
-      "Sail roundtrip from Miami with a 2-night pre-cruise hotel stay and private port transfers — bundled at a single locked-in rate.",
-    perks: [
-      "Free Wi-Fi & drink package",
-      "$200 onboard credit",
-      "Pre-cruise hotel + transfers",
-      "Kids sail half off",
-    ],
-    icon: Ship,
-    priceFrom: "From $1,899/person",
-    priceWas: "$2,499",
-    bookBy: "Book by Jul 31",
-    travelWindow: "Travel Sep – Dec 2026",
-    badge: "Bonus Commission",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Walt Disney World 5-Day Magic Bundle",
-    destination: "Orlando, FL • Disney Resort + Park Hopper",
-    category: ["Disney", "Bundles"],
-    image:
-      "https://images.unsplash.com/photo-1597466599360-3b9775841aec?auto=format&fit=crop&w=1200&q=80",
-    description:
-      "Deluxe resort stay, 5-day Park Hopper tickets, Memory Maker, and dining plan — packaged with preferred-partner pricing.",
-    perks: [
-      "Free dining plan",
-      "Memory Maker included",
-      "Early park entry",
-      "$150 resort credit",
-    ],
-    icon: Castle,
-    priceFrom: "From $3,299/family of 4",
-    priceWas: "$3,899",
-    bookBy: "Book by Aug 15",
-    travelWindow: "Travel Oct 2026 – Mar 2027",
-    badge: "Exclusive Bundle",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "All-Inclusive Riviera Maya Escape",
-    destination: "Cancún / Playa del Carmen, Mexico",
-    category: ["All-Inclusive"],
-    image:
-      "https://images.unsplash.com/photo-1510097467424-192d713fd8b2?auto=format&fit=crop&w=1200&q=80",
-    description:
-      "Adults-only beachfront resort with unlimited dining, top-shelf bars, and round-trip airport transfers.",
-    perks: [
-      "Unlimited dining & drinks",
-      "Resort credit $300",
-      "Airport transfers included",
-      "5th night free",
-    ],
-    icon: TreePalm,
-    priceFrom: "From $1,499/person",
-    priceWas: "$1,899",
-    bookBy: "Book by Sep 30",
-    travelWindow: "Travel Nov 2026 – Apr 2027",
-    badge: "Hot Deal",
-  },
-  {
-    id: 4,
-    title: "Hawaii Multi-Island Hopper",
-    destination: "Oahu • Maui • Kauai",
-    category: ["Hawaii", "Bundles"],
-    image:
-      "https://images.unsplash.com/photo-1505852679233-d9fd70aff56d?auto=format&fit=crop&w=1200&q=80",
-    description:
-      "10 nights across three islands with inter-island flights, oceanfront stays, and a private luau experience bundled in.",
-    perks: [
-      "Inter-island flights included",
-      "Oceanfront upgrades",
-      "Private luau",
-      "Daily breakfast",
-    ],
-    icon: TreePalm,
-    priceFrom: "From $3,499/person",
-    priceWas: "$4,199",
-    bookBy: "Book by Jun 30",
-    travelWindow: "Travel Jan – May 2027",
-    badge: "Bonus Commission",
-  },
-  {
-    id: 5,
-    title: "Mediterranean River Cruise + Land Tour",
-    destination: "Rome • Florence • French Riviera",
-    category: ["Europe", "Cruises", "Bundles"],
-    image:
-      "https://images.unsplash.com/photo-1531572753322-ad063cecc140?auto=format&fit=crop&w=1200&q=80",
-    description:
-      "12-day cruise + curated land tour with guided excursions, premium beverage package, and pre-paid gratuities.",
-    perks: [
-      "Pre-paid gratuities",
-      "Premium beverages included",
-      "Guided shore excursions",
-      "Business-class flight upgrade option",
-    ],
-    icon: Ship,
-    priceFrom: "From $4,799/person",
-    priceWas: "$5,599",
-    bookBy: "Book by Aug 31",
-    travelWindow: "Travel Apr – Oct 2027",
-    badge: "Exclusive Bundle",
-  },
-  {
-    id: 6,
-    title: "Disneyland + San Diego Family Combo",
-    destination: "Anaheim & San Diego, CA",
-    category: ["Disney", "Bundles"],
-    image:
-      "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=1200&q=80",
-    description:
-      "3 nights at a Disneyland Good Neighbor hotel + 2 nights in San Diego with SeaWorld or Zoo tickets bundled.",
-    perks: [
-      "Park Hopper tickets",
-      "SeaWorld or Zoo admission",
-      "Rental car included",
-      "Free 4th night",
-    ],
-    icon: Castle,
-    priceFrom: "From $2,799/family of 4",
-    priceWas: "$3,299",
-    bookBy: "Book by Jul 15",
-    travelWindow: "Travel Sep 2026 – Feb 2027",
-    badge: "Hot Deal",
-  },
-];
+/** Runtime deal — same as RawDeal but with a React component instead of iconName */
+type Deal = Omit<RawDeal, "iconName"> & { icon: React.ElementType };
 
-const CATEGORIES: { key: DealCategory; icon: React.ElementType }[] = [
+// Derive runtime Deal objects (with React component icon) from the JSON data.
+// deals.json is updated by `pnpm run deals:refresh` (see scripts/refresh-deals.ts).
+const DEALS: Deal[] = dealsData.deals.map(d => {
+  const { iconName, ...rest } = d;
+  return { ...rest, icon: ICON_MAP[iconName as DealIconName] ?? Globe };
+});
+
+/** ISO string from deals.json, e.g. "2026-04-28T22:38:20Z" */
+const DEALS_UPDATED_AT = dealsData.updatedAt;
+const CATEGORIES: { key: FilterCategory; icon: React.ElementType }[] = [
   { key: "All", icon: Sparkles },
   { key: "Cruises", icon: Ship },
   { key: "Disney", icon: Castle },
@@ -233,9 +89,22 @@ const WHY_BUNDLE = [
   },
 ];
 
+/** Format ISO timestamp to "Apr 28, 2026" for display */
+function formatUpdatedAt(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
 export default function Deals() {
   const { setVideoContext } = useVideoHero();
-  const [activeCategory, setActiveCategory] = useState<DealCategory>("All");
+  const [activeCategory, setActiveCategory] = useState<FilterCategory>("All");
   useScrollReveal();
 
   useEffect(() => {
@@ -244,7 +113,9 @@ export default function Deals() {
 
   const filteredDeals = useMemo(() => {
     if (activeCategory === "All") return DEALS;
-    return DEALS.filter(deal => deal.category.includes(activeCategory));
+    return DEALS.filter(deal =>
+      (deal.category as string[]).includes(activeCategory)
+    );
   }, [activeCategory]);
 
   return (
@@ -416,6 +287,9 @@ export default function Deals() {
                         <Calendar className="w-3 h-3" />
                         {deal.bookBy} · {deal.travelWindow}
                       </p>
+                      <p className="text-[10px] font-sans text-muted-foreground/50 mt-0.5">
+                        via {deal.supplierName}
+                      </p>
                     </div>
                     <Link href={`/plan-my-trip?deal=${deal.id}`}>
                       <Button
@@ -449,6 +323,10 @@ export default function Deals() {
             <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto font-sans">
               Filter Jessica's curated promotions and trip bundles to match your
               travel style.
+            </p>
+            <p className="mt-3 text-xs font-sans text-muted-foreground/60 inline-flex items-center justify-center gap-1.5">
+              <RefreshCw className="w-3 h-3" />
+              Deals refreshed {formatUpdatedAt(DEALS_UPDATED_AT)}
             </p>
           </div>
 
@@ -544,9 +422,12 @@ export default function Deals() {
                           {deal.priceFrom}
                         </span>
                       </div>
-                      <p className="text-[11px] font-sans text-muted-foreground/80 mb-3 inline-flex items-center gap-1">
+                      <p className="text-[11px] font-sans text-muted-foreground/80 mb-1 inline-flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {deal.bookBy}
+                      </p>
+                      <p className="text-[10px] font-sans text-muted-foreground/50 mb-3">
+                        via {deal.supplierName}
                       </p>
                       <Link href={`/plan-my-trip?deal=${deal.id}`}>
                         <Button
