@@ -19,28 +19,31 @@ export function useScrollReveal(rootRef?: React.RefObject<HTMLElement | null>) {
     if (typeof window === "undefined") return;
 
     const scope: ParentNode = rootRef?.current ?? document;
-    const targets = Array.from(
-      scope.querySelectorAll<HTMLElement>("[data-reveal]")
-    );
-    if (targets.length === 0) return;
-
     const prefersReducedMotion =
       typeof window.matchMedia === "function" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const reveal = (element: HTMLElement) => {
+      element.setAttribute("data-revealed", "true");
+    };
+
+    const queryTargets = () =>
+      Array.from(scope.querySelectorAll<HTMLElement>("[data-reveal]"));
+
+    const initialTargets = queryTargets();
+    if (initialTargets.length === 0) return;
+
     if (prefersReducedMotion || typeof IntersectionObserver === "undefined") {
-      targets.forEach(el => el.setAttribute("data-revealed", "true"));
+      initialTargets.forEach(reveal);
       return;
     }
 
+    const observed = new WeakSet<HTMLElement>();
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            (entry.target as HTMLElement).setAttribute(
-              "data-revealed",
-              "true"
-            );
+            reveal(entry.target as HTMLElement);
             observer.unobserve(entry.target);
           }
         });
@@ -48,7 +51,38 @@ export function useScrollReveal(rootRef?: React.RefObject<HTMLElement | null>) {
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
 
-    targets.forEach(el => observer.observe(el));
-    return () => observer.disconnect();
+    const observeTarget = (element: HTMLElement) => {
+      if (observed.has(element) || element.getAttribute("data-revealed") === "true") {
+        return;
+      }
+
+      observed.add(element);
+      observer.observe(element);
+    };
+
+    initialTargets.forEach(observeTarget);
+
+    const mutationObserver = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (!(node instanceof HTMLElement)) return;
+
+          if (node.matches("[data-reveal]")) {
+            observeTarget(node);
+          }
+
+          node
+            .querySelectorAll<HTMLElement>("[data-reveal]")
+            .forEach(observeTarget);
+        });
+      });
+    });
+
+    mutationObserver.observe(scope, { childList: true, subtree: true });
+
+    return () => {
+      mutationObserver.disconnect();
+      observer.disconnect();
+    };
   }, [rootRef]);
 }
