@@ -1226,10 +1226,129 @@ a, button, [role="button"] {
   .card-accent-gold::before,
   .gradient-border-animated,
   .tilt-card:hover,
-  .connector-line-animated {
+  .connector-line-animated,
+  .compass-spin,
+  .route-arc-draw,
+  .btn-shimmer::after,
+  .twinkle-1,
+  .twinkle-2,
+  .twinkle-3 {
     animation: none !important;
     transform: none !important;
   }
+}
+
+/* ── Button shimmer (sheen sweep on hover) ──────────────────────────────────
+   Adds a subtle diagonal light-sweep across primary CTAs on hover/focus.
+   The pseudo-element is masked to the button's padding-box so corners stay
+   clean. Works on top of any background — the sheen uses a light overlay.  */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    oklch(1 0 0 / 0.18) 50%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+  transition: left 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  z-index: 0;
+}
+.btn-shimmer:hover::after,
+.btn-shimmer:focus-visible::after {
+  left: 130%;
+}
+/* Keep button content above the sheen */
+.btn-shimmer > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Slow compass spin (used on 404 page) ───────────────────────────────── */
+@keyframes compassSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.compass-spin {
+  animation: compassSpin 22s linear infinite;
+}
+
+/* ── Twinkling stars (decorative sparkles) ──────────────────────────────── */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.85); }
+  50%       { opacity: 1;   transform: scale(1.15); }
+}
+.twinkle-1 { animation: twinkle 3.2s ease-in-out infinite; }
+.twinkle-2 { animation: twinkle 4.1s ease-in-out infinite 0.7s; }
+.twinkle-3 { animation: twinkle 2.8s ease-in-out infinite 1.4s; }
+
+/* ── Section divider (centered hairline + diamond accent) ───────────────── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 auto;
+  max-width: 14rem;
+  opacity: 0.6;
+}
+.section-divider::before,
+.section-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.72 0.09 65 / 0.45),
+    transparent
+  );
+}
+.section-divider-icon {
+  width: 0.55rem;
+  height: 0.55rem;
+  background: oklch(0.82 0.1 80);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  box-shadow: 0 0 12px oklch(0.82 0.1 80 / 0.6);
+}
+
+/* ── Animated dashed route arc (decorative SVG stroke draw) ─────────────── */
+@keyframes routeArcDraw {
+  to { stroke-dashoffset: 0; }
+}
+.route-arc-draw {
+  stroke-dasharray: 8 6;
+  stroke-dashoffset: 400;
+  animation: routeArcDraw 6s ease-out forwards;
+}
+
+/* ── Soft ring pulse (used on photo / icon containers) ──────────────────── */
+@keyframes softRingPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 oklch(0.72 0.09 65 / 0.4),
+      0 0 30px -4px oklch(0.72 0.09 65 / 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px oklch(0.72 0.09 65 / 0),
+      0 0 36px -2px oklch(0.72 0.09 65 / 0.55);
+  }
+}
+.soft-ring-pulse {
+  animation: softRingPulse 3.4s ease-in-out infinite;
 }
 
 /* ── Reduced-motion overrides ───────────────────────────────────────────────
@@ -1257,6 +1376,11 @@ a, button, [role="button"] {
   .animate-float,
   .animate-heartbeat,
   .animate-shake,
+  .compass-spin,
+  .soft-ring-pulse,
+  .twinkle-1,
+  .twinkle-2,
+  .twinkle-3,
   .video-fade-in {
     animation: none !important;
   }

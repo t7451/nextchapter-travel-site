@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { VideoHeroProvider } from "./contexts/VideoHeroContext";
 import GlobalVideoBackground from "./components/GlobalVideoBackground";
 import RouteLoadingScreen from "./components/RouteLoadingScreen";
+import ScrollProgressBar from "./components/ScrollProgressBar";
 
 const lazyWithRetry = <T extends ComponentType<unknown>>(
   importer: () => Promise<{ default: T }>,
@@ -386,6 +387,8 @@ function App() {
             <Toaster />
             {/* Global cinematic video background — sits behind everything */}
             <GlobalVideoBackground />
+            {/* Site-wide scroll progress indicator */}
+            <ScrollProgressBar />
             <Suspense fallback={<RouteLoadingScreen />}>
               <Router />
             </Suspense>

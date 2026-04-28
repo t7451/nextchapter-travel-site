@@ -214,7 +214,7 @@ export default function Services() {
             <Link href="/plan-my-trip" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-12 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                className="group w-full sm:w-auto bg-secondary text-secondary-foreground hover:bg-secondary/90 px-7 sm:px-12 py-6 sm:py-8 text-base sm:text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
               >
                 <span>Get My Free Proposal</span>
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
@@ -342,7 +342,7 @@ export default function Services() {
             <Link href="/plan-my-trip">
               <Button
                 size="lg"
-                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-10 py-6 text-lg font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-10 py-6 text-lg font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
               >
                 <span>Start Step One — It's Free</span>
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
@@ -422,7 +422,7 @@ export default function Services() {
             <Link href="/plan-my-trip">
               <Button
                 size="lg"
-                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-14 py-8 text-xl font-sans font-bold rounded-2xl min-h-[56px] cta-glow active:scale-95 transition-all"
+                className="group bg-secondary text-secondary-foreground hover:bg-secondary/90 px-14 py-8 text-xl font-sans font-bold rounded-2xl min-h-[56px] btn-shimmer cta-glow active:scale-95 transition-all"
               >
                 <span>Get My Free Proposal</span>
                 <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
