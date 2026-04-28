@@ -43,7 +43,7 @@ const LOCAL_BUSINESS_SCHEMA = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    email: "jessica@nextchaptertravel.com",
+    email: "seidersconsulting@gmail.com",
     contactType: "customer service",
     availableLanguage: "English",
   },
