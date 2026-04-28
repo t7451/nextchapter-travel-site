@@ -52,7 +52,11 @@ export function useScrollReveal(rootRef?: React.RefObject<HTMLElement | null>) {
     );
 
     const observeTarget = (element: HTMLElement) => {
-      if (observed.has(element) || element.getAttribute("data-revealed") === "true") {
+      if (observed.has(element)) {
+        return;
+      }
+
+      if (element.dataset.revealed === "true") {
         return;
       }
 
@@ -63,9 +67,9 @@ export function useScrollReveal(rootRef?: React.RefObject<HTMLElement | null>) {
     initialTargets.forEach(observeTarget);
 
     const mutationObserver = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        mutation.addedNodes.forEach(node => {
-          if (!(node instanceof HTMLElement)) return;
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (!(node instanceof HTMLElement)) continue;
 
           if (node.matches("[data-reveal]")) {
             observeTarget(node);
@@ -74,8 +78,8 @@ export function useScrollReveal(rootRef?: React.RefObject<HTMLElement | null>) {
           node
             .querySelectorAll<HTMLElement>("[data-reveal]")
             .forEach(observeTarget);
-        });
-      });
+        }
+      }
     });
 
     mutationObserver.observe(scope, { childList: true, subtree: true });
